@@ -1,19 +1,12 @@
-import { CollectionIP } from './../UIRepresentation/types/deviceAuthSession';
-import {
-  DeviceModel,
-  DeviceViewModel,
-} from "./../UIRepresentation/types/deviceAuthSession";
-import {
-  deviceAuthSessionCollection,
-  IPAuthSessionCollection,
-} from "./../db/db";
+import { DevicesModel } from './../db/db';
+import { DeviceViewModel, DeviceModel, CollectionIP } from './../UI/types/deviceAuthSession';
 import { Filter } from 'mongodb';
 
 export const securityDeviceRepositories = {
   async getDevicesAllUsers(userId: string): Promise<DeviceViewModel[]> {
-    const getAllDevices: DeviceModel[] = await deviceAuthSessionCollection
+    const getAllDevices: DeviceModel[] = await DevicesModel
       .find({ userId })
-      .toArray();
+      .lean();
     return getAllDevices.map(function (item) {
       return {
         ip: item.ip,
@@ -24,32 +17,32 @@ export const securityDeviceRepositories = {
     });
   },
   async terminateSession(deviceId: string) {
-    const deleteOne = await deviceAuthSessionCollection.deleteOne({deviceId});
+    const deleteOne = await DevicesModel.deleteOne({deviceId});
     return deleteOne.deletedCount === 1;
   },
   async createDevice(device: DeviceModel): Promise<DeviceModel> {
-    const resultDevice = await deviceAuthSessionCollection.insertOne(
+    const resultDevice = await DevicesModel.insertMany(
       device,
     );	
     return device;
   },
   async findDeviceByDeviceId(deviceId: string) {
-    return await deviceAuthSessionCollection.findOne({ deviceId: deviceId });
+    return await DevicesModel.findOne({ deviceId: deviceId });
   },
   async createCollectionIP(reqData: any) {
-    await IPAuthSessionCollection.insertOne(reqData);
+    await DevicesModel.insertMany(reqData);
     return reqData;
   },
   async countDocs(filter: Filter<CollectionIP>) {
 	console.log(filter)
-    const result = await IPAuthSessionCollection.countDocuments(filter);
+    const result = await DevicesModel.countDocuments(filter);
 	return result
   },
   async updateDeviceUser(userId: string, deviceId: string, newLastActiveDate: string) {
-	await deviceAuthSessionCollection.updateOne({userId, deviceId}, {$set: {lastActiveDate: newLastActiveDate}})
+	await DevicesModel.updateOne({userId, deviceId}, {$set: {lastActiveDate: newLastActiveDate}})
   },
   async logoutDevice(deviceId: string) {
-	const decayResult = await deviceAuthSessionCollection.deleteOne({deviceId})
+	const decayResult = await DevicesModel.deleteOne({deviceId})
     return decayResult.deletedCount === 1
   }
 };

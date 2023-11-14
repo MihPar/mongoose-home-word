@@ -46,7 +46,7 @@ export const userRepositories = {
         page: +pageNumber,
         pageSize: +pageSize,
         totalCount: totalCount,
-        items: getAllUsers.map(user => ({
+        items: getAllUsers.map((user: DBUserType): UserType  => ({
 			id: user._id.toString(),
 			login: user.accountData.userName,
 			email: user.accountData.email,

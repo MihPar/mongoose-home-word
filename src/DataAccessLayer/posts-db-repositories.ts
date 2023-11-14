@@ -1,6 +1,6 @@
-import { PostsType } from '../UIRepresentation/types/postsType';
-import { PaginationType} from '../UIRepresentation/types/types';
-import { postsCollection } from "../db/db";
+import { PostsModel } from './../db/db';
+import { PostsType } from './../UI/types/postsTypes';
+import { PaginationType } from './../UI/types/types';
 import { Filter } from "mongodb";
 
 export const postsRepositories = {
@@ -11,14 +11,14 @@ export const postsRepositories = {
 		sortDirection: string
 	  ): Promise<PaginationType<PostsType>> {
 		const filtered: Filter<PostsType> = {};
-		const allPosts = await postsCollection
+		const allPosts = await PostsModel
 		  .find(filtered, { projection: { _id: 0 } })
 		  .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
 		  .skip((+pageNumber - 1) * +pageSize)
 		  .limit(+pageSize)
-		  .toArray();
+		  .lean();
 	
-		const totalCount: number = await postsCollection.countDocuments(filtered);
+		const totalCount: number = await PostsModel.countDocuments(filtered);
 		const pagesCount: number = Math.ceil(totalCount / +pageSize);
 
 		let result: PaginationType<PostsType> = {
@@ -31,7 +31,7 @@ export const postsRepositories = {
 		return result
 	  },
   async createNewBlogs(newPost: PostsType): Promise<PostsType> {
-    const result = await postsCollection.insertOne({ ...newPost });
+    const result = await PostsModel.insertMany({ ...newPost });
     return newPost;
   },
   async findPostsByBlogsId(
@@ -48,13 +48,13 @@ export const postsRepositories = {
 	console.log((+pageNumber - 1) * +pageSize)
 	console.log(+pageSize)
 
-    const posts = await postsCollection
+    const posts = await PostsModel
       .find(filter, { projection: { _id: 0 } })
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
       .skip((+pageNumber - 1) * +pageSize) //todo find how we can skip
       .limit(+pageSize)
-      .toArray();
-    const totalCount: number = await postsCollection.countDocuments(filter);
+      .lean();
+    const totalCount: number = await PostsModel.countDocuments(filter);
     const pagesCount: number = Math.ceil(totalCount / +pageSize);
 
 	return {
@@ -66,7 +66,7 @@ export const postsRepositories = {
 	}
   },
   async findPostById(id: string): Promise<PostsType | null> {
-    return await postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
+    return await PostsModel.findOne({ id: id }, { projection: { _id: 0 } });
   },
   async updatePost(
     id: string,
@@ -75,7 +75,7 @@ export const postsRepositories = {
     content: string,
     blogId: string
   ): Promise<boolean> {
-    const result = await postsCollection.updateOne(
+    const result = await PostsModel.updateOne(
       { id: id },
       {
         $set: {
@@ -89,11 +89,11 @@ export const postsRepositories = {
     return result.matchedCount === 1;
   },
   async deletedPostById(id: string): Promise<boolean> {
-    const result = await postsCollection.deleteOne({ id: id });
+    const result = await PostsModel.deleteOne({ id: id });
     return result.deletedCount === 1;
   },
   async deleteRepoPosts(): Promise<boolean> {
-    const deletedAll = await postsCollection.deleteMany({});
+    const deletedAll = await PostsModel.deleteMany({});
     return deletedAll.acknowledged
   },
 };
