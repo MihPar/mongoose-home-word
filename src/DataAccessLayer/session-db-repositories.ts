@@ -16,7 +16,7 @@ export const sessionRepositories = {
     );
   },
   async addToBlackList(newRefreshToken: BlackList): Promise<boolean> {
-	const result = await BlackListMode.insertMany({...newRefreshToken})
+	const result = await BlackListMode.insertMany([newRefreshToken])
 	if(result) {
 		return true
 	} else {

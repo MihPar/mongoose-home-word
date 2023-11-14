@@ -1,6 +1,5 @@
 import { DevicesModel } from './../db/db';
 import { DeviceViewModel, DeviceModel, CollectionIP } from './../UI/types/deviceAuthSession';
-import { Filter } from 'mongodb';
 
 export const securityDeviceRepositories = {
   async getDevicesAllUsers(userId: string): Promise<DeviceViewModel[]> {
@@ -33,7 +32,7 @@ export const securityDeviceRepositories = {
     await DevicesModel.insertMany(reqData);
     return reqData;
   },
-  async countDocs(filter: Filter<CollectionIP>) {
+  async countDocs(filter: any) {
 	console.log(filter)
     const result = await DevicesModel.countDocuments(filter);
 	return result

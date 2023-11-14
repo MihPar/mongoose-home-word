@@ -1,7 +1,7 @@
 import { PaginationType } from './../UI/types/types';
 import { CommentsModel } from './../db/db';
 import { CommentType, CommentTypeView } from './../UI/types/commentType';
-import { Filter, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 
 const commentDBToView = (item: CommentType): CommentTypeView => {
   return {
@@ -49,7 +49,7 @@ export const commentRepositories = {
     sortBy: string,
     sortDirection: string
   ): Promise<PaginationType<CommentTypeView> | null> {
-    const filter: Filter<CommentType> = { postId: postId };
+    const filter = { postId: postId };
     const commentByPostId: CommentType[] = await CommentsModel
       .find(filter)
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
@@ -71,7 +71,7 @@ export const commentRepositories = {
   async createNewCommentPostId(
     newComment: CommentType
   ): Promise<CommentTypeView> {
-    await CommentsModel.insertMany({ ...newComment });
+    await CommentsModel.insertMany([newComment]);
     return commentDBToView(newComment);
   },
 };

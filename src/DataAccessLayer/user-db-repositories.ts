@@ -30,7 +30,7 @@ export const userRepositories = {
     searchLoginTerm: string,
     searchEmailTerm: string 
   ): Promise<PaginationType<UserType>> {
-    const filter: Filter<DBUserType> = {$or: [{'accountData.userName': {$regex: searchLoginTerm ?? '', $options: 'i'}}, {'accountData.email': {$regex: searchEmailTerm ?? '', $options: 'i'}}]};
+    const filter = {$or: [{'accountData.userName': {$regex: searchLoginTerm ?? '', $options: 'i'}}, {'accountData.email': {$regex: searchEmailTerm ?? '', $options: 'i'}}]};
 	
     const getAllUsers = await UsersModel
       .find(filter, { projection: { passwordHash: 0 } })
@@ -55,7 +55,7 @@ export const userRepositories = {
       }
   },
   async createUser(newUser: DBUserType): Promise<DBUserType> {
-	const  updateUser = await UsersModel.insertMany({...newUser})
+	const  updateUser = await UsersModel.insertMany([newUser])
 	return newUser
   },
   async deleteById(id: string): Promise<boolean> {

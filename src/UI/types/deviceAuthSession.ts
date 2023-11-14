@@ -1,5 +1,5 @@
 export type CollectionIP = {
-	IP: string
+	IP?: string
 	URL: string
 	date: Date
 }

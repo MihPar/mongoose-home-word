@@ -11,7 +11,7 @@ export const blogsRepositories = {
     sortBy: string,
     sortDirection: string
   ): Promise<PaginationType<BlogsType>> {
-    const filtered: Filter<BlogsType> = searchNameTerm
+    const filtered = searchNameTerm
       ? { name: { $regex: searchNameTerm ?? '', $options: 'i' } }
       : {}; // todo finished filter
     const blogs: BlogsType[] = await BlogsModel
@@ -41,7 +41,7 @@ export const blogsRepositories = {
     return await BlogsModel.find(filtered, { projection: { _id: 0 } }).lean();
   },
   async createNewBlogs(newBlog: BlogsType): Promise<BlogsType> {
-    const result = await BlogsModel.insertMany({ ...newBlog });
+    const result = await BlogsModel.insertMany([newBlog]);
     return newBlog;
   },
   async updateBlogById(
