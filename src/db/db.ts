@@ -1,28 +1,36 @@
-import { DeviceModel, CollectionIP } from './../UIRepresentation/types/deviceAuthSession';
-import dotenv from 'dotenv'
-import { BlogsType } from '../UIRepresentation/types/blogsType';
-import { PostsType } from '../UIRepresentation/types/postsType';
-import { DBUserType } from '../UIRepresentation/types/usersType';
-import { CommentType } from '../UIRepresentation/types/commentType';
+import { DeviceSchema, CollectioinIPSchema } from './../schema/deviceAuth-schema';
+import { CommentViewSchema } from './../schema/comment-schema';
+import { DBUserSchema } from './../schema/users-schema';
+import { PostSchema } from './../schema/posts-schema';
+import { BlogsSchema } from './../schema/blogs-schema';
+import { DeviceModel, CollectionIP } from './../UI/types/deviceAuthSession';
+import { BlogsType } from './../UI/types/blogsType';
+import { PostsType } from './../UI/types/postsTypes';
+import { DBUserType } from './../UI/types/userTypes';
+import { BlackList } from './../UI/types/sessionTypes';
+import { CommentType } from '../UI/types/commentType';
 import { MongoClient } from 'mongodb';
-import { BlackList } from '../UIRepresentation/types/sessionTypes';
+import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+import { BlackListSchema } from '../schema/session-schema';
+dotenv.config()
 	 
 
-dotenv.config()
+const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017";
+let dbName = process.env.mongoDBName || 'mongoose-example'
 
 
-const mongoURI = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017'
 
 export const client = new MongoClient(mongoURI)
 export const db = client.db('dbMongoDb')
 export async function runDb() {
 	try {
-		await client.connect()
-		await db.command({ping: 1})
+		
+		await mongoose.connect(mongoURI + '/' + dbName)
 		console.log('Connect successfully to mongo server')
 	} catch(e) {
 		console.log('Cann`t to connect to db:', e)
-		await client.close()
+		await mongoose.disconnect()
 	}
 }
 
@@ -30,10 +38,18 @@ export const stopDb = async () => {
 	await client.close()
 }
 
-export const blogsCollection = db.collection<BlogsType>('blogs')
-export const postsCollection = db.collection<PostsType>('posts')
-export const userCollection = db.collection<DBUserType>('user')
-export const commentCollection = db.collection<CommentType>('comment')
-export const blackCollection = db.collection<BlackList>('session')
-export const deviceAuthSessionCollection = db.collection<DeviceModel>('divice')
-export const IPAuthSessionCollection = db.collection<CollectionIP>('IP')
+export const BlogsModel = mongoose.model<BlogsType>('blogs', BlogsSchema)
+export const PostsModel = mongoose.model<PostsType>('posts', PostSchema)
+export const UsersModel = mongoose.model<DBUserType>('user', DBUserSchema)
+export const CommentsModel = mongoose.model<CommentType>('comment', CommentViewSchema)
+export const BlackListMode = mongoose.model<BlackList>('blackList', BlackListSchema)
+export const DevicesModel =mongoose.model<DeviceModel>('device', DeviceSchema)
+export const IPCollectionModel = mongoose.model<CollectionIP>('IP', CollectioinIPSchema)
+
+// export const blogsCollection = db.collection<BlogsType>('blogs')
+// export const postsCollection = db.collection<PostsType>('posts')
+// export const userCollection = db.collection<DBUserType>('user')
+// export const commentCollection = db.collection<CommentType>('comment')
+// export const blackCollection = db.collection<BlackList>('blackList')
+// export const deviceAuthSessionCollection = db.collection<DeviceModel>('device')
+// export const IPAuthSessionCollection = db.collection<CollectionIP>('IP')

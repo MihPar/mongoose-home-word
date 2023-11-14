@@ -24,8 +24,3 @@ export type DBUserType = {
 	email: string;
 	createdAt: string;
   };
-
-  export type RegistrationDateType = {
-	ip: string;
-  };
-  
