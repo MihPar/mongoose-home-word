@@ -1,8 +1,8 @@
-import { PostsType } from '../UIRepresentation/types/postsType';
+import { ObjectId } from 'mongodb';
+import { BlogsModel } from './../db/db';
+import { BlogsType } from './../UI/types/blogsType';
+import { PostsType } from './../UI/types/postsTypes';
 import { postsRepositories } from "../DataAccessLayer/posts-db-repositories";
-import { blogsCollection } from "../db/db";
-import { randomUUID } from "crypto";
-import { BlogsType } from '../UIRepresentation/types/blogsType';
 
 export const postsService = {
   async createPost(
@@ -11,12 +11,12 @@ export const postsService = {
     shortDescription: string,
     content: string
   ): Promise<PostsType | null> {
-    const blog: BlogsType | null = await blogsCollection.findOne({
+    const blog: BlogsType | null = await BlogsModel.findOne({
       id: blogId,
     });
     if (!blog) return null;
     const newPost: PostsType = {
-      id: randomUUID(),
+      _id: new ObjectId(),
       title,
       shortDescription,
       content,

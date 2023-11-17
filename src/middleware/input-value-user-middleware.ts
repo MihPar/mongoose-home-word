@@ -1,4 +1,4 @@
-import { DBUserType } from '../UIRepresentation/types/usersType';
+import { DBUserType } from './../UI/types/userTypes';
 import { userRepositories } from '../DataAccessLayer/user-db-repositories';
 import {body} from 'express-validator'
 

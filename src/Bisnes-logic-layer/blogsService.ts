@@ -1,4 +1,5 @@
-import { BlogsType } from '../UIRepresentation/types/blogsType';
+import { ObjectId } from "mongodb"
+import { BlogsType } from './../UI/types/blogsType';
 import { blogsRepositories } from "../DataAccessLayer/blogs-db-repositories";
 import { randomUUID } from "crypto";
 
@@ -9,8 +10,8 @@ export const blogsService = {
     description: string,
     websiteUrl: string
   ): Promise<BlogsType> {
-    const newBlog = {
-	  id: randomUUID(),
+    const newBlog: BlogsType = {
+	  _id: new ObjectId(),
       name,
       description,
       websiteUrl,

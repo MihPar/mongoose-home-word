@@ -1,5 +1,5 @@
 import { DeviceSchema, CollectioinIPSchema } from './../schema/deviceAuth-schema';
-import { CommentViewSchema } from './../schema/comment-schema';
+import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
 import { PostSchema } from './../schema/posts-schema';
 import { BlogsSchema } from './../schema/blogs-schema';
@@ -41,7 +41,7 @@ export const stopDb = async () => {
 export const BlogsModel = mongoose.model<BlogsType>('blogs', BlogsSchema)
 export const PostsModel = mongoose.model<PostsType>('posts', PostSchema)
 export const UsersModel = mongoose.model<DBUserType>('user', DBUserSchema)
-export const CommentsModel = mongoose.model<CommentType>('comment', CommentViewSchema)
+export const CommentsModel = mongoose.model<CommentType>('comment', CommentSchema)
 export const BlackListMode = mongoose.model<BlackList>('blackList', BlackListSchema)
 export const DevicesModel =mongoose.model<DeviceModel>('device', DeviceSchema)
 export const IPCollectionModel = mongoose.model<CollectionIP>('IP', CollectioinIPSchema)

@@ -1,11 +1,17 @@
+import { UserType } from './../UI/types/userTypes';
 import { PaginationType } from './../UI/types/types';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 
-export const PaginationTypeSchema = new mongoose.Schema<WithId<PaginationType<T>>>({
+
+export const PaginationTypeSchema = new mongoose.Schema<WithId<PaginationType<UserType>>>({
 	pagesCount: {type: Number, require: true},
-  page: {type: Number, require: true},
-  pageSize: {type: Number, require: true},
-  totalCount: {type: Number, require: true}
-  items: {T[]}
+	page: {type: Number, require: true},
+	pageSize: {type: Number, require: true},
+	totalCount: {type: Number, require: true},
+	items: {
+		login: {type: String, require: true},
+		email: {type: String, require: true},
+		createdAt: {type: String, require: true},
+	}
 })

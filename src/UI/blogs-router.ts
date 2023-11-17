@@ -1,7 +1,9 @@
+import { bodyPostsModel } from './../model/modePosts.ts/bodyPostsMode';
+import { PostsType } from './types/postsTypes';
+import { queryPostsModel } from './../model/modePosts.ts/queryPostsModel';
+import { paramsPostsModelBlogId } from './../model/modePosts.ts/paramsPostsModeBlogId';
 import { postsRepositories } from '../DataAccessLayer/posts-db-repositories';
 import { paramsBlogsModel } from "../model/modelBlogs/paramsBlogsModel";
-import { bodyPostsModel } from "../model/modelPosts/bodyPostsMode";
-import { queryPostsModel } from "../model/modelPosts/queryPostsModel";
 import {
   RequestWithParamsAndQuery,
   RequestWithParamsAndBody,
@@ -25,13 +27,10 @@ import {
   inputPostShortDescriptionValidator,
   inputPostTitleValidator,
 } from "../middleware/input-value-posts-middleware";
-import { paramsPostsModelBlogId } from "../model/modelPosts/paramsPostsModeBlogId";
 import { QueryBlogsModel } from "../model/modelBlogs/QueryBlogsModel";
 import { bodyBlogsModel } from "../model/modelBlogs/bodyBlogsModel";
 import { blogsRepositories } from "../DataAccessLayer/blogs-db-repositories";
 import { BlogsType } from './types/blogsType';
-import { PostsType } from './types/postsType';
-
 export const blogsRouter = Router({});
 
 /********************************** get **********************************/

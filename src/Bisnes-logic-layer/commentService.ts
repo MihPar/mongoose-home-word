@@ -1,4 +1,4 @@
-import { CommentTypeView } from '../UIRepresentation/types/commentType';
+import { CommentTypeView } from './../UI/types/commentType';
 import { ObjectId } from "mongodb";
 import { commentRepositories } from "../DataAccessLayer/comment-db-repositories";
 
@@ -15,7 +15,7 @@ export const commentService = {
     content: string,
 	userId: string,
 	userLogin: string
-  ): Promise<CommentTypeView | null> {
+  ): Promise<CommentTypeView| null> {
 	
     const newComment = {
       _id: new ObjectId(),

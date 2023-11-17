@@ -1,4 +1,3 @@
-import { UserType, DBUserType } from '../UIRepresentation/types/usersType';
 import { emailAdapter } from "../adapter/email-adapter"
 
 export const emailManager = {

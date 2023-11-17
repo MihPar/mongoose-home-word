@@ -1,9 +1,7 @@
-import { DeviceModel} from './../UIRepresentation/types/deviceAuthSession';
 import { ObjectId } from 'mongodb';
+import { DeviceModel } from './../UI/types/deviceAuthSession';
 import { jwtService } from './jwtService';
 import { securityDeviceRepositories } from './../DataAccessLayer/securityDevice-db-repositories';
-import { fromUnixTime } from 'date-fns';
-import {format} from "date-fns-tz";
 
 export const deviceService = {
 	async terminateAllCurrentSessions(userId: string, deviceId: string) {
@@ -25,6 +23,7 @@ export const deviceService = {
 		}
 		const lastActiveDate = jwtService.getLastActiveDate(refreshToken)
 		const device: DeviceModel = {
+			_id: new ObjectId(),
 			ip: ip,
     		title: title,
     		deviceId: payload.deviceId,

@@ -1,6 +1,5 @@
-import { inpurtValueRecoveryCode, inputValueNewPasswordAuth } from './../middleware/input-value-auth-middleware';
+import { inputValueNewPasswordAuth } from './../middleware/input-value-auth-middleware';
 import { BodyPasswordRecoveryCode, EmailResending } from './../model/modelUser/bodyPasswordRecovery';
-import { userRepositories } from './../DataAccessLayer/user-db-repositories';
 import { DBUserType } from './types/userTypes';
 import { checkRefreshTokenSecurityDeviceMiddleware } from "./../middleware/checkRefreshTokenSevurityDevice-middleware";
 import { limitRequestMiddleware } from "./../middleware/limitRequest";
@@ -34,16 +33,19 @@ authRouter.post(
   "/new-password",
   limitRequestMiddleware,
   inputValueNewPasswordAuth,
-  inpurtValueRecoveryCode,
+  inputValueCodeAuth,
   ValueMiddleware,
   async function (
     req: RequestWithBody<BodyPasswordRecoveryCode>,
     res: Response
   ) {
+	const id = new ObjectId(req.user)
+	console.log(id)
     const { newPassword, recoveryCode } = req.body;
     const resultUpdatePassword = await userService.setNewPassword(
       newPassword,
-      recoveryCode
+      recoveryCode,
+	  id
     );
     if (!resultUpdatePassword) {
       return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
@@ -54,8 +56,22 @@ authRouter.post(
 
 authRouter.post(
   "/password-recovery",
-  async function (req: RequestWithBody<EmailResending>, res: Response) {
-	
+  limitRequestMiddleware,
+  inputValueEmailAuth,
+  ValueMiddleware,
+  async function (
+    req: RequestWithBody<EmailResending>,
+    res: Response
+  ): Promise<void> {
+    const { email } = req.body;
+	const id = new ObjectId(req.user)
+    const passwordRecovery = await userService.recoveryPassword(email, id);
+    if (!passwordRecovery) {
+      res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+      return;
+    }
+    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+    return;
   }
 );
 

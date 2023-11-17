@@ -1,6 +1,6 @@
+import { BlackList } from './../UI/types/sessionTypes';
 import { ObjectId } from 'mongodb';
 import { sessionRepositories } from "../DataAccessLayer/session-db-repositories"
-import { BlackList } from '../UIRepresentation/types/sessionTypes';
 
 export const sessionService = {
 	async findRefreshToken(refreshToken: string) {
@@ -11,7 +11,8 @@ export const sessionService = {
 		return await sessionRepositories.addRefreshToken(currentUserId, newRefreshToken)
 	},
 	async addRefreshToken(refreshToken: string) {
-		const newRefreshToken: BlackList = {
+		const newRefreshToken: BlackList  = {
+			_id: new ObjectId(),
 			refreshToken
 		}
 		const addToBlackListRefreshToken = await sessionRepositories.addToBlackList(newRefreshToken)

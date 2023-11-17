@@ -1,13 +1,12 @@
-import { securityDeviceRouter } from './UIRepresentation/securityDevice';
-import { usersRouter } from './UIRepresentation/user-router';
+import { securityDeviceRouter } from './UI/security-device';
+import { commentsRouter } from './UI/comments-router';
+import { usersRouter } from './UI/users-router';
+import { authRouter } from './UI/auth-router';
+import { blogsRouter } from './UI/blogs-router';
+import { deleteAllRouter } from './UI/delete-all-users';
+import { postsRouter } from './UI/posts-router';
+import  cookieParser  from 'cookie-parser';
 import express from 'express'
-import { blogsRouter } from './UIRepresentation/blogs-router'
-import { postsRouter } from './UIRepresentation/posts-router'
-import { deleteAllRouter } from './UIRepresentation/deleteAll-router'
-import { authRouter} from './UIRepresentation/auth-router'
-import { commentsRouter } from './UIRepresentation/comments-router';
-import cookieParser from 'cookie-parser'
-
 
 	export const app = express()
 

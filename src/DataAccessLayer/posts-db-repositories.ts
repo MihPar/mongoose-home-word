@@ -10,7 +10,7 @@ export const postsRepositories = {
 		sortBy: string,
 		sortDirection: string
 	  ): Promise<PaginationType<PostsType>> {
-		const filtered: Filter<PostsType> = {};
+		const filtered = {};
 		const allPosts = await PostsModel
 		  .find(filtered, { projection: { _id: 0 } })
 		  .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
@@ -41,7 +41,7 @@ export const postsRepositories = {
     sortDirection: string,
     blogId: string
   ): Promise<PaginationType<PostsType>> {
-    const filter: Filter<PostsType> = { blogId: blogId };
+    const filter = { blogId: blogId };
 
 	console.log(filter)
 	console.log({ [sortBy]: sortDirection === "asc" ? 1 : -1 })

@@ -1,8 +1,10 @@
-import { paramsIdModel } from "../model/modelPosts/paramsIdModel";
-import { paramsPostIdMode } from "../model/modelPosts/paramsPostIdMode";
-import { postsRepositories } from "../DataAccessLayer/posts-db-repositories";
-import { bodyPostsModel } from "../model/modelPosts/bodyPostsMode";
-import { queryPostsModel } from "../model/modelPosts/queryPostsModel";
+import { paramsIdModel } from './../model/modePosts.ts/paramsIdModel';
+import { bodyPostsModel } from './../model/modePosts.ts/bodyPostsMode';
+import { PostsType } from './types/postsTypes';
+import { bodyPostModelContent } from './../model/modePosts.ts/bodyPostModeContent';
+import { postsRepositories } from './../DataAccessLayer/posts-db-repositories';
+import { queryPostsModel } from './../model/modePosts.ts/queryPostsModel';
+import { paramsPostIdMode } from './../model/modePosts.ts/paramsPostIdMode';
 import {
   RequestWithParams,
   RequestWithBody,
@@ -21,11 +23,9 @@ import { authorization } from "../middleware/authorizatin";
 import { Router, Response } from "express";
 import { HTTP_STATUS } from "../utils";
 import { postsService } from "../Bisnes-logic-layer/postsService";
-import { PostsType } from "./types/postsType";
 import { commentService } from "../Bisnes-logic-layer/commentService";
 import { CommentTypeView } from "./types/commentType";
 import { commentRepositories } from "../DataAccessLayer/comment-db-repositories";
-import { bodyPostModelContent } from "../model/modelPosts/bodyPostModeContent";
 import { commentAuthorization } from "../middleware/commentAuthorization";
 import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
 

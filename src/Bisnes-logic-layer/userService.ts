@@ -1,3 +1,4 @@
+import { emailAdapter } from './../adapter/email-adapter';
 import { UserType, DBUserType, UserGeneralType } from './../UI/types/userTypes';
 import { UsersModel } from './../db/db';
 import { userRepositories } from "../DataAccessLayer/user-db-repositories";
@@ -120,26 +121,30 @@ export const userService = {
       refreshToken
     );
   },
-  async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean> {
-	const findUserByCode = await userRepositories.findUserByCode(recoveryCode)
-	if(!findUserByCode) {
-		return false
-	}
-	if(findUserByCode.emailConfirmation.confirmationCode !== recoveryCode) {
-		return false
-	}
-	if(findUserByCode.emailConfirmation.expirationDate < new Date()) {
-		return false
-	}
+  async setNewPassword(newPassword: string, recoveryCode: string, id: ObjectId): Promise<boolean> {
+	// const findUserByCode = await userRepositories.findUserByCode(recoveryCode)
+	// if(!findUserByCode) {
+	// 	return false
+	// }
 	
+	// if(findUserByCode.emailConfirmation.expirationDate < new Date()) {
+	// 	return false
+	// }
 	const newPasswordHash = await this._generateHash(newPassword);
-
-	const resultUpdatePassword = await userRepositories.updatePassword(findUserByCode._id, newPasswordHash)
+	const resultUpdatePassword = await userRepositories.updatePassword(id, newPasswordHash)
 	if(!resultUpdatePassword) {
 		return false
 	}
 	return true
-
+  },
+  async recoveryPassword(email: string, id: ObjectId): Promise<boolean> {
+	const recoveryCode = uuidv4()
+	try {
+		await emailAdapter.sendEmail(email, recoveryCode)
+		await userRepositories.passwordRecovery(id, recoveryCode)
+		return true
+	} catch (e) {
+		return false
+	}
   }
-  
 };

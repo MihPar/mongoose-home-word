@@ -1,10 +1,9 @@
-import { blackCollection } from './../db/db';
+import { CommentsModel, BlackListMode, DevicesModel, IPCollectionModel } from './../db/db';
 import { blogsService } from '../Bisnes-logic-layer/blogsService';
 import { postsService } from '../Bisnes-logic-layer/postsService';
 import { Router, Request, Response } from "express";
 import { HTTP_STATUS } from "../utils";
 import { userService } from '../Bisnes-logic-layer/userService';
-import { IPAuthSessionCollection, commentCollection, deviceAuthSessionCollection} from '../db/db';
 
 export const deleteAllRouter = Router({});
 
@@ -14,10 +13,10 @@ deleteAllRouter.delete(
     await postsService.deleteAllPosts();
     await blogsService.deleteAllBlogs();
 	await userService.deleteAllUsers()
-	await commentCollection.deleteMany({});
-	await blackCollection.deleteMany({});
-	await deviceAuthSessionCollection.deleteMany({});
-	await IPAuthSessionCollection.deleteMany({});
+	await CommentsModel.deleteMany({});
+	await BlackListMode.deleteMany({});
+	await DevicesModel.deleteMany({});
+	await IPCollectionModel.deleteMany({});
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
 );

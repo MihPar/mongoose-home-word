@@ -1,9 +1,9 @@
+import { DBUserType } from './../UI/types/userTypes';
 import { userService } from "./../Bisnes-logic-layer/userService";
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../utils";
 import { ObjectId } from "mongodb";
 import { jwtService } from "../Bisnes-logic-layer/jwtService";
-import { DBUserType } from "../UIRepresentation/types/usersType";
 
 export const authValidationInfoMiddleware = async function (
   req: Request,

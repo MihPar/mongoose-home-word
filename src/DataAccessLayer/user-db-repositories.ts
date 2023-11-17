@@ -5,6 +5,7 @@ import { UserType, DBUserType, UserGeneralType } from './../UI/types/userTypes';
 import { Filter, ObjectId } from "mongodb";
 import mongoose from "mongoose";
 import {WithId} from 'mongodb'
+import add from "date-fns/add";
 
 
 export const userRepositories = {
@@ -87,5 +88,14 @@ export const userRepositories = {
   async updatePassword(id: ObjectId, newPasswordHash: string) {
 	const updatePassword = await UsersModel.updateOne({_id: id}, {$unset: {'emailConfirmation.confirmationCode': 1, 'emailConfirmation.expirationDate': 1}, $set: {'accountData.passwordHash': newPasswordHash}})
 	return updatePassword.matchedCount === 1
+  },
+  async passwordRecovery(id: ObjectId, recoveryCode: string): Promise<boolean> {
+	const recoveryInfo = {
+		code: recoveryCode,
+		exp: add(new Date(), {minutes: 5})
+	}
+	const updateRes = await UsersModel.updateOne({_id: id}, {$set: recoveryInfo})
+	return updateRes.matchedCount === 1
+
   }
 };

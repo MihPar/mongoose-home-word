@@ -1,6 +1,6 @@
-import { ParamsSecurityDeviceModel } from './../model/modelSecurityDevide/modelSecurityDevice';
+import { ParamsSecurityDeviceModel } from './../model/modelSecurityDevice/modelSecurityDevice';
+import { RequestWithParams } from './../UI/types/types';
 import { NextFunction, Response } from "express";
-import { RequestWithParams } from "../UIRepresentation/types/types";
 import { HTTP_STATUS } from "../utils";
 
 export const checkDeviceId = function (

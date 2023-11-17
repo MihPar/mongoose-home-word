@@ -30,11 +30,6 @@ export const inputValueNewPasswordAuth = body('newPassword')
 .isLength({min: 6, max: 20})
 .withMessage('new password should be length from 6 to 20 symbols')
 
-export const inpurtValueRecoveryCode = body('recoveryCode')
-.isString()
-.notEmpty()
-.trim()
-.withMessage('recovery code is incorrect')
 
 export const inputValueEmailRegistrationAuth = body('email')
 .isString()
@@ -53,13 +48,14 @@ export const inputValueEmailAuth = body('email')
 .isString()
 .trim()
 .isEmail()
-.custom(async(email): Promise<boolean> => {
+.custom(async(email, {req}): Promise<boolean> => {
 	const user: DBUserType | null = await userRepositories.findByLoginOrEmail(email)
 	if(!user) {
 		throw new Error('User does not exist in DB')
 	} else if(user.emailConfirmation.isConfirmed === true) {
 		throw new Error('Email is already exist in DB')
 	}
+	req.user = user?._id.toHexString()
 	return true
 })
 
@@ -74,7 +70,7 @@ export const inputValueCodeAuth = body('code')
 .withMessage('Code should be string')
 .notEmpty()
 .trim()
-.custom(async(code) => {
+.custom(async(code, {req}) => {
 	console.log(code)
 	const user: DBUserType | null = await userRepositories.findUserByConfirmation(code)
 	console.log(user)
@@ -87,5 +83,6 @@ export const inputValueCodeAuth = body('code')
 	if(user.emailConfirmation.isConfirmed) {
 		throw new Error('Code is alreade confirmed')
 	}
+	req.user = user?._id.toHexString()
 	return true
 })

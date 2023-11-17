@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { Filter } from 'mongodb';
 import { securityDeviceRepositories } from './../DataAccessLayer/securityDevice-db-repositories';
 import { NextFunction, Request, Response } from 'express';
@@ -8,6 +9,7 @@ config()
 
 export const limitRequestMiddleware = async (req: Request, res: Response, next: NextFunction) => {
 	const reqData: CollectionIP = {
+		_id: new ObjectId(),
 		IP: req.ip,
 		URL: req.originalUrl,
 		date: new Date(),
@@ -15,7 +17,7 @@ export const limitRequestMiddleware = async (req: Request, res: Response, next: 
 	console.log('url/endpoit: ', reqData.URL)
 	await securityDeviceRepositories.createCollectionIP(reqData)
     const tenSecondsAgo = new Date(Date.now() - 10000)
-    const filter: Filter<CollectionIP> = {IP: reqData.IP, URL: reqData.URL, date: {$gt: tenSecondsAgo}}
+    const filter = {IP: reqData.IP, URL: reqData.URL, date: {$gt: tenSecondsAgo}}
 
     const count = await securityDeviceRepositories.countDocs(filter)
     if (count > 5) {
