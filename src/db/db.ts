@@ -16,8 +16,8 @@ import mongoose from 'mongoose';
 dotenv.config()
 	 
 
-const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017";
-let dbName = process.env.mongoDBName || 'mongoose-example'
+const mongoURI = process.env.MONGO_URL || "mongodb://0.0.0.0:27017";
+let dbName = process.env.MONGOOSE_DB_NAME || 'mongoose-example'
 
 
 
@@ -26,7 +26,7 @@ export const db = client.db('dbMongoDb')
 export async function runDb() {
 	try {
 		
-		await mongoose.connect(mongoURI + '/' + dbName)
+		await mongoose.connect(mongoURI)
 		console.log('Connect successfully to mongo server')
 	} catch(e) {
 		console.log('Cann`t to connect to db:', e)
