@@ -3,7 +3,6 @@ import { PaginationType } from './../UI/types/types';
 import { UsersModel } from './../db/db';
 import { UserType, DBUserType, UserGeneralType } from './../UI/types/userTypes';
 import { Filter, ObjectId } from "mongodb";
-import mongoose from "mongoose";
 import {WithId} from 'mongodb'
 import add from "date-fns/add";
 

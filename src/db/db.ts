@@ -10,9 +10,9 @@ import { DBUserType } from './../UI/types/userTypes';
 import { BlackList } from './../UI/types/sessionTypes';
 import { CommentType } from '../UI/types/commentType';
 import { MongoClient } from 'mongodb';
-import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import { BlackListSchema } from '../schema/session-schema';
+import mongoose from 'mongoose';
 dotenv.config()
 	 
 
