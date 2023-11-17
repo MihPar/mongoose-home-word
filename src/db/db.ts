@@ -22,7 +22,6 @@ let dbName = process.env.MONGOOSE_DB_NAME || 'mongoose-example'
 
 
 export const client = new MongoClient(mongoURI)
-export const db = client.db('dbMongoDb')
 export async function runDb() {
 	try {
 		
