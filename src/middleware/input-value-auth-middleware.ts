@@ -83,6 +83,6 @@ export const inputValueCodeAuth = body('code')
 	if(user.emailConfirmation.isConfirmed) {
 		throw new Error('Code is alreade confirmed')
 	}
-	req.user = user?._id.toHexString()
+	req.user = user
 	return true
 })

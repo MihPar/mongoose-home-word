@@ -121,27 +121,31 @@ export const userService = {
       refreshToken
     );
   },
-  async setNewPassword(newPassword: string, recoveryCode: string, id: ObjectId): Promise<boolean> {
-	// const findUserByCode = await userRepositories.findUserByCode(recoveryCode)
-	// if(!findUserByCode) {
-	// 	return false
-	// }
+  async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean> {
+	const findUserByCode = await userRepositories.findUserByCode(recoveryCode)
+	if(!findUserByCode) {
+		return false
+	}
 	
-	// if(findUserByCode.emailConfirmation.expirationDate < new Date()) {
-	// 	return false
-	// }
+	if(findUserByCode.emailConfirmation.expirationDate < new Date()) {
+		return false
+	}
 	const newPasswordHash = await this._generateHash(newPassword);
-	const resultUpdatePassword = await userRepositories.updatePassword(id, newPasswordHash)
+	const resultUpdatePassword = await userRepositories.updatePassword(findUserByCode._id, newPasswordHash)
 	if(!resultUpdatePassword) {
 		return false
 	}
 	return true
   },
-  async recoveryPassword(email: string, id: ObjectId): Promise<boolean> {
+  async recoveryPassword(email: string): Promise<boolean> {
 	const recoveryCode = uuidv4()
+        const findUser: WithId<DBUserType> | null = await userRepositories.findByLoginOrEmail(email)
+        if (!findUser) {
+            return false
+        }
 	try {
 		await emailAdapter.sendEmail(email, recoveryCode)
-		await userRepositories.passwordRecovery(id, recoveryCode)
+		await userRepositories.passwordRecovery(findUser._id, recoveryCode)
 		return true
 	} catch (e) {
 		return false

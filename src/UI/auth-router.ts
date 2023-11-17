@@ -45,7 +45,6 @@ authRouter.post(
     const resultUpdatePassword = await userService.setNewPassword(
       newPassword,
       recoveryCode,
-	  id
     );
     if (!resultUpdatePassword) {
       return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
@@ -64,8 +63,8 @@ authRouter.post(
     res: Response
   ): Promise<void> {
     const { email } = req.body;
-	const id = new ObjectId(req.user)
-    const passwordRecovery = await userService.recoveryPassword(email, id);
+	// const id = new ObjectId(req.user)
+    const passwordRecovery = await userService.recoveryPassword(email);
     if (!passwordRecovery) {
       res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
       return;
