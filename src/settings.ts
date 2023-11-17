@@ -8,7 +8,9 @@ import { postsRouter } from './UI/posts-router';
 import  cookieParser  from 'cookie-parser';
 import express from 'express'
 
-	export const app = express()
+
+export const initApp =()=>{
+	const app = express()
 
 	app.use(express.json());
 	app.use(cookieParser())
@@ -24,3 +26,6 @@ import express from 'express'
 	app.get('/test', (req, res) => {
 		res.json({ message: 'This is a test endpoint!' });
 	});
+return app;
+}
+	

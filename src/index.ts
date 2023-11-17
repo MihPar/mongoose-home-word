@@ -1,7 +1,9 @@
 import { runDb } from './db/db';
-import { app } from './settings';
+import {initApp } from './settings';
 import dotenv from 'dotenv'
 dotenv.config()
+
+const app = initApp();
 
 const port = process.env.PORT || 3000
 
@@ -13,4 +15,4 @@ const starting = async () => {
 	})
 }
 
-starting()
+starting();
