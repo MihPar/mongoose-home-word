@@ -1,3 +1,10 @@
+import mongoose from 'mongoose'
+
+
+const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017";
+let dbName = process.env.mongoDBName || 'mongoose-example'
+
+
 describe("/blogs", () => {
 	// beforeAll(async () => {
 	//   await runDb();
@@ -40,6 +47,8 @@ describe(`/auth/login (POST) - login user
 
     beforeAll(async () => {
       await deleteAllDataTest(httpServer);
+	  await mongoose.connect(mongoURI + '/' + dbName)
+
 
       user = await usersRequestsTestManager.createUserSa(
         httpServer,
@@ -109,5 +118,9 @@ describe(`/auth/login (POST) - login user
       expect(result.statusCode).toBe(HTTP_STATUS_CODE.UNAUTHORIZED_401);
     });
   });
+
+  afterAll(async() => {
+	await mongoose.connection.close()
+  })
   
 });

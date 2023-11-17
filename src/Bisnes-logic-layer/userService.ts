@@ -1,10 +1,13 @@
+import { UserType, DBUserType, UserGeneralType } from './../UI/types/userTypes';
+import { UsersModel } from './../db/db';
 import { userRepositories } from "../DataAccessLayer/user-db-repositories";
-import { DBUserType, UserType } from "../UIRepresentation/types/usersType";
 import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
 import { emailManager } from "../manager/email-manager";
 import { v4 as uuidv4 } from "uuid";
 import add from "date-fns/add";
+import {WithId} from 'mongodb'
+
 
 export const userService = {
   async createNewUser(
@@ -117,4 +120,26 @@ export const userService = {
       refreshToken
     );
   },
+  async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean> {
+	const findUserByCode = await userRepositories.findUserByCode(recoveryCode)
+	if(!findUserByCode) {
+		return false
+	}
+	if(findUserByCode.emailConfirmation.confirmationCode !== recoveryCode) {
+		return false
+	}
+	if(findUserByCode.emailConfirmation.expirationDate < new Date()) {
+		return false
+	}
+	
+	const newPasswordHash = await this._generateHash(newPassword);
+
+	const resultUpdatePassword = await userRepositories.updatePassword(findUserByCode._id, newPasswordHash)
+	if(!resultUpdatePassword) {
+		return false
+	}
+	return true
+
+  }
+  
 };

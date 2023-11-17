@@ -1,5 +1,5 @@
-import { DBUserType } from '../UIRepresentation/types/usersType';
-import jwt from 'jsonwebtoken'
+import jwt  from 'jsonwebtoken';
+import { DBUserType } from './../UI/types/userTypes';
 import dotenv from 'dotenv'
 import { ObjectId } from 'mongodb';
 dotenv.config()

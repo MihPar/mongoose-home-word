@@ -1,9 +1,11 @@
-import { deviceAuthSessionCollection } from "./../db/db";
+import { inpurtValueRecoveryCode, inputValueNewPasswordAuth } from './../middleware/input-value-auth-middleware';
+import { BodyPasswordRecoveryCode, EmailResending } from './../model/modelUser/bodyPasswordRecovery';
+import { userRepositories } from './../DataAccessLayer/user-db-repositories';
+import { DBUserType } from './types/userTypes';
 import { checkRefreshTokenSecurityDeviceMiddleware } from "./../middleware/checkRefreshTokenSevurityDevice-middleware";
 import { limitRequestMiddleware } from "./../middleware/limitRequest";
 import { deviceService } from "./../Bisnes-logic-layer/deviceService";
 import { authValidationInfoMiddleware } from "../middleware/authValidationInfoMiddleware";
-import { checkRefreshTokenMiddleware } from "../middleware/checkRefreshToken-middleware";
 import {
   inputValueEmailAuth,
   inputValueCodeAuth,
@@ -24,10 +26,38 @@ import { Router, Response, Request } from "express";
 import { HTTP_STATUS } from "../utils";
 import { userService } from "../Bisnes-logic-layer/userService";
 import { ObjectId } from "mongodb";
-import { DBUserType } from "./types/usersType";
 import { sessionService } from "../Bisnes-logic-layer/sessionService";
 
 export const authRouter = Router({});
+
+authRouter.post(
+  "/new-password",
+  limitRequestMiddleware,
+  inputValueNewPasswordAuth,
+  inpurtValueRecoveryCode,
+  ValueMiddleware,
+  async function (
+    req: RequestWithBody<BodyPasswordRecoveryCode>,
+    res: Response
+  ) {
+    const { newPassword, recoveryCode } = req.body;
+    const resultUpdatePassword = await userService.setNewPassword(
+      newPassword,
+      recoveryCode
+    );
+    if (!resultUpdatePassword) {
+      return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+    }
+    return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+  }
+);
+
+authRouter.post(
+  "/password-recovery",
+  async function (req: RequestWithBody<EmailResending>, res: Response) {
+	
+  }
+);
 
 authRouter.post(
   "/login",

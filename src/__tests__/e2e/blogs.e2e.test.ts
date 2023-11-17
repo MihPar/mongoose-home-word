@@ -4,9 +4,11 @@ import dotenv from "dotenv";
 import { HTTP_STATUS } from "../../utils";
 import { runDb, stopDb } from "../../db/db";
 import { randomUUID } from "crypto";
+import mongoose from 'mongoose'
 dotenv.config();
 
-const mongoURL = process.env.MONGO_URL || "mongodb://0.0.0.0:27017";
+const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017";
+let dbName = process.env.mongoDBName || 'mongoose-example'
 
 export function createErrorsMessageTest(fields: string[]) {
 	const errorsMessages: any = [];
@@ -22,6 +24,7 @@ export function createErrorsMessageTest(fields: string[]) {
 describe("/blogs", () => {
   beforeAll(async () => {
     await runDb();
+	await mongoose.connect(mongoURI + '/' + dbName)
 
     const wipeAllRes = await request(app).delete("/testing/all-data").send();
 
@@ -34,6 +37,7 @@ describe("/blogs", () => {
 
   afterAll(async () => {
     await stopDb();
+	await mongoose.connection.close()
   });
 
   const blogsValidationErrRes = {

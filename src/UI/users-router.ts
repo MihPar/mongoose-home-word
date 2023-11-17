@@ -1,3 +1,5 @@
+import { bodyUserModel } from './../model/modelUser/bodyUserMode';
+import { UserType } from './types/userTypes';
 import { ParamsUserMode } from "../model/modelUser/paramsUserModel";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import {
@@ -17,9 +19,7 @@ import {
 import { HTTP_STATUS } from "../utils";
 import { userRepositories } from "../DataAccessLayer/user-db-repositories";
 import { Router, Response } from "express";
-import { bodyUserModel } from "../model/modelUser/bodyUserModel";
 import { checkId } from "../middleware/input-value-delete-middleware";
-import { UserType } from "./types/usersType";
 
 export const usersRouter = Router({});
 

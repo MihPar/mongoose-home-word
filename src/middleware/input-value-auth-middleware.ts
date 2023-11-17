@@ -1,6 +1,6 @@
-import { DBUserType } from '../UIRepresentation/types/usersType';
+import { DBUserType } from './../UI/types/userTypes';
+import { body } from 'express-validator';
 import { userRepositories } from '../DataAccessLayer/user-db-repositories';
-import {body} from 'express-validator'
 
 export const inputValueLoginAuth = body('login')
 .isString()
@@ -22,6 +22,19 @@ export const inputValuePasswordAuth = body('password')
 .trim()
 .isLength({min: 6, max: 20})
 .withMessage('password should be length from 6 to 20 symbols')
+
+export const inputValueNewPasswordAuth = body('newPassword')
+.isString()
+.notEmpty()
+.trim()
+.isLength({min: 6, max: 20})
+.withMessage('new password should be length from 6 to 20 symbols')
+
+export const inpurtValueRecoveryCode = body('recoveryCode')
+.isString()
+.notEmpty()
+.trim()
+.withMessage('recovery code is incorrect')
 
 export const inputValueEmailRegistrationAuth = body('email')
 .isString()

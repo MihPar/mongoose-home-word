@@ -1,7 +1,11 @@
+import { userService } from './../Bisnes-logic-layer/userService';
 import { PaginationType } from './../UI/types/types';
 import { UsersModel } from './../db/db';
-import { UserType, DBUserType } from './../UI/types/userTypes';
+import { UserType, DBUserType, UserGeneralType } from './../UI/types/userTypes';
 import { Filter, ObjectId } from "mongodb";
+import mongoose from "mongoose";
+import {WithId} from 'mongodb'
+
 
 export const userRepositories = {
   async findByLoginOrEmail(loginOrEmail: string): Promise<DBUserType | null> {
@@ -30,8 +34,11 @@ export const userRepositories = {
     searchLoginTerm: string,
     searchEmailTerm: string 
   ): Promise<PaginationType<UserType>> {
-    const filter = {$or: [{'accountData.userName': {$regex: searchLoginTerm ?? '', $options: 'i'}}, {'accountData.email': {$regex: searchEmailTerm ?? '', $options: 'i'}}]};
-	
+
+    // const filter: mongoose.FilterQuery<BlogViewModel> = {};
+
+    const filter = {$or: [{'accountData.userName': {$regex: searchLoginTerm || '', $options: 'i'}}, {'accountData.email': {$regex: searchEmailTerm ?? '', $options: 'i'}}]};
+
     const getAllUsers = await UsersModel
       .find(filter, { projection: { passwordHash: 0 } })
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
@@ -73,5 +80,12 @@ export const userRepositories = {
   async updateUserByToken(currentUserId: ObjectId, refreshToken: string): Promise<boolean> {
 	const user = await UsersModel.updateOne({_id: currentUserId}, {$push: {blackList: refreshToken}})
 	return user.matchedCount === 1
+  },
+  async findUserByCode(recoveryCode: string): Promise<WithId<UserGeneralType> | null> {
+	return UsersModel.findOne({'emailConfirmation.confirmationCode': recoveryCode})
+  },
+  async updatePassword(id: ObjectId, newPasswordHash: string) {
+	const updatePassword = await UsersModel.updateOne({_id: id}, {$unset: {'emailConfirmation.confirmationCode': 1, 'emailConfirmation.expirationDate': 1}, $set: {'accountData.passwordHash': newPasswordHash}})
+	return updatePassword.matchedCount === 1
   }
 };
