@@ -39,8 +39,8 @@ authRouter.post(
     req: RequestWithBody<BodyPasswordRecoveryCode>,
     res: Response
   ) {
-	const id = new ObjectId(req.user)
-	console.log(id)
+	// const id = new ObjectId(req.user)
+	// console.log(id)
     const { newPassword, recoveryCode } = req.body;
     const resultUpdatePassword = await userService.setNewPassword(
       newPassword,
