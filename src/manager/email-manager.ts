@@ -7,6 +7,6 @@ export const emailManager = {
 	},
 	async sendEamilRecoveryCode(email: string, recoveryCode: string) {
 		const result = await emailAdapter.sendEmailByRecoveryCode(email, recoveryCode)
-		return result
+		// return result
 	}
 }
