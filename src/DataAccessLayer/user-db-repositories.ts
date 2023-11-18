@@ -96,7 +96,7 @@ export const userRepositories = {
 		code: recoveryCode,
 		exp: add(new Date(), {minutes: 5})
 	}
-	const updateRes = await UsersModel.updateOne({_id: id}, {$set: recoveryInfo})
+	const updateRes = await UsersModel.updateOne({_id: new ObjectId(id)}, {$set: recoveryInfo})
 	return updateRes.matchedCount === 1
 
   }
