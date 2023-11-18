@@ -17,7 +17,7 @@ export const emailAdapter = {
 			  subject: 'Hello worlds', // Subject line
 			  html: `<h1>Thank for your registration</h1>
 			  <p>To finish registration please follow the link below:
-				  <a href='https://somesite.com/password-recovery?recoveryCode='${code}'>complete registration</a>
+				  <a href='https://somesite.com/password-recovery?recoveryCode=${code}'>complete registration</a>
 			  </p>`
 			});
 		  }
