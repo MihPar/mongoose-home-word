@@ -6,7 +6,7 @@ export const emailAdapter = {
       service: "gmail",
       auth: {
         user: "mpara7274@gmail.com",
-        pass: "it-incubator",
+        pass: "ldhkcdcybmrbxaew",
       },
     });
     console.log("recoveryCode: ", code);
@@ -28,7 +28,7 @@ export const emailAdapter = {
       service: "gmail",
       auth: {
         user: "mpara7274@gmail.com",
-        pass: "it-incubator",
+        pass: "ldhkcdcybmrbxaew",
       },
     });
     console.log("recoveryCode: ", code);
