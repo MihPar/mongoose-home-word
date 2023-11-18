@@ -66,7 +66,7 @@ authRouter.post(
 	// const id = new ObjectId(req.user)
     const passwordRecovery = await userService.recoveryPassword(email);
     if (!passwordRecovery) {
-      return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
     
