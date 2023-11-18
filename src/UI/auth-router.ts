@@ -61,16 +61,15 @@ authRouter.post(
   async function (
     req: RequestWithBody<EmailResending>,
     res: Response
-  ): Promise<void> {
+  ) {
     const { email } = req.body;
 	// const id = new ObjectId(req.user)
     const passwordRecovery = await userService.recoveryPassword(email);
     if (!passwordRecovery) {
-      res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
-      return;
+      return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
     }
-    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
-    return;
+    return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+    
   }
 );
 

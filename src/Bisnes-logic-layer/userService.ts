@@ -148,6 +148,7 @@ export const userService = {
 		await userRepositories.passwordRecovery(findUser._id, recoveryCode)
 		return true
 	} catch (e) {
+		console.log('email: ', e)
 		return false
 	}
   }
