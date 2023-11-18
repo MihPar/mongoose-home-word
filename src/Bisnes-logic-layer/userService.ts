@@ -139,7 +139,7 @@ export const userService = {
   },
   async recoveryPassword(email: string): Promise<boolean> {
 	const recoveryCode = uuidv4()
-        const findUser: WithId<DBUserType> | null = await userRepositories.findByLoginOrEmail(email)
+        const findUser: WithId<DBUserType> | null = await userRepositories.findUserByEmail(email)
         if (!findUser) {
             return false
         }

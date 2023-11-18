@@ -14,6 +14,9 @@ export const userRepositories = {
     });
     return user;
   },
+  async findUserByEmail(email: string) {
+	return UsersModel.findOne({email: email})
+  },
   async findUserByConfirmation(code: string): Promise<DBUserType | null> {
     const user: DBUserType | null = await UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
     return user;
