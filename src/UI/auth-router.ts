@@ -1,4 +1,4 @@
-import { inputValueNewPasswordAuth } from './../middleware/input-value-auth-middleware';
+import { inputValueNewPasswordAuth, inputValueRecoveryCodeAuth } from './../middleware/input-value-auth-middleware';
 import { BodyPasswordRecoveryCode, EmailResending } from './../model/modelUser/bodyPasswordRecovery';
 import { DBUserType } from './types/userTypes';
 import { checkRefreshTokenSecurityDeviceMiddleware } from "./../middleware/checkRefreshTokenSevurityDevice-middleware";
@@ -33,7 +33,7 @@ authRouter.post(
   "/new-password",
   limitRequestMiddleware,
   inputValueNewPasswordAuth,
-  inputValueCodeAuth,
+  inputValueRecoveryCodeAuth,
   ValueMiddleware,
   async function (
     req: RequestWithBody<BodyPasswordRecoveryCode>,

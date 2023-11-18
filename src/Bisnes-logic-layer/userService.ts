@@ -1,4 +1,4 @@
-import { emailAdapter } from './../adapter/email-adapter';
+import { emailAdapter, passwordAdapter } from './../adapter/email-adapter';
 import { UserType, DBUserType, UserGeneralType } from './../UI/types/userTypes';
 import { UsersModel } from './../db/db';
 import { userRepositories } from "../DataAccessLayer/user-db-repositories";
@@ -140,11 +140,13 @@ export const userService = {
   async recoveryPassword(email: string): Promise<boolean> {
 	const recoveryCode = uuidv4()
         const findUser: WithId<DBUserType> | null = await userRepositories.findUserByEmail(email)
+		console.log('findUser: ', findUser)
         if (!findUser) {
+			console.log('false: ', findUser)
             return false
         }
 	try {
-		await emailAdapter.sendEmail(email, recoveryCode)
+		await passwordAdapter.sendEmail(email, recoveryCode)
 		await userRepositories.passwordRecovery(findUser._id, recoveryCode)
 		return true
 	} catch (e) {

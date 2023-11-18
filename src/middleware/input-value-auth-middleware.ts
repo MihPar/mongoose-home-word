@@ -86,3 +86,25 @@ export const inputValueCodeAuth = body('code')
 	req.user = user
 	return true
 })
+
+export const inputValueRecoveryCodeAuth = body('recoveryCode')
+.isString()
+.withMessage('Code should be string')
+.notEmpty()
+.trim()
+// .custom(async(code, {req}) => {
+// 	console.log(code)
+// 	const user: DBUserType | null = await userRepositories.findUserByConfirmation(code)
+// 	console.log(user)
+// 	if(!user) {
+// 		throw new Error('User not found')
+// 	} 
+//     if(user.emailConfirmation.expirationDate <= new Date()) {
+// 		throw new Error('code was expiration')
+// 	} 
+// 	if(user.emailConfirmation.isConfirmed) {
+// 		throw new Error('Code is alreade confirmed')
+// 	}
+// 	req.user = user
+// 	return true
+// })
