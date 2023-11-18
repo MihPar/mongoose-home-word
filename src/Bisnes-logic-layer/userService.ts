@@ -146,7 +146,8 @@ export const userService = {
             return false
         }
 	try {
-		await emailManager.sendEamilRecoveryCode(email, recoveryCode)
+		// await emailManager.sendEamilRecoveryCode(email, recoveryCode)
+		await emailAdapter.sendEmailByRecoveryCode(email, recoveryCode)
 		await userRepositories.passwordRecovery(findUser._id, recoveryCode)
 		return true
 	} catch (e) {
