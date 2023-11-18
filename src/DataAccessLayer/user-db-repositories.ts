@@ -98,6 +98,5 @@ export const userRepositories = {
 	}
 	const updateRes = await UsersModel.updateOne({_id: new ObjectId(id)}, {$set: recoveryInfo})
 	return updateRes.matchedCount === 1
-
   }
 };
