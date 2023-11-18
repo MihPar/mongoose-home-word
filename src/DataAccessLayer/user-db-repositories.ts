@@ -93,8 +93,8 @@ export const userRepositories = {
   },
   async passwordRecovery(id: ObjectId, recoveryCode: string): Promise<boolean> {
 	const recoveryInfo = {
-		code: recoveryCode,
-		exp: add(new Date(), {minutes: 5})
+		['emailConfirmation.confirmationCode']: recoveryCode,
+		['emailConfirmation.expirationDate']: add(new Date(), {minutes: 5})
 	}
 	const updateRes = await UsersModel.updateOne({_id: new ObjectId(id)}, {$set: recoveryInfo})
 	return updateRes.matchedCount === 1
