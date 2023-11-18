@@ -59,6 +59,24 @@ export const inputValueEmailAuth = body('email')
 	return true
 })
 
+export const inputValueEmailAuthPasswordRecovery = body('email')
+.isString()
+.trim()
+.isEmail()
+.isLength({min: 6, max: 30})
+.withMessage('value of email is incorrect')
+
+// .custom(async(email, {req}): Promise<boolean> => {
+// 	const user: DBUserType | null = await userRepositories.findByLoginOrEmail(email)
+// 	if(!user) {
+// 		throw new Error('User does not exist in DB')
+// 	} else if(user.emailConfirmation.isConfirmed === true) {
+// 		throw new Error('Email is already exist in DB')
+// 	}
+// 	req.user = user?._id.toHexString()
+// 	return true
+// })
+
 export const inputValueLoginOrEamilAuth = body('loginOrEmail')
 .isString()
 .notEmpty()
@@ -89,9 +107,9 @@ export const inputValueCodeAuth = body('code')
 
 export const inputValueRecoveryCodeAuth = body('recoveryCode')
 .isString()
-.withMessage('Code should be string')
-.notEmpty()
+// .notEmpty()
 .trim()
+.withMessage('recovery code is incorrect')
 // .custom(async(code, {req}) => {
 // 	console.log(code)
 // 	const user: DBUserType | null = await userRepositories.findUserByConfirmation(code)

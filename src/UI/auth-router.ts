@@ -1,8 +1,8 @@
-import { inputValueNewPasswordAuth, inputValueRecoveryCodeAuth } from './../middleware/input-value-auth-middleware';
+import { inputValueEmailAuthPasswordRecovery, inputValueNewPasswordAuth, inputValueRecoveryCodeAuth } from './../middleware/input-value-auth-middleware';
 import { BodyPasswordRecoveryCode, EmailResending } from './../model/modelUser/bodyPasswordRecovery';
 import { DBUserType } from './types/userTypes';
 import { checkRefreshTokenSecurityDeviceMiddleware } from "./../middleware/checkRefreshTokenSevurityDevice-middleware";
-import { limitRequestMiddleware } from "./../middleware/limitRequest";
+import { limitRequestMiddleware, limitRequestMiddlewarePassword } from "./../middleware/limitRequest";
 import { deviceService } from "./../Bisnes-logic-layer/deviceService";
 import { authValidationInfoMiddleware } from "../middleware/authValidationInfoMiddleware";
 import {
@@ -31,7 +31,7 @@ export const authRouter = Router({});
 
 authRouter.post(
   "/new-password",
-  limitRequestMiddleware,
+  limitRequestMiddlewarePassword,
   inputValueNewPasswordAuth,
   inputValueRecoveryCodeAuth,
   ValueMiddleware,
@@ -55,8 +55,8 @@ authRouter.post(
 
 authRouter.post(
   "/password-recovery",
-  limitRequestMiddleware,
-  inputValueEmailAuth,
+  limitRequestMiddlewarePassword,
+  inputValueEmailAuthPasswordRecovery,
   ValueMiddleware,
   async function (
     req: RequestWithBody<EmailResending>,
@@ -66,7 +66,7 @@ authRouter.post(
 	// const id = new ObjectId(req.user)
     const passwordRecovery = await userService.recoveryPassword(email);
     if (!passwordRecovery) {
-      return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
     }
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
     

@@ -42,7 +42,7 @@ export const PostsModel = mongoose.model<PostsType>('posts', PostSchema)
 export const UsersModel = mongoose.model<DBUserType>('user', DBUserSchema)
 export const CommentsModel = mongoose.model<CommentType>('comment', CommentSchema)
 export const BlackListMode = mongoose.model<BlackList>('blackList', BlackListSchema)
-export const DevicesModel =mongoose.model<DeviceModel>('device', DeviceSchema)
+export const DevicesModel = mongoose.model<DeviceModel>('device', DeviceSchema)
 export const IPCollectionModel = mongoose.model<CollectionIP>('IP', CollectioinIPSchema)
 
 // export const blogsCollection = db.collection<BlogsType>('blogs')
