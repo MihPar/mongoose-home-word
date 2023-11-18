@@ -1,4 +1,4 @@
-import { emailAdapter, passwordAdapter } from './../adapter/email-adapter';
+import { emailAdapter} from './../adapter/email-adapter';
 import { UserType, DBUserType, UserGeneralType } from './../UI/types/userTypes';
 import { UsersModel } from './../db/db';
 import { userRepositories } from "../DataAccessLayer/user-db-repositories";
@@ -146,7 +146,7 @@ export const userService = {
             return false
         }
 	try {
-		await passwordAdapter.sendEmail(email, recoveryCode)
+		await emailManager.sendEamilRecoveryCode(email, recoveryCode)
 		await userRepositories.passwordRecovery(findUser._id, recoveryCode)
 		return true
 	} catch (e) {
