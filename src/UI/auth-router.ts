@@ -47,7 +47,7 @@ authRouter.post(
       recoveryCode,
     );
     if (!resultUpdatePassword) {
-      return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
