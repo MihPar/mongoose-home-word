@@ -1,10 +1,10 @@
-import { securityDeviceRouter } from './UI/security-device';
-import { commentsRouter } from './UI/comments-router';
-import { usersRouter } from './UI/users-router';
-import { authRouter } from './UI/auth-router';
-import { blogsRouter } from './UI/blogs-router';
+import { securityDeviceRouter } from './UI/securityDevice-controller';
+import { commentsRouter } from './UI/comments-controller';
+import { usersRouter } from './UI/users-controller';
+import { authRouter } from './UI/auth-controller';
+import { blogsRouter } from './UI/blogs-controller';
 import { deleteAllRouter } from './UI/delete-all-users';
-import { postsRouter } from './UI/posts-router';
+import { postsRouter } from './UI/posts-controller';
 import  cookieParser  from 'cookie-parser';
 import express from 'express'
 

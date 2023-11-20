@@ -1,15 +1,15 @@
 import { userService } from './../Bisnes-logic-layer/userService';
 import { PaginationType } from './../UI/types/types';
 import { UsersModel } from './../db/db';
-import { UserType, DBUserType, UserGeneralType } from './../UI/types/userTypes';
+import { User, UserViewType } from './../UI/types/userTypes';
 import { Filter, ObjectId } from "mongodb";
 import {WithId} from 'mongodb'
 import add from "date-fns/add";
 
 
 export const userRepositories = {
-  async findByLoginOrEmail(loginOrEmail: string): Promise<DBUserType | null> {
-    const user: DBUserType | null = await UsersModel.findOne({
+  async findByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
+    const user: User | null = await UsersModel.findOne({
       $or: [{ 'accountData.email': loginOrEmail }, { 'accountData.userName': loginOrEmail }],
     });
     return user;
@@ -17,8 +17,8 @@ export const userRepositories = {
   async findUserByEmail(email: string) {
 	return UsersModel.findOne({'accountData.email': email})
   },
-  async findUserByConfirmation(code: string): Promise<DBUserType | null> {
-    const user: DBUserType | null = await UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
+  async findUserByConfirmation(code: string): Promise<User | null> {
+    const user: User | null = await UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
     return user;
   },
   async updateConfirmation(_id: ObjectId) {
@@ -36,7 +36,7 @@ export const userRepositories = {
     pageSize: string,
     searchLoginTerm: string,
     searchEmailTerm: string 
-  ): Promise<PaginationType<UserType>> {
+  ): Promise<PaginationType<UserViewType>> {
 
     // const filter: mongoose.FilterQuery<BlogViewModel> = {};
 
@@ -56,15 +56,11 @@ export const userRepositories = {
         page: +pageNumber,
         pageSize: +pageSize,
         totalCount: totalCount,
-        items: getAllUsers.map((user: DBUserType): UserType  => ({
-			id: user._id.toString(),
-			login: user.accountData.userName,
-			email: user.accountData.email,
-			createdAt: user.accountData.createdAt,
-		})),
+        items: getAllUsers.map((user: User): UserViewType  => 
+		user.getViewUser())
       }
   },
-  async createUser(newUser: DBUserType): Promise<DBUserType> {
+  async createUser(newUser: User): Promise<User> {
 	const  updateUser = await UsersModel.insertMany([newUser])
 	return newUser
   },
@@ -72,7 +68,7 @@ export const userRepositories = {
 	const deleted = await UsersModel.deleteOne({_id: new ObjectId(id)})
 	return deleted.deletedCount === 1;
   },
-  async findUserById(userId: ObjectId) :Promise<DBUserType | null>{
+  async findUserById(userId: ObjectId) :Promise<User | null>{
     let user = await UsersModel.findOne({ _id: userId });
       return user;
   },
@@ -84,7 +80,7 @@ export const userRepositories = {
 	const user = await UsersModel.updateOne({_id: currentUserId}, {$push: {blackList: refreshToken}})
 	return user.matchedCount === 1
   },
-  async findUserByCode(recoveryCode: string): Promise<WithId<UserGeneralType> | null> {
+  async findUserByCode(recoveryCode: string): Promise<WithId<User> | null> {
 	return UsersModel.findOne({'emailConfirmation.confirmationCode': recoveryCode})
   },
   async updatePassword(id: ObjectId, newPasswordHash: string) {

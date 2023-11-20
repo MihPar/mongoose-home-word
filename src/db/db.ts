@@ -3,16 +3,13 @@ import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
 import { PostSchema } from './../schema/posts-schema';
 import { BlogsSchema } from './../schema/blogs-schema';
-import { DeviceModel, CollectionIP } from './../UI/types/deviceAuthSession';
-import { BlogsType } from './../UI/types/blogsType';
-import { PostsType } from './../UI/types/postsTypes';
-import { DBUserType } from './../UI/types/userTypes';
-import { BlackList } from './../UI/types/sessionTypes';
-import { CommentType } from '../UI/types/commentType';
+import { DeviceModel, CollectionIP, Device } from './../UI/types/deviceAuthSession';
+import { Blogs} from './../UI/types/blogsType';
+import { Post } from './../UI/types/postsTypes';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv'
-import { BlackListSchema } from '../schema/session-schema';
-import mongoose from 'mongoose';
+import mongoose, { Collection } from 'mongoose';
+import { User } from '../UI/types/userTypes';
 dotenv.config()
 	 
 
@@ -37,13 +34,12 @@ export const stopDb = async () => {
 	await client.close()
 }
 
-export const BlogsModel = mongoose.model<BlogsType>('blogs', BlogsSchema)
-export const PostsModel = mongoose.model<PostsType>('posts', PostSchema)
-export const UsersModel = mongoose.model<DBUserType>('user', DBUserSchema)
-export const CommentsModel = mongoose.model<CommentType>('comment', CommentSchema)
-export const BlackListMode = mongoose.model<BlackList>('blackList', BlackListSchema)
-export const DevicesModel = mongoose.model<DeviceModel>('device', DeviceSchema)
-export const IPCollectionModel = mongoose.model<CollectionIP>('IP', CollectioinIPSchema)
+export const BlogsModel = mongoose.model<Blogs>('blogs', BlogsSchema)
+export const PostsModel = mongoose.model<Post>('posts', PostSchema)
+export const UsersModel = mongoose.model<User>('user', DBUserSchema)
+export const CommentsModel = mongoose.model<Comment>('comment', CommentSchema)
+export const DevicesModel = mongoose.model<Device>('device', DeviceSchema)
+export const IPCollectionModel = mongoose.model<Collection>('IP', CollectioinIPSchema)
 
 // export const blogsCollection = db.collection<BlogsType>('blogs')
 // export const postsCollection = db.collection<PostsType>('posts')

@@ -1,7 +1,7 @@
-import { bodyPostsModel } from './../model/modePosts.ts/bodyPostsMode';
+import { bodyPostsModel } from '../model/modePosts.ts/bodyPostsMode';
 import { PostsType } from './types/postsTypes';
-import { queryPostsModel } from './../model/modePosts.ts/queryPostsModel';
-import { paramsPostsModelBlogId } from './../model/modePosts.ts/paramsPostsModeBlogId';
+import { queryPostsModel } from '../model/modePosts.ts/queryPostsModel';
+import { paramsPostsModelBlogId } from '../model/modePosts.ts/paramsPostsModeBlogId';
 import { postsRepositories } from '../DataAccessLayer/posts-db-repositories';
 import { paramsBlogsModel } from "../model/modelBlogs/paramsBlogsModel";
 import {

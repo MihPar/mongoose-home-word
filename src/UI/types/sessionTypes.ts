@@ -1,6 +1,6 @@
-import { ObjectId } from "mongodb"
+// import { ObjectId } from "mongodb"
 
-export type BlackList = {
-	_id: ObjectId
-	refreshToken: string
-}
+// export type BlackList = {
+// 	_id: ObjectId
+// 	refreshToken: string
+// }

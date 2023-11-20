@@ -126,7 +126,6 @@ export const userService = {
 	if(!findUserByCode) {
 		return false
 	}
-	
 	if(findUserByCode.emailConfirmation.expirationDate < new Date()) {
 		return false
 	}
@@ -147,7 +146,6 @@ export const userService = {
         }
 	try {
 		await emailManager.sendEamilRecoveryCode(email, recoveryCode)
-		// await emailAdapter.sendEmailByRecoveryCode(email, recoveryCode)
 		await userRepositories.passwordRecovery(findUser._id, recoveryCode)
 		return true
 	} catch (e) {

@@ -1,4 +1,4 @@
-import { CommentsModel, BlackListMode, DevicesModel, IPCollectionModel } from './../db/db';
+import { CommentsModel, DevicesModel, IPCollectionModel } from './../db/db';
 import { blogsService } from '../Bisnes-logic-layer/blogsService';
 import { postsService } from '../Bisnes-logic-layer/postsService';
 import { Router, Request, Response } from "express";
@@ -14,7 +14,6 @@ deleteAllRouter.delete(
     await blogsService.deleteAllBlogs();
 	await userService.deleteAllUsers()
 	await CommentsModel.deleteMany({});
-	await BlackListMode.deleteMany({});
 	await DevicesModel.deleteMany({});
 	await IPCollectionModel.deleteMany({});
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);

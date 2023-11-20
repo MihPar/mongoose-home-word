@@ -1,9 +1,8 @@
-import { inputValueEmailAuthPasswordRecovery, inputValueNewPasswordAuth, inputValueRecoveryCodeAuth } from './../middleware/input-value-auth-middleware';
-import { BodyPasswordRecoveryCode, EmailResending } from './../model/modelUser/bodyPasswordRecovery';
-import { DBUserType } from './types/userTypes';
-import { checkRefreshTokenSecurityDeviceMiddleware } from "./../middleware/checkRefreshTokenSevurityDevice-middleware";
-import { limitRequestMiddleware, limitRequestMiddlewarePassword } from "./../middleware/limitRequest";
-import { deviceService } from "./../Bisnes-logic-layer/deviceService";
+import { inputValueEmailAuthPasswordRecovery, inputValueNewPasswordAuth, inputValueRecoveryCodeAuth } from '../middleware/input-value-auth-middleware';
+import { BodyPasswordRecoveryCode, EmailResending } from '../model/modelUser/bodyPasswordRecovery';
+import { checkRefreshTokenSecurityDeviceMiddleware } from "../middleware/checkRefreshTokenSevurityDevice-middleware";
+import { limitRequestMiddleware, limitRequestMiddlewarePassword } from "../middleware/limitRequest";
+import { deviceService } from "../Bisnes-logic-layer/deviceService";
 import { authValidationInfoMiddleware } from "../middleware/authValidationInfoMiddleware";
 import {
   inputValueEmailAuth,
@@ -26,6 +25,7 @@ import { HTTP_STATUS } from "../utils";
 import { userService } from "../Bisnes-logic-layer/userService";
 import { ObjectId } from "mongodb";
 import { sessionService } from "../Bisnes-logic-layer/sessionService";
+import { User } from './types/userTypes';
 
 export const authRouter = Router({});
 
@@ -39,15 +39,19 @@ authRouter.post(
     req: RequestWithBody<BodyPasswordRecoveryCode>,
     res: Response
   ) {
-	// const id = new ObjectId(req.user)
-	// console.log(id)
     const { newPassword, recoveryCode } = req.body;
     const resultUpdatePassword = await userService.setNewPassword(
       newPassword,
-      recoveryCode,
+      recoveryCode
     );
     if (!resultUpdatePassword) {
-      return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST_400)
+        .send({
+          errorsMessages: [
+            { message: "recovery code is incorrect", field: "recoveryCode" },
+          ],
+        });
     }
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
@@ -63,7 +67,6 @@ authRouter.post(
     res: Response
   ) {
     const { email } = req.body;
-	// const id = new ObjectId(req.user)
     const passwordRecovery = await userService.recoveryPassword(email);
     if (!passwordRecovery) {
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
@@ -84,7 +87,7 @@ authRouter.post(
     res: Response<{ accessToken: string }>
   ): Promise<Response<{ accessToken: string }>> {
     const { loginOrEmail, password } = req.body;
-    const user: DBUserType | null = await userService.checkCridential(
+    const user: User | null = await userService.checkCridential(
       loginOrEmail,
       password
     );
@@ -148,8 +151,8 @@ authRouter.post(
   async function (req: Request, res: Response<void>): Promise<void> {
     const refreshToken: string = req.cookies.refreshToken;
     const isDeleteDevice = await deviceService.logoutDevice(refreshToken);
-	const toAddRefreshTokenInBlackList: boolean =
-	await sessionService.addRefreshToken(refreshToken);
+	// const toAddRefreshTokenInBlackList: boolean =
+	// await sessionService.addRefreshToken(refreshToken);
 	if (!isDeleteDevice) {
 		res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
 		return;
@@ -172,7 +175,7 @@ authRouter.get(
     const token: string = req.headers.authorization!.split(" ")[1];
     const userId: ObjectId | null = await jwtService.getUserIdByToken(token);
     if (!userId) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
-    const currentUser: DBUserType | null = await userService.findUserById(
+    const currentUser: User | null = await userService.findUserById(
       userId
     );
     if (!currentUser) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);

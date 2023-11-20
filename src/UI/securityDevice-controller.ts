@@ -1,36 +1,21 @@
-import { checkRefreshTokenMiddleware } from "./../middleware/checkRefreshToken-middleware";
-import { sessionService } from "./../Bisnes-logic-layer/sessionService";
-import { checkForbiddenSecurityDevice } from "./../middleware/checkForbiddenSecurityDevice";
-import { jwtService } from "./../Bisnes-logic-layer/jwtService";
-import { checkRefreshTokenSecurityDeviceMiddleware } from "./../middleware/checkRefreshTokenSevurityDevice-middleware";
-import { DeviceViewModel } from "./types/deviceAuthSession";
-import { deviceService } from "./../Bisnes-logic-layer/deviceService";
+import { checkForbiddenSecurityDevice } from "../middleware/checkForbiddenSecurityDevice";
+import { jwtService } from "../Bisnes-logic-layer/jwtService";
+import { checkRefreshTokenSecurityDeviceMiddleware } from "../middleware/checkRefreshTokenSevurityDevice-middleware";
+import { deviceService } from "../Bisnes-logic-layer/deviceService";
 import { Router, Request, Response } from "express";
 import { securityDeviceRepositories } from "../DataAccessLayer/securityDevice-db-repositories";
 import { HTTP_STATUS } from "../utils";
+import { DeviceView } from "./types/deviceAuthSession";
 
 export const securityDeviceRouter = Router({});
 
-securityDeviceRouter.get(
-  "/",
-  checkRefreshTokenSecurityDeviceMiddleware,
-  async function (
+class SecurityDeviceController {
+  async getDeviceUsers(
     req: Request,
-    res: Response<DeviceViewModel[]>
-  ): Promise<Response<DeviceViewModel[]>> {
-    // const refreshToken = req.cookies.refreshToken
+    res: Response<DeviceView[]>
+  ): Promise<Response<DeviceView[]>> {
     const userId = req.user._id.toString();
-    // const isInBlackList = await sessionService.findRefreshToken(refreshToken)
-    // if(isInBlackList) {
-    // 	return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401)
-    // }
-
-	// const isInBlackList = await sessionService.findRefreshToken(refreshToken)
-	// if(isInBlackList) {
-	// 	return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401)
-	// }
-	
-    const getDevicesAllUsers: DeviceViewModel[] =
+    const getDevicesAllUsers: DeviceView[] =
       await securityDeviceRepositories.getDevicesAllUsers(userId);
     if (!getDevicesAllUsers) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
@@ -38,12 +23,7 @@ securityDeviceRouter.get(
       return res.status(HTTP_STATUS.OK_200).send(getDevicesAllUsers);
     }
   }
-);
-
-securityDeviceRouter.delete(
-  "/",
-  checkRefreshTokenSecurityDeviceMiddleware,
-  async function (
+  async terminateCurrentSessions(
     req: Request,
     res: Response<boolean>
   ): Promise<Response<boolean>> {
@@ -63,13 +43,7 @@ securityDeviceRouter.delete(
     }
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
-);
-
-securityDeviceRouter.delete(
-  "/:deviceId",
-  checkRefreshTokenSecurityDeviceMiddleware,
-  checkForbiddenSecurityDevice,
-  async function (
+  async terminateSessionById(
     req: Request<{ deviceId: string }>,
     res: Response<boolean>
   ): Promise<Response<boolean>> {
@@ -82,4 +56,23 @@ securityDeviceRouter.delete(
     }
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
+}
+
+export const securityDeviceController = new SecurityDeviceController();
+
+securityDeviceRouter.get(
+  "/",
+  checkRefreshTokenSecurityDeviceMiddleware,
+  securityDeviceController.getDeviceUsers
+);
+securityDeviceRouter.delete(
+  "/",
+  checkRefreshTokenSecurityDeviceMiddleware,
+  securityDeviceController.terminateCurrentSessions
+);
+securityDeviceRouter.delete(
+  "/:deviceId",
+  checkRefreshTokenSecurityDeviceMiddleware,
+  checkForbiddenSecurityDevice,
+  securityDeviceController.terminateSessionById
 );
