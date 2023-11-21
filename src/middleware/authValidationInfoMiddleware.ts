@@ -1,4 +1,4 @@
-import { DBUserType } from './../UI/types/userTypes';
+import { Users } from './../UI/types/userTypes';
 import { userService } from "./../Bisnes-logic-layer/userService";
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../utils";
@@ -17,7 +17,7 @@ export const authValidationInfoMiddleware = async function (
   const token: string = req.headers.authorization!.split(" ")[1];
   const userId: ObjectId | null = await jwtService.getUserIdByToken(token);
   if (!userId) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
-  const currentUser: DBUserType | null = await userService.findUserById(userId);
+  const currentUser: Users | null = await userService.findUserById(userId);
   if (!currentUser) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
   next();
   return;

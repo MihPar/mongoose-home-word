@@ -34,8 +34,7 @@ import { Router, Response, Request } from "express";
 import { HTTP_STATUS } from "../utils";
 import { userService } from "../Bisnes-logic-layer/userService";
 import { ObjectId } from "mongodb";
-import { sessionService } from "../Bisnes-logic-layer/sessionService";
-import { User } from "./types/userTypes";
+import { Users } from "./types/userTypes";
 
 export const authRouter = Router({});
 
@@ -74,7 +73,7 @@ class AuthContorller {
     res: Response<{ accessToken: string }>
   ): Promise<Response<{ accessToken: string }>> {
     const { loginOrEmail, password } = req.body;
-    const user: User | null = await userService.checkCridential(
+    const user: Users | null = await userService.checkCridential(
       loginOrEmail,
       password
     );
@@ -145,7 +144,7 @@ class AuthContorller {
     const token: string = req.headers.authorization!.split(" ")[1];
     const userId: ObjectId | null = await jwtService.getUserIdByToken(token);
     if (!userId) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
-    const currentUser: User | null = await userService.findUserById(userId);
+    const currentUser: Users | null = await userService.findUserById(userId);
     if (!currentUser) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     return res.status(HTTP_STATUS.OK_200).send({
       userId: currentUser._id.toString(),

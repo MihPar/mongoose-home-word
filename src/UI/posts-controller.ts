@@ -23,18 +23,18 @@ import { Router, Response } from "express";
 import { HTTP_STATUS } from "../utils";
 import { postsService } from "../Bisnes-logic-layer/postsService";
 import { commentService } from "../Bisnes-logic-layer/commentService";
-import { CommentTypeView } from "./types/commentType";
 import { commentRepositories } from "../DataAccessLayer/comment-db-repositories";
 import { commentAuthorization } from "../middleware/commentAuthorization";
 import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
 import { Posts } from './types/postsTypes';
+import { CommentView } from './types/commentType';
 
 export const postsRouter = Router({});
 
 class RouterController {
 	async getPostByPostId (
 		req: RequestWithParamsAndQuery<paramsPostIdMode, queryPostsModel>,
-		res: Response<PaginationType<CommentTypeView>>
+		res: Response<PaginationType<CommentView>>
 	  ) {
 		const { postId } = req.params;
 		const {
@@ -47,7 +47,7 @@ class RouterController {
 		if(!isExistPots) {
 			return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 		}
-		const commentByPostsId: PaginationType<CommentTypeView> | null = await commentRepositories.findCommentByPostId(
+		const commentByPostsId: PaginationType<CommentView> | null = await commentRepositories.findCommentByPostId(
 		  postId,
 		  pageNumber,
 		  pageSize,
@@ -62,7 +62,7 @@ class RouterController {
 	  }
 	  async createPostByPostId (
 		req: RequestWithParamsAndBody<paramsPostIdMode, bodyPostModelContent>,
-		res: Response<CommentTypeView>
+		res: Response<CommentView>
 	  ) {
 		const { postId } = req.params;
 		const { content } = req.body;
@@ -72,7 +72,7 @@ class RouterController {
 	
 		if (!post) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
 		console.log(user)
-		const createNewCommentByPostId: CommentTypeView| null =
+		const createNewCommentByPostId: CommentView| null =
 		  await commentService.createNewCommentByPostId(postId, content, user._id.toString(), user.accountData.userName);
 		if (!createNewCommentByPostId) {
 			return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

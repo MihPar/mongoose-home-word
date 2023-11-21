@@ -43,7 +43,7 @@ class CommentRepositories {
 		sortDirection: string
 	  ): Promise<PaginationType<CommentView> | null> {
 		const filter = { postId: postId };
-		const commentByPostId: Comment[] = await CommentsModel
+		const commentByPostId: Comments[] = await CommentsModel
 		  .find(filter)
 		  .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
 		  .skip((+pageNumber - 1) * +pageSize)

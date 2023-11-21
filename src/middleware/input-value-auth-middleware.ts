@@ -1,4 +1,4 @@
-import { DBUserType } from './../UI/types/userTypes';
+import { Users } from './../UI/types/userTypes';
 import { body } from 'express-validator';
 import { userRepositories } from '../DataAccessLayer/user-db-repositories';
 
@@ -9,7 +9,7 @@ export const inputValueLoginAuth = body('login')
 .isLength({min: 3, max: 10})
 .matches(/^[a-zA-Z0-9_-]/)
 .custom(async(login) => {
-		const user: DBUserType | null = await userRepositories.findByLoginOrEmail(login)
+		const user: Users | null = await userRepositories.findByLoginOrEmail(login)
 		if(user) {
 			throw new Error('Login does not exist in DB')
 		}
@@ -36,7 +36,7 @@ export const inputValueEmailRegistrationAuth = body('email')
 .trim()
 .isEmail()
 .custom(async(email) => {
-	const user: DBUserType | null = await userRepositories.findByLoginOrEmail(email)
+	const user: Users | null = await userRepositories.findByLoginOrEmail(email)
 	if(user) {
 		throw new Error('Email does not exist in DB')
 	} 
@@ -49,7 +49,7 @@ export const inputValueEmailAuth = body('email')
 .trim()
 .isEmail()
 .custom(async(email, {req}): Promise<boolean> => {
-	const user: DBUserType | null = await userRepositories.findByLoginOrEmail(email)
+	const user: Users | null = await userRepositories.findByLoginOrEmail(email)
 	if(!user) {
 		throw new Error('User does not exist in DB')
 	} else if(user.emailConfirmation.isConfirmed === true) {
@@ -90,7 +90,7 @@ export const inputValueCodeAuth = body('code')
 .trim()
 .custom(async(code, {req}) => {
 	console.log(code)
-	const user: DBUserType | null = await userRepositories.findUserByConfirmation(code)
+	const user: Users | null = await userRepositories.findUserByConfirmation(code)
 	console.log(user)
 	if(!user) {
 		throw new Error('User not found')

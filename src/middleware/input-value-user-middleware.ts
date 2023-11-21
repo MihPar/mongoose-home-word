@@ -1,4 +1,4 @@
-import { DBUserType } from './../UI/types/userTypes';
+import { Users } from './../UI/types/userTypes';
 import { userRepositories } from '../DataAccessLayer/user-db-repositories';
 import {body} from 'express-validator'
 
@@ -7,7 +7,7 @@ export const inputValueUserEmailValidatioin = body('email')
 .trim()
 .isEmail()
 .custom(async(email): Promise<boolean> => {
-	const user: DBUserType | null = await userRepositories.findByLoginOrEmail(email)
+	const user: Users | null = await userRepositories.findByLoginOrEmail(email)
 	if(user) {
 		throw new Error('User does not exist in DB')
 	} 

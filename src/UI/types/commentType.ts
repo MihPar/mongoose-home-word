@@ -10,7 +10,7 @@ export class CommentView {
     public _id: ObjectId,
     public content: string,
     public commentatorInfo: CommentatorInfo,
-    public createAt: string
+    public createdAt: string
   ) {}
 }
 
@@ -20,6 +20,6 @@ export class Comments {
 	  public content: string,
 	  public commentatorInfo: CommentatorInfo,
 	  public postId: string,
-	  public createAt: string
+	  public createdAt: string
 	) {}
   }

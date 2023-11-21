@@ -1,4 +1,4 @@
-import { Comments } from './../UI/types/commentType';
+import { CommentView, Comments } from './../UI/types/commentType';
 import { ObjectId } from "mongodb";
 import { commentRepositories } from "../DataAccessLayer/comment-db-repositories";
 
@@ -15,7 +15,7 @@ class CommentService {
 		content: string,
 		userId: string,
 		userLogin: string
-	  ): Promise<Comments| null> {
+	  ): Promise<CommentView| null> {
 		
 		const newComment: Comments = {
 		  _id: new ObjectId(),
