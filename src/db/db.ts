@@ -1,4 +1,4 @@
-import { DeviceSchema, CollectioinIPSchema } from './../schema/deviceAuth-schema';
+import { DeviceSchema, CollectioInIPSchema } from './../schema/deviceAuth-schema';
 import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
 import { PostSchema } from './../schema/posts-schema';
@@ -6,10 +6,11 @@ import { BlogsSchema } from './../schema/blogs-schema';
 import { Blogs} from './../UI/types/blogsType';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv'
-import mongoose, { Collection } from 'mongoose';
-import { User } from '../UI/types/userTypes';
+import mongoose from 'mongoose';
+import { Users } from '../UI/types/userTypes';
 import { Posts } from '../UI/types/postsTypes';
-import { Device } from '../UI/types/deviceAuthSession';
+import { CollectionIP, Devices } from '../UI/types/deviceAuthSession';
+import { Comments } from '../UI/types/commentType';
 dotenv.config()
 	 
 
@@ -36,10 +37,10 @@ export const stopDb = async () => {
 
 export const BlogsModel = mongoose.model<Blogs>('blogs', BlogsSchema)
 export const PostsModel = mongoose.model<Posts>('posts', PostSchema)
-export const UsersModel = mongoose.model<User>('user', DBUserSchema)
-export const CommentsModel = mongoose.model<Comment>('comment', CommentSchema)
-export const DevicesModel = mongoose.model<Device>('device', DeviceSchema)
-export const IPCollectionModel = mongoose.model<Collection>('IP', CollectioinIPSchema)
+export const UsersModel = mongoose.model<Users>('user', DBUserSchema)
+export const CommentsModel = mongoose.model<Comments>('comment', CommentSchema)
+export const DevicesModel = mongoose.model<Devices>('device', DeviceSchema)
+export const IPCollectionModel = mongoose.model<CollectionIP>('IP', CollectioInIPSchema)
 
 // export const blogsCollection = db.collection<BlogsType>('blogs')
 // export const postsCollection = db.collection<PostsType>('posts')

@@ -9,7 +9,7 @@ export class CollectionIP {
   ) {}
 }
 
-export class Device {
+export class Devices {
   constructor(
     public _id: ObjectId,
     public ip: string,

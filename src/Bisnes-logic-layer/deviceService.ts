@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { DeviceModel } from './../UI/types/deviceAuthSession';
+import { Devices } from './../UI/types/deviceAuthSession';
 import { jwtService } from './jwtService';
 import { securityDeviceRepositories } from './../DataAccessLayer/securityDevice-db-repositories';
 
-export const deviceService = {
+class DeviceService {
 	async terminateAllCurrentSessions(userId: string, deviceId: string) {
 		const findSession = await securityDeviceRepositories.getDevicesAllUsers(userId)
 		if(!findSession) {
@@ -15,14 +15,14 @@ export const deviceService = {
 			}
 		}
 		return true
-	},
-	async createDevice(ip: string, title: string, refreshToken: string): Promise<DeviceModel | null> {
+	}
+	async createDevice(ip: string, title: string, refreshToken: string): Promise<Devices | null> {
 		const payload = await jwtService.decodeRefreshToken(refreshToken)
 		if(!payload){
 			return null
 		}
 		const lastActiveDate = jwtService.getLastActiveDate(refreshToken)
-		const device: DeviceModel = {
+		const device: Devices = {
 			_id: new ObjectId(),
 			ip: ip,
     		title: title,
@@ -31,9 +31,9 @@ export const deviceService = {
 			lastActiveDate: lastActiveDate,
 		}
 		
-		const createDevice: DeviceModel = await securityDeviceRepositories.createDevice(device)
+		const createDevice: Devices = await securityDeviceRepositories.createDevice(device)
 		return createDevice
-	},
+	}
 	async updateDevice(userId: string, refreshToken: string) {
 		const payload = await jwtService.decodeRefreshToken(refreshToken)
 
@@ -45,7 +45,7 @@ export const deviceService = {
 
 		await securityDeviceRepositories.updateDeviceUser(userId, payload.deviceId, lastActiveDate)
 		return
-	},
+	}
 	async logoutDevice(refreshToken: string) {
 		const payload = await jwtService.decodeRefreshToken(refreshToken)
 		if(!payload){
@@ -58,3 +58,5 @@ export const deviceService = {
 		return true
 	}
 }
+
+export const deviceService = new DeviceService()

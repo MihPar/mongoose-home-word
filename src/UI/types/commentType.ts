@@ -10,16 +10,16 @@ export class CommentView {
     public _id: ObjectId,
     public content: string,
     public commentatorInfo: CommentatorInfo,
-    public createAT: string
+    public createAt: string
   ) {}
 }
 
-export class Comment {
+export class Comments {
 	constructor(
 	  public _id: ObjectId,
 	  public content: string,
 	  public commentatorInfo: CommentatorInfo,
 	  public postId: string,
-	  public createAT: string
+	  public createAt: string
 	) {}
   }

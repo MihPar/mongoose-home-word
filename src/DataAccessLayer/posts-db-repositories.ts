@@ -1,15 +1,14 @@
+import { Posts } from './../UI/types/postsTypes';
 import { PostsModel } from './../db/db';
-import { PostsType } from './../UI/types/postsTypes';
 import { PaginationType } from './../UI/types/types';
-import { Filter } from "mongodb";
 
-export const postsRepositories = {
+class PostsRepositories {
 	async findAllPosts(
 		pageNumber: string,
 		pageSize: string,
 		sortBy: string,
 		sortDirection: string
-	  ): Promise<PaginationType<PostsType>> {
+	  ): Promise<PaginationType<Posts>> {
 		const filtered = {};
 		const allPosts = await PostsModel
 		  .find(filtered, { projection: { _id: 0 } })
@@ -21,7 +20,7 @@ export const postsRepositories = {
 		const totalCount: number = await PostsModel.countDocuments(filtered);
 		const pagesCount: number = Math.ceil(totalCount / +pageSize);
 
-		let result: PaginationType<PostsType> = {
+		let result: PaginationType<Posts> = {
 			pagesCount: pagesCount,
 			page: +pageNumber,
 			pageSize: +pageSize,
@@ -29,18 +28,18 @@ export const postsRepositories = {
 			items: allPosts,
 		}
 		return result
-	  },
-  async createNewBlogs(newPost: PostsType): Promise<PostsType> {
+	  }
+  async createNewBlogs(newPost: Posts): Promise<Posts> {
     const result = await PostsModel.insertMany({ ...newPost });
     return newPost;
-  },
+  }
   async findPostsByBlogsId(
     pageNumber: string,
     pageSize: string,
     sortBy: string,
     sortDirection: string,
     blogId: string
-  ): Promise<PaginationType<PostsType>> {
+  ): Promise<PaginationType<Posts>> {
     const filter = { blogId: blogId };
 
 	console.log(filter)
@@ -64,10 +63,10 @@ export const postsRepositories = {
 		totalCount: totalCount,
 		items: posts,
 	}
-  },
-  async findPostById(id: string): Promise<PostsType | null> {
+  }
+  async findPostById(id: string): Promise<Posts | null> {
     return await PostsModel.findOne({ id: id }, { projection: { _id: 0 } });
-  },
+  }
   async updatePost(
     id: string,
     title: string,
@@ -87,13 +86,15 @@ export const postsRepositories = {
       }
     );
     return result.matchedCount === 1;
-  },
+  }
   async deletedPostById(id: string): Promise<boolean> {
     const result = await PostsModel.deleteOne({ id: id });
     return result.deletedCount === 1;
-  },
+  }
   async deleteRepoPosts(): Promise<boolean> {
     const deletedAll = await PostsModel.deleteMany({});
     return deletedAll.acknowledged
-  },
-};
+  }
+}
+
+export const postsRepositories = new PostsRepositories()

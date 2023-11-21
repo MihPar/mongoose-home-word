@@ -1,14 +1,14 @@
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
-import { CollectionIP, Device, DeviceView } from '../UI/types/deviceAuthSession'
+import { CollectionIP, Devices, DeviceView } from '../UI/types/deviceAuthSession'
 
-export const CollectioinIPSchema = new mongoose.Schema<WithId<CollectionIP>>({
+export const CollectioInIPSchema = new mongoose.Schema<WithId<CollectionIP>>({
 	IP: {type: String, require: true},
 	URL: {type: String, require: true},
 	date: {type: Date, require: true}
 })
 
-export const DeviceSchema = new mongoose.Schema<WithId<Device>>({
+export const DeviceSchema = new mongoose.Schema<WithId<Devices>>({
 	ip: {type: String, require: true},
     title: {type: String, require: true},
     deviceId: {type: String, require: true},

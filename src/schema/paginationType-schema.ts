@@ -1,10 +1,10 @@
-import { UserType } from './../UI/types/userTypes';
+import { Users } from './../UI/types/userTypes';
 import { PaginationType } from './../UI/types/types';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 
 
-export const PaginationTypeSchema = new mongoose.Schema<WithId<PaginationType<UserType>>>({
+export const PaginationTypeSchema = new mongoose.Schema<WithId<PaginationType<Users>>>({
 	pagesCount: {type: Number, require: true},
 	page: {type: Number, require: true},
 	pageSize: {type: Number, require: true},

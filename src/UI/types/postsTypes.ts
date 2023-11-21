@@ -4,7 +4,7 @@ export class Posts {
   constructor(
     public _id: ObjectId,
     public title: string,
-    shortDescription: string,
+    public shortDescription: string,
     public content: string,
     public blogId: string,
     public blogName: string,
