@@ -1,5 +1,5 @@
 import { BlogsModel } from './../db/db';
-import { BlogsType } from './../UI/types/blogsType';
+import { Blogs } from './../UI/types/blogsType';
 import { PaginationType } from './../UI/types/types';
 import { Filter } from "mongodb";
 
@@ -10,11 +10,11 @@ export const blogsRepositories = {
     pageSize: string,
     sortBy: string,
     sortDirection: string
-  ): Promise<PaginationType<BlogsType>> {
+  ): Promise<PaginationType<Blogs>> {
     const filtered = searchNameTerm
       ? { name: { $regex: searchNameTerm ?? '', $options: 'i' } }
       : {}; // todo finished filter
-    const blogs: BlogsType[] = await BlogsModel
+    const blogs: Blogs[] = await BlogsModel
       .find(filtered, { projection: { _id: 0 } })
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
       .skip((+pageNumber - 1) * +pageSize) //todo find how we can skip
@@ -24,7 +24,7 @@ export const blogsRepositories = {
     const totalCount: number = await BlogsModel.countDocuments(filtered);
     const pagesCount: number = Math.ceil(totalCount / +pageSize);
 	
-	const result: PaginationType<BlogsType> = {
+	const result: PaginationType<Blogs> = {
 		pagesCount: pagesCount,
 		page: +pageNumber,
 		pageSize: +pageSize,
@@ -33,14 +33,14 @@ export const blogsRepositories = {
 	}
     return result
   },
-  async findBlogById(blogId: string): Promise<BlogsType | null> {
+  async findBlogById(blogId: string): Promise<Blogs | null> {
     return await BlogsModel.findOne({ id: blogId }, { projection: { _id: 0 } });
   },
-  async findBlogs(): Promise<BlogsType[]> {
+  async findBlogs(): Promise<Blogs[]> {
     const filtered: any = {};
     return await BlogsModel.find(filtered, { projection: { _id: 0 } }).lean();
   },
-  async createNewBlogs(newBlog: BlogsType): Promise<BlogsType> {
+  async createNewBlogs(newBlog: Blogs): Promise<Blogs> {
     const result = await BlogsModel.insertMany([newBlog]);
     return newBlog;
   },
