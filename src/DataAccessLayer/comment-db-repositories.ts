@@ -3,14 +3,6 @@ import { PaginationType } from './../UI/types/types';
 import { CommentsModel } from './../db/db';
 import { ObjectId } from "mongodb";
 
-const commentDBToView = (item: Comments): CommentView => {
-	return {
-	  _id: new ObjectId(),
-	  content: item.content,
-	  commentatorInfo: item.commentatorInfo,
-	  createdAt: item.createdAt,
-	};
-  };
 
 class CommentRepositories {
 	async updateComment(commentId: string, content: string) {
@@ -77,6 +69,13 @@ class CommentRepositories {
 	  }
 }
 
+const commentDBToView = (item: Comments): CommentView => {
+	return {
+	  _id: new ObjectId(),
+	  content: item.content,
+	  commentatorInfo: item.commentatorInfo,
+	  createdAt: item.createdAt,
+	};
+  };
 
-
-export const commentRepositories = new CommentRepositories()
+  export const commentRepositories = new CommentRepositories()
