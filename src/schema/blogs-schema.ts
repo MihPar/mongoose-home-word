@@ -1,8 +1,8 @@
-import { BlogsType } from './../UI/types/blogsType';
+import { Blogs } from './../UI/types/blogsType';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 
-export const BlogsSchema = new mongoose.Schema<WithId<BlogsType>>({
+export const BlogsSchema = new mongoose.Schema<WithId<Blogs>>({
 	name: {type: String, require: true},
 	description: {type: String, require: true},
 	websiteUrl: {type: String, require: true},

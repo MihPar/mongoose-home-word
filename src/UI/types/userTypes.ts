@@ -32,7 +32,6 @@ export class User extends DbId{
 		public emailConfirmation: EmailConfirmationType) {
 		super()
 	}
-
 	getViewUser(): UserViewType{
 		return {
 			id: this._id.toString(),
@@ -40,8 +39,18 @@ export class User extends DbId{
  			email: this.accountData.email,
  			createdAt: this.accountData.createdAt}
 	}
-
 }
+
+export class UserClass {
+	login: string
+	email: string
+	createdAt: string
+	constructor(login: string, email: string, createdAt: string) {
+		this.login = login
+		this.email = email
+		this.createdAt = createdAt
+	}
+  }
 
 
 // export type DBUserType = {
@@ -70,5 +79,3 @@ export class User extends DbId{
 // 		public createdAt: string
 // 		){}
 // }
-  
-  ;

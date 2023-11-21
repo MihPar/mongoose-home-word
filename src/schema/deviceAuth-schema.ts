@@ -1,6 +1,6 @@
-import { CollectionIP, DeviceModel, DeviceViewModel } from './../UI/types/deviceAuthSession';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
+import { CollectionIP, Device, DeviceView } from '../UI/types/deviceAuthSession'
 
 export const CollectioinIPSchema = new mongoose.Schema<WithId<CollectionIP>>({
 	IP: {type: String, require: true},
@@ -8,7 +8,7 @@ export const CollectioinIPSchema = new mongoose.Schema<WithId<CollectionIP>>({
 	date: {type: Date, require: true}
 })
 
-export const DeviceSchema = new mongoose.Schema<WithId<DeviceModel>>({
+export const DeviceSchema = new mongoose.Schema<WithId<Device>>({
 	ip: {type: String, require: true},
     title: {type: String, require: true},
     deviceId: {type: String, require: true},
@@ -16,7 +16,7 @@ export const DeviceSchema = new mongoose.Schema<WithId<DeviceModel>>({
 	lastActiveDate: {type: String, require: true}
 })
 
-export const DeviceViewSchema = new mongoose.Schema<WithId<DeviceViewModel>>({
+export const DeviceViewSchema = new mongoose.Schema<WithId<DeviceView>>({
 	ip: {type: String, require: true},
     title: {type: String, require: true},
     deviceId: {type: String, require: true},

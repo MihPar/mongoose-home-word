@@ -1,8 +1,8 @@
-import { UserType, DBUserType } from './../UI/types/userTypes';
+import { User, UserClass } from './../UI/types/userTypes';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 
-export const DBUserSchema = new mongoose.Schema<WithId<DBUserType>>({
+export const DBUserSchema = new mongoose.Schema<WithId<User>>({
 	accountData: {
 		userName: {type: String, require: true},
 		email: {type: String, require: true},
@@ -16,7 +16,7 @@ export const DBUserSchema = new mongoose.Schema<WithId<DBUserType>>({
 	},
 })
 
-export const UsersType = new mongoose.Schema<WithId<UserType>>({
+export const UsersType = new mongoose.Schema<WithId<UserClass>>({
 	login: {type: String, require: true},
 	email: {type: String, require: true},
 	createdAt: {type: String, require: true}

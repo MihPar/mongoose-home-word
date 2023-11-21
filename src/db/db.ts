@@ -3,13 +3,13 @@ import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
 import { PostSchema } from './../schema/posts-schema';
 import { BlogsSchema } from './../schema/blogs-schema';
-import { DeviceModel, CollectionIP, Device } from './../UI/types/deviceAuthSession';
 import { Blogs} from './../UI/types/blogsType';
-import { Post } from './../UI/types/postsTypes';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv'
 import mongoose, { Collection } from 'mongoose';
 import { User } from '../UI/types/userTypes';
+import { Posts } from '../UI/types/postsTypes';
+import { Device } from '../UI/types/deviceAuthSession';
 dotenv.config()
 	 
 
@@ -35,7 +35,7 @@ export const stopDb = async () => {
 }
 
 export const BlogsModel = mongoose.model<Blogs>('blogs', BlogsSchema)
-export const PostsModel = mongoose.model<Post>('posts', PostSchema)
+export const PostsModel = mongoose.model<Posts>('posts', PostSchema)
 export const UsersModel = mongoose.model<User>('user', DBUserSchema)
 export const CommentsModel = mongoose.model<Comment>('comment', CommentSchema)
 export const DevicesModel = mongoose.model<Device>('device', DeviceSchema)

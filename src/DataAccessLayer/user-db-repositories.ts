@@ -1,8 +1,7 @@
-import { userService } from './../Bisnes-logic-layer/userService';
 import { PaginationType } from './../UI/types/types';
 import { UsersModel } from './../db/db';
 import { User, UserViewType } from './../UI/types/userTypes';
-import { Filter, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import {WithId} from 'mongodb'
 import add from "date-fns/add";
 

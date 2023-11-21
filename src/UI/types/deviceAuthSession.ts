@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb"
 
-export class Collection {
+export class CollectionIP {
   constructor(
     public id: ObjectId,
     public URL: string,
