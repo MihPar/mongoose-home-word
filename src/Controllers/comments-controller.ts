@@ -14,23 +14,23 @@ import { CommentView } from "../types/commentType";
 
 export const commentsRouter = Router({});
 
-class CommentController {
-	commentRepositories: CommentRepositories
-	commentService: CommentService
-	constructor() {
-		this.commentRepositories = new CommentRepositories()
-		this.commentService = new CommentService()
-	}
+export class CommentController {
+  constructor(
+    protected commentRepositories: CommentRepositories,
+    protected commentService: CommentService
+  ) {}
   async updateByCommentIdLikeStatus(
     req: RequestWithParamsAndBody<paramsCommentIdMode, likeStatusModel>,
     res: Response
   ) {
     const { commentId } = req.params;
     const { likeStatus } = req.body;
-	const findCommentById = await this.commentRepositories.findCommentById(commentId)
-	if(!findCommentById) {
-		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
-	}
+    const findCommentById = await this.commentRepositories.findCommentById(
+      commentId
+    );
+    if (!findCommentById) {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    }
   }
   async updateByCommentId(
     req: RequestWithParamsAndBody<paramsCommentIdMode, bodyCommentIdMode>,
@@ -38,7 +38,9 @@ class CommentController {
   ) {
     const { commentId } = req.params;
     const { content } = req.body;
-    const isExistComment = await this.commentRepositories.findCommentById(commentId);
+    const isExistComment = await this.commentRepositories.findCommentById(
+      commentId
+    );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
@@ -58,16 +60,17 @@ class CommentController {
     res: Response<boolean>
   ): Promise<Response<boolean>> {
     const { commentId } = req.params;
-    const isExistComment = await this.commentRepositories.findCommentById(commentId);
+    const isExistComment = await this.commentRepositories.findCommentById(
+      commentId
+    );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
     if (req.user._id.toString() !== isExistComment.commentatorInfo.userId) {
       return res.sendStatus(HTTP_STATUS.FORBIDEN_403);
     }
-    const deleteCommentById: boolean = await this.commentRepositories.deleteComment(
-      req.params.commentId
-    );
+    const deleteCommentById: boolean =
+      await this.commentRepositories.deleteComment(req.params.commentId);
     if (!deleteCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     } else {
@@ -88,20 +91,5 @@ class CommentController {
   }
 }
 
-export const commentController = new CommentController();
+// export const commentController = new CommentController();
 
-commentsRouter.put(
-  "/:commentId",
-  commentAuthorization,
-  inputCommentValidator,
-  ValueMiddleware,
-  commentController.updateByCommentId.bind(commentController.updateByCommentId)
-);
-
-commentsRouter.delete(
-  "/:commentId",
-  commentAuthorization,
-  commentController.deleteByCommentId.bind(commentController.deleteByCommentId)
-);
-
-commentsRouter.get("/:id", commentController.getCommentById);

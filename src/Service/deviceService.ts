@@ -1,15 +1,13 @@
 import { ObjectId } from "mongodb";
-import { Devices } from "../types/deviceAuthSession";
+import { Devices } from "../types/deviceAuthSessionTypes";
 import { SecurityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
 import { JWTService } from "./jwtService";
 
 export class DeviceService {
-  securityDeviceRepositories: SecurityDeviceRepositories;
-  jwtService: JWTService;
-  constructor() {
-    this.securityDeviceRepositories = new SecurityDeviceRepositories();
-    this.jwtService = new JWTService();
-  }
+  constructor(
+    protected securityDeviceRepositories: SecurityDeviceRepositories,
+    protected jwtService: JWTService
+  ) {}
   async terminateAllCurrentSessions(userId: string, deviceId: string) {
     const findSession =
       await this.securityDeviceRepositories.getDevicesAllUsers(userId);
@@ -76,5 +74,3 @@ export class DeviceService {
     return true;
   }
 }
-
-// export const deviceService = new DeviceService()

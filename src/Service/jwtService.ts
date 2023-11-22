@@ -43,5 +43,3 @@ export class JWTService {
 		return new Date(result.iat * 1000).toISOString()
 	}
 }
-
-// export const jwtService = new JWTService()

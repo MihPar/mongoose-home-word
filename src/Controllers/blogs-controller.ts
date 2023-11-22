@@ -34,17 +34,14 @@ import { PostsRepositories } from "../Repositories/posts-db-repositories";
 
 export const blogsRouter = Router({});
 
-class BlogsComtroller {
-	blogsService: BlogsService
-	blogsRepositories: BlogsRepositories
-	postsService: PostsService
-	postsRepositories: PostsRepositories
-	constructor() {
-		this.blogsService = new BlogsService()
-		this.blogsRepositories = new BlogsRepositories()
-		this.postsService = new PostsService()
-		this.postsRepositories = new PostsRepositories()
-	}
+export class BlogsComtroller {
+  constructor(
+    protected blogsService: BlogsService,
+    protected blogsRepositories: BlogsRepositories,
+    protected postsService: PostsService,
+    protected postsRepositories: PostsRepositories
+  ) {
+  }
   async getBlogs(
     req: RequestWithQuery<QueryBlogsModel>,
     res: Response<PaginationType<Blogs>>
@@ -167,37 +164,3 @@ class BlogsComtroller {
     }
   }
 }
-
-export const blogsComtroller = new BlogsComtroller();
-
-blogsRouter.get("/", blogsComtroller.getBlogs.bind(blogsComtroller.getBlogs));
-blogsRouter.post(
-  "/",
-  authorization,
-  inputBlogNameValidator,
-  inputBlogDescription,
-  inputBlogWebsiteUrl,
-  ValueMiddleware,
-  blogsComtroller.createBlog.bind(blogsComtroller.createBlog)
-);
-blogsRouter.get("/:blogId/posts", blogsComtroller.getBlogsByPostIdPost.bind(blogsComtroller.getBlogsByPostIdPost));
-blogsRouter.post(
-  "/:blogId/posts",
-  authorization,
-  inputPostContentValidator,
-  inputPostTitleValidator,
-  inputPostShortDescriptionValidator,
-  ValueMiddleware,
-  blogsComtroller.createBlogsByBlogsIdPost.bind(blogsComtroller.createBlogsByBlogsIdPost)
-);
-blogsRouter.get("/:id", blogsComtroller.getPostById.bind(blogsComtroller.getPostById));
-blogsRouter.put(
-  "/:id",
-  authorization,
-  inputBlogNameValidator,
-  inputBlogDescription,
-  inputBlogWebsiteUrl,
-  ValueMiddleware,
-  blogsComtroller.updateBlogsById.bind(blogsComtroller.updateBlogsById)
-);
-blogsRouter.delete("/:id", authorization, blogsComtroller.deleteBlogsById.bind(blogsComtroller.deleteBlogsById));

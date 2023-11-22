@@ -5,9 +5,7 @@ import { Posts } from '../types/postsTypes';
 import { PostsRepositories } from '../Repositories/posts-db-repositories';
 
 export class PostsService {
-	postsRepositories: PostsRepositories
-	constructor() {
-		this.postsRepositories = new PostsRepositories()
+	constructor(protected postsRepositories: PostsRepositories) {
 	}
 	async createPost(
 		blogId: string,
@@ -54,5 +52,3 @@ export class PostsService {
 		return await this.postsRepositories.deleteRepoPosts();
 	  }
 }
-
-// export const postsService = new PostsService()

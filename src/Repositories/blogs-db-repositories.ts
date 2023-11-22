@@ -65,4 +65,3 @@ export class BlogsRepositories {
 	  }
 }
 
-// export const blogsRepositories = new BlogsRepositories()

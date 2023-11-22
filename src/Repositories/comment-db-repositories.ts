@@ -103,4 +103,3 @@ const commentDBToView = (item: Comments, likesInfo: LikesInfoClass): CommentView
 	};
   };
 
-//   export const commentRepositories = new CommentRepositories()

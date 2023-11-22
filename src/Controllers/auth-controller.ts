@@ -2,33 +2,13 @@ import { DeviceService } from '../Service/deviceService';
 import { JWTService } from '../Service/jwtService';
 import { UserService } from '../Service/userService';
 import {
-  inputValueEmailAuthPasswordRecovery,
-  inputValueNewPasswordAuth,
-  inputValueRecoveryCodeAuth,
-} from "../middleware/input-value-auth-middleware";
-import {
   BodyPasswordRecoveryCode,
   EmailResending,
 } from "../model/modelUser/bodyPasswordRecovery";
-import { checkRefreshTokenSecurityDeviceMiddleware } from "../middleware/checkRefreshTokenSevurityDevice-middleware";
-import {
-  limitRequestMiddleware,
-  limitRequestMiddlewarePassword,
-} from "../middleware/limitRequest";
-import { authValidationInfoMiddleware } from "../middleware/authValidationInfoMiddleware";
-import {
-  inputValueEmailAuth,
-  inputValueCodeAuth,
-  inputValueEmailRegistrationAuth,
-  inputValuePasswordAuth,
-  inputValueLoginAuth,
-  inputValueLoginOrEamilAuth,
-} from "../middleware/input-value-auth-middleware";
 import { BodyRegistrationEmailResendigModel } from "../model/modelAuth/bodyRegistrationEamilResendingMidel";
 import { BodyRegistrationConfirmationModel } from "../model/modelAuth/bodyRegistrationConfirmationModel";
 import { BodyRegistrationModel } from "../model/modelAuth/bodyRegistrationMode";
 import { ResAuthModel } from "../model/modelAuth/resAuthMode";
-import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { bodyAuthModel } from "../model/modelAuth/bodyAuthModel";
 import { RequestWithBody } from "../types/types";
 import { Router, Response, Request } from "express";
@@ -38,15 +18,12 @@ import { Users } from "../types/userTypes";
 
 export const authRouter = Router({});
 
-class AuthContorller {
-	userService: UserService
-	jwtService: JWTService
-	deviceService: DeviceService
-	constructor() {
-		this.userService = new UserService()
-		this.jwtService = new JWTService()
-		this.deviceService = new DeviceService()
-	}
+export class AuthContorller {
+  constructor(
+    protected userService: UserService,
+    protected jwtService: JWTService,
+    protected deviceService: DeviceService
+  ) {}
   async createNewPassword(
     req: RequestWithBody<BodyPasswordRecoveryCode>,
     res: Response
@@ -150,9 +127,13 @@ class AuthContorller {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     }
     const token: string = req.headers.authorization!.split(" ")[1];
-    const userId: ObjectId | null = await this.jwtService.getUserIdByToken(token);
+    const userId: ObjectId | null = await this.jwtService.getUserIdByToken(
+      token
+    );
     if (!userId) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
-    const currentUser: Users | null = await this.userService.findUserById(userId);
+    const currentUser: Users | null = await this.userService.findUserById(
+      userId
+    );
     if (!currentUser) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     return res.status(HTTP_STATUS.OK_200).send({
       userId: currentUser._id.toString(),
@@ -196,71 +177,3 @@ class AuthContorller {
     }
   }
 }
-
-export const authContorller = new AuthContorller();
-
-authRouter.post(
-  "/new-password",
-  limitRequestMiddlewarePassword,
-  inputValueNewPasswordAuth,
-  inputValueRecoveryCodeAuth,
-  ValueMiddleware,
-  authContorller.createNewPassword.bind(authContorller.createNewPassword)
-);
-
-authRouter.post(
-  "/password-recovery",
-  limitRequestMiddlewarePassword,
-  inputValueEmailAuthPasswordRecovery,
-  ValueMiddleware,
-  authContorller.createPasswordRecovery.bind(authContorller.createPasswordRecovery)
-);
-
-authRouter.post(
-  "/login",
-  limitRequestMiddleware,
-  inputValueLoginOrEamilAuth,
-  inputValuePasswordAuth,
-  ValueMiddleware,
-  authContorller.createLogin.bind(authContorller.createLogin)
-);
-
-authRouter.post(
-  "/refresh-token",
-  checkRefreshTokenSecurityDeviceMiddleware,
-  authContorller.cretaeRefreshToken.bind(authContorller.cretaeRefreshToken)
-);
-
-authRouter.post(
-  "/logout",
-  checkRefreshTokenSecurityDeviceMiddleware,
-  authContorller.cretaeRefreshToken.bind(authContorller.cretaeRefreshToken)
-);
-
-authRouter.get("/me", authValidationInfoMiddleware, authContorller.findMe.bind(authContorller.findMe));
-
-authRouter.post(
-  "/registration",
-  limitRequestMiddleware,
-  inputValueLoginAuth,
-  inputValuePasswordAuth,
-  inputValueEmailRegistrationAuth,
-  ValueMiddleware,
-  authContorller.creteRegistration.bind(authContorller.creteRegistration)
-);
-
-authRouter.post(
-  "/registration-confirmation",
-  limitRequestMiddleware,
-  inputValueCodeAuth,
-  ValueMiddleware,
-  authContorller.createRegistrationConfirmation.bind(authContorller.createRegistrationConfirmation)
-);
-
-authRouter.post(
-  "/registration-email-resending",
-  limitRequestMiddleware,
-  inputValueEmailAuth,
-  ValueMiddleware,
-  authContorller.createRegistrationEmailResending.bind(authContorller.createRegistrationEmailResending)
-);

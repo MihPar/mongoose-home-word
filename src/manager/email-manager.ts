@@ -14,5 +14,3 @@ export class EmailManager {
 		return result
 	}
 }
-
-// export const emailManager = new EmailManager()

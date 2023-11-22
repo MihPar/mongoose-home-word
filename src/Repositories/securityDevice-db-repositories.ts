@@ -1,4 +1,4 @@
-import { DeviceView, Devices } from '../types/deviceAuthSession';
+import { DeviceView, Devices } from '../types/deviceAuthSessionTypes';
 import { DevicesModel } from '../db/db';
 
 export class SecurityDeviceRepositories {
@@ -46,4 +46,3 @@ export class SecurityDeviceRepositories {
 	  }
 }
 
-// export const securityDeviceRepositories = new SecurityDeviceRepositories()

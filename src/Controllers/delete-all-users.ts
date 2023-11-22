@@ -1,5 +1,3 @@
-import { userService } from './../Bisnes-logic-layer/userService';
-import { blogsService } from './../Service/blogsService';
 import { postsService } from './../Bisnes-logic-layer/postsService';
 import { CommentsModel, DevicesModel, IPCollectionModel } from '../db/db';
 import { Router, Request, Response } from "express";

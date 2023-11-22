@@ -97,4 +97,3 @@ export class PostsRepositories {
   }
 }
 
-// export const postsRepositories = new PostsRepositories()

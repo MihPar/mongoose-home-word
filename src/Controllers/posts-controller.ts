@@ -31,173 +31,145 @@ import { PostsService } from '../Service/postsService';
 
 export const postsRouter = Router({});
 
-class RouterController {
-	postsRepositories: PostsRepositories
-	commentRepositories: CommentRepositories
-	commentService: CommentService
-	postsService: PostsService
-	constructor() {
-		this.postsRepositories = new PostsRepositories()
-		this.commentRepositories = new CommentRepositories()
-		this.commentService = new CommentService()
-		this.postsService = new PostsService()
-	}
-	async getPostByPostId (
-		req: RequestWithParamsAndQuery<paramsPostIdMode, queryPostsModel>,
-		res: Response<PaginationType<CommentView>>
-	  ) {
-		const { postId } = req.params;
-		const {
-		  pageNumber = "1",
-		  pageSize = "10",
-		  sortBy = "createdAt",
-		  sortDirection = "desc",
-		} = req.query;
-		const isExistPots = await this.postsRepositories.findPostById(postId)
-		if(!isExistPots) {
-			return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
-		}
-		const commentByPostsId: PaginationType<CommentView> | null = await this.commentRepositories.findCommentByPostId(
-		  postId,
-		  pageNumber,
-		  pageSize,
-		  sortBy,
-		  sortDirection
-		);
-		if (!commentByPostsId) {
-			return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-		} else {
-			   return res.status(HTTP_STATUS.OK_200).send(commentByPostsId);
-		}
-	  }
-	  async createPostByPostId (
-		req: RequestWithParamsAndBody<paramsPostIdMode, bodyPostModelContent>,
-		res: Response<CommentView>
-	  ) {
-		const { postId } = req.params;
-		const { content } = req.body;
-		const user = req.user;
-		const post: Posts | null =
-		  await this.postsRepositories.findPostById(postId);
-	
-		if (!post) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-		console.log(user)
-		const createNewCommentByPostId: CommentView| null =
-		  await this.commentService.createNewCommentByPostId(postId, content, user._id.toString(), user.accountData.userName);
-		if (!createNewCommentByPostId) {
-			return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-		} else {
-			return res.status(HTTP_STATUS.CREATED_201).send(createNewCommentByPostId);
-		}
-	  }
-	  async getPosts (
-		req: RequestWithParams<queryPostsModel>,
-		res: Response<PaginationType<Posts>>
-	  ): Promise<Response<PaginationType<Posts>>> {
-		const {
-		  pageNumber = "1",
-		  pageSize = "10",
-		  sortBy = "createdAt",
-		  sortDirection = "desc",
-		} = req.query;
-		const getAllPosts: PaginationType<Posts> =
-		  await this.postsRepositories.findAllPosts(
-			pageNumber as string,
-			pageSize as string,
-			sortBy as string,
-			sortDirection as string
-		  );
-		return res.status(HTTP_STATUS.OK_200).send(getAllPosts);
-	  }
-	  async createPost (
-		req: RequestWithBody<bodyPostsModel>,
-		res: Response<Posts>
-	  ) {
-		const { title, shortDescription, content, blogId } = req.body;
-		const createNewPost: Posts | null = await this.postsService.createPost(
-		  blogId,
-		  title,
-		  shortDescription,
-		  content
-		);
-		if (!createNewPost) {
-		  return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
-		} else {
-		  return res.status(HTTP_STATUS.CREATED_201).send(createNewPost);
-		}
-	  }
-	  async getPostById (
-		req: RequestWithParams<paramsIdModel>,
-		res: Response<Posts | null>
-	  ) {
-		const getPostById: Posts | null = await this.postsRepositories.findPostById(
-		  req.params.id
-		);
-		if (!getPostById) {
-		  return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-		} else {
-		  return res.status(HTTP_STATUS.OK_200).send(getPostById);
-		}
-	  }
-	  async updatePostById (
-		req: RequestWithParamsAndBody<paramsIdModel, bodyPostsModel>,
-		res: Response<boolean>
-	  ) {
-		const { id } = req.params;
-		const { title, shortDescription, content, blogId } = req.body;
-		const updatePost: boolean = await this.postsService.updateOldPost(
-		  id,
-		  title,
-		  shortDescription,
-		  content,
-		  blogId
-		);
-		if (!updatePost) {
-		  return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-		} else {
-		  return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
-		}
-	  }
-	  async deletePostById (req: RequestWithParams<paramsIdModel>, res: Response<void>) {
-		const deletPost: boolean = await this.postsService.deletePostId(req.params.id);
-		if (!deletPost) {
-		  return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-		} else {
-		  return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
-		}
-	  }
+export class PostsController {
+  constructor(
+    protected postsRepositories: PostsRepositories,
+    protected commentRepositories: CommentRepositories,
+    protected commentService: CommentService,
+    protected postsService: PostsService
+  ) {
+  }
+  async getPostByPostId(
+    req: RequestWithParamsAndQuery<paramsPostIdMode, queryPostsModel>,
+    res: Response<PaginationType<CommentView>>
+  ) {
+    const { postId } = req.params;
+    const {
+      pageNumber = "1",
+      pageSize = "10",
+      sortBy = "createdAt",
+      sortDirection = "desc",
+    } = req.query;
+    const isExistPots = await this.postsRepositories.findPostById(postId);
+    if (!isExistPots) {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    }
+    const commentByPostsId: PaginationType<CommentView> | null =
+      await this.commentRepositories.findCommentByPostId(
+        postId,
+        pageNumber,
+        pageSize,
+        sortBy,
+        sortDirection
+      );
+    if (!commentByPostsId) {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    } else {
+      return res.status(HTTP_STATUS.OK_200).send(commentByPostsId);
+    }
+  }
+  async createPostByPostId(
+    req: RequestWithParamsAndBody<paramsPostIdMode, bodyPostModelContent>,
+    res: Response<CommentView>
+  ) {
+    const { postId } = req.params;
+    const { content } = req.body;
+    const user = req.user;
+    const post: Posts | null = await this.postsRepositories.findPostById(
+      postId
+    );
+
+    if (!post) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    console.log(user);
+    const createNewCommentByPostId: CommentView | null =
+      await this.commentService.createNewCommentByPostId(
+        postId,
+        content,
+        user._id.toString(),
+        user.accountData.userName
+      );
+    if (!createNewCommentByPostId) {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    } else {
+      return res.status(HTTP_STATUS.CREATED_201).send(createNewCommentByPostId);
+    }
+  }
+  async getPosts(
+    req: RequestWithParams<queryPostsModel>,
+    res: Response<PaginationType<Posts>>
+  ): Promise<Response<PaginationType<Posts>>> {
+    const {
+      pageNumber = "1",
+      pageSize = "10",
+      sortBy = "createdAt",
+      sortDirection = "desc",
+    } = req.query;
+    const getAllPosts: PaginationType<Posts> =
+      await this.postsRepositories.findAllPosts(
+        pageNumber as string,
+        pageSize as string,
+        sortBy as string,
+        sortDirection as string
+      );
+    return res.status(HTTP_STATUS.OK_200).send(getAllPosts);
+  }
+  async createPost(req: RequestWithBody<bodyPostsModel>, res: Response<Posts>) {
+    const { title, shortDescription, content, blogId } = req.body;
+    const createNewPost: Posts | null = await this.postsService.createPost(
+      blogId,
+      title,
+      shortDescription,
+      content
+    );
+    if (!createNewPost) {
+      return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+    } else {
+      return res.status(HTTP_STATUS.CREATED_201).send(createNewPost);
+    }
+  }
+  async getPostById(
+    req: RequestWithParams<paramsIdModel>,
+    res: Response<Posts | null>
+  ) {
+    const getPostById: Posts | null = await this.postsRepositories.findPostById(
+      req.params.id
+    );
+    if (!getPostById) {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    } else {
+      return res.status(HTTP_STATUS.OK_200).send(getPostById);
+    }
+  }
+  async updatePostById(
+    req: RequestWithParamsAndBody<paramsIdModel, bodyPostsModel>,
+    res: Response<boolean>
+  ) {
+    const { id } = req.params;
+    const { title, shortDescription, content, blogId } = req.body;
+    const updatePost: boolean = await this.postsService.updateOldPost(
+      id,
+      title,
+      shortDescription,
+      content,
+      blogId
+    );
+    if (!updatePost) {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    } else {
+      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+    }
+  }
+  async deletePostById(
+    req: RequestWithParams<paramsIdModel>,
+    res: Response<void>
+  ) {
+    const deletPost: boolean = await this.postsService.deletePostId(
+      req.params.id
+    );
+    if (!deletPost) {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    } else {
+      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+    }
+  }
 }
-
-export const routerController = new RouterController()
-
-postsRouter.get("/:postId/comments", routerController.getPostByPostId.bind(routerController.getPostByPostId));
-postsRouter.post(
-  "/:postId/comments",
-  commentAuthorization,
-  inputCommentValidator,
-  ValueMiddleware,
-  routerController.createPostByPostId.bind(routerController.createPostByPostId)
-);
-postsRouter.get("/", routerController.getPosts.bind(routerController.getPosts));
-postsRouter.post(
-  "/",
-  authorization,
-  inputPostTitleValidator,
-  inputPostShortDescriptionValidator,
-  inputPostContentValidator,
-  inputPostBlogValidator,
-  ValueMiddleware,
-  routerController.createPost.bind(routerController.createPost)
-);
-postsRouter.get("/:id", routerController.getPostById.bind(routerController.getPostById));
-postsRouter.put(
-  "/:id",
-  authorization,
-  inputPostTitleValidator,
-  inputPostShortDescriptionValidator,
-  inputPostContentValidator,
-  inputPostBlogValidator,
-  ValueMiddleware,
-  routerController.updatePostById.bind(routerController.updatePostById)
-);
-postsRouter.delete("/:id", authorization, routerController.deletePostById.bind(routerController.deletePostById));

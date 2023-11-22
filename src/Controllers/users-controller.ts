@@ -15,13 +15,11 @@ import { UserViewType } from "../types/userTypes";
 
 export const usersRouter = Router({});
 
-class UserController {
-	userRepositories: UserRepositories
-	userService: UserService
-	constructor()  {
-		this.userRepositories = new UserRepositories()
-		this.userService = new UserService()
-	}
+export class UserController {
+  constructor(
+    protected userRepositories: UserRepositories,
+    protected userService: UserService
+  ) {}
   async getAllUsers(
     req: RequestWithQuery<QueryUserModel>,
     res: Response<PaginationType<UserViewType>>
@@ -74,6 +72,3 @@ class UserController {
     }
   }
 }
-
-export const userController = new UserController();
-

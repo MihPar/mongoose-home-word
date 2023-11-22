@@ -3,7 +3,7 @@ import { securityDeviceRepositories } from '../Repositories/securityDevice-db-re
 import { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUS } from '../utils';
 import {config} from'dotenv'
-import { CollectionIP } from '../types/deviceAuthSession';
+import { CollectionIP } from '../types/deviceAuthSessionTypes';
 import { IPCollectionModel } from '../db/db';
 config()
 

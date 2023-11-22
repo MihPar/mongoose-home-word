@@ -1,23 +1,18 @@
 import { DeviceService } from '../Service/deviceService';
-import { checkForbiddenSecurityDevice } from "../middleware/checkForbiddenSecurityDevice";
 import { JWTService } from "../Service/jwtService";
-import { checkRefreshTokenSecurityDeviceMiddleware } from "../middleware/checkRefreshTokenSevurityDevice-middleware";
 import { Router, Request, Response } from "express";
 import { SecurityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
 import { HTTP_STATUS } from "../utils";
-import { DeviceView } from "../types/deviceAuthSession";
+import { DeviceView } from "../types/deviceAuthSessionTypes";
 
 export const securityDeviceRouter = Router({});
 
-class SecurityDeviceController {
-	securityDeviceRepositories: SecurityDeviceRepositories
-	jwtService: JWTService
-	deviceService: DeviceService
-	constructor() {
-		this.securityDeviceRepositories = new SecurityDeviceRepositories()
-		this.jwtService = new JWTService()
-		this.deviceService = new DeviceService()
-	}
+export class SecurityDeviceController {
+  constructor(
+    protected securityDeviceRepositories: SecurityDeviceRepositories,
+    protected jwtService: JWTService,
+    protected deviceService: DeviceService
+  ) {}
   async getDeviceUsers(
     req: Request,
     res: Response<DeviceView[]>
@@ -45,7 +40,10 @@ class SecurityDeviceController {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
     const findAllCurrentDevices =
-      await this.deviceService.terminateAllCurrentSessions(userId, payload.deviceId);
+      await this.deviceService.terminateAllCurrentSessions(
+        userId,
+        payload.deviceId
+      );
     if (!findAllCurrentDevices) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     }
@@ -56,31 +54,11 @@ class SecurityDeviceController {
     res: Response<boolean>
   ): Promise<Response<boolean>> {
     const deviceId = req.params.deviceId;
-    const deleteDeviceById = await this.securityDeviceRepositories.terminateSession(
-      deviceId
-    );
+    const deleteDeviceById =
+      await this.securityDeviceRepositories.terminateSession(deviceId);
     if (!deleteDeviceById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
 }
-
-export const securityDeviceController = new SecurityDeviceController();
-
-securityDeviceRouter.get(
-  "/",
-  checkRefreshTokenSecurityDeviceMiddleware,
-  securityDeviceController.getDeviceUsers.bind(securityDeviceController.getDeviceUsers)
-);
-securityDeviceRouter.delete(
-  "/",
-  checkRefreshTokenSecurityDeviceMiddleware,
-  securityDeviceController.terminateCurrentSessions.bind(securityDeviceController.terminateCurrentSessions)
-);
-securityDeviceRouter.delete(
-  "/:deviceId",
-  checkRefreshTokenSecurityDeviceMiddleware,
-  checkForbiddenSecurityDevice,
-  securityDeviceController.terminateSessionById.bind(securityDeviceController.terminateSessionById)
-);

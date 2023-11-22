@@ -9,7 +9,7 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose';
 import { Users } from '../types/userTypes';
 import { Posts } from '../types/postsTypes';
-import { CollectionIP, Devices } from '../types/deviceAuthSession';
+import { CollectionIP, Devices } from '../types/deviceAuthSessionTypes';
 import { Comments } from '../types/commentType';
 dotenv.config()
 	 

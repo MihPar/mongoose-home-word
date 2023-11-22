@@ -2,7 +2,8 @@ import { authorization } from "../middleware/authorizatin";
 import { checkId } from "../middleware/input-value-delete-middleware";
 import { inputValueLoginValidation, inputValuePasswordValidation, inputValueUserEmailValidatioin } from "../middleware/input-value-user-middleware";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
-import { userController, usersRouter } from "../Controllers/users-controller";
+import { usersRouter } from "../Controllers/users-controller";
+import { userController } from "../Compositions-root/user-composition-root";
 
 usersRouter.get("/", authorization, userController.getAllUsers.bind(userController.getAllUsers));
 usersRouter.post(
