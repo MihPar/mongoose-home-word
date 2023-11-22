@@ -1,5 +1,5 @@
 import { ParamsSecurityDeviceModel } from './../model/modelSecurityDevice/modelSecurityDevice';
-import { RequestWithParams } from './../UI/types/types';
+import { RequestWithParams } from '../types/types';
 import { NextFunction, Response } from "express";
 import { HTTP_STATUS } from "../utils";
 

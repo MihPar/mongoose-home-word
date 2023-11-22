@@ -1,29 +1,27 @@
 import { bodyUserModel } from "../model/modelUser/bodyUserMode";
 import { ParamsUserMode } from "../model/modelUser/paramsUserModel";
-import { ValueMiddleware } from "../middleware/validatorMiddleware";
-import {
-  inputValueLoginValidation,
-  inputValuePasswordValidation,
-  inputValueUserEmailValidatioin,
-} from "../middleware/input-value-user-middleware";
-import { userService } from "../Bisnes-logic-layer/userService";
-import { authorization } from "../middleware/authorizatin";
+import { UserService } from "../Service/userService";
 import { QueryUserModel } from "../model/modelUser/queryUserModel";
 import {
   PaginationType,
   RequestWithQuery,
   RequestWithBody,
   RequestWithParams,
-} from "./types/types";
+} from "../types/types";
 import { HTTP_STATUS } from "../utils";
-import { userRepositories } from "../DataAccessLayer/user-db-repositories";
+import { UserRepositories } from "../Repositories/user-db-repositories";
 import { Router, Response } from "express";
-import { checkId } from "../middleware/input-value-delete-middleware";
-import { UserViewType } from "./types/userTypes";
+import { UserViewType } from "../types/userTypes";
 
 export const usersRouter = Router({});
 
 class UserController {
+	userRepositories: UserRepositories
+	userService: UserService
+	constructor()  {
+		this.userRepositories = new UserRepositories()
+		this.userService = new UserService()
+	}
   async getAllUsers(
     req: RequestWithQuery<QueryUserModel>,
     res: Response<PaginationType<UserViewType>>
@@ -37,7 +35,7 @@ class UserController {
       searchEmailTerm = "",
     } = req.query;
     const users: PaginationType<UserViewType> =
-      await userRepositories.getAllUsers(
+      await this.userRepositories.getAllUsers(
         sortBy,
         sortDirection,
         pageNumber,
@@ -56,7 +54,7 @@ class UserController {
     res: Response<UserViewType | null>
   ): Promise<Response<UserViewType> | null> {
     const { login, password, email } = req.body;
-    const newUser: UserViewType | null = await userService.createNewUser(
+    const newUser: UserViewType | null = await this.userService.createNewUser(
       login,
       password,
       email
@@ -68,7 +66,7 @@ class UserController {
     res: Response<void>
   ): Promise<Response<void>> {
     console.log(req.params.id);
-    const deleteUserById = await userService.deleteUserId(req.params.id);
+    const deleteUserById = await this.userService.deleteUserId(req.params.id);
     if (!deleteUserById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     } else {
@@ -79,19 +77,3 @@ class UserController {
 
 export const userController = new UserController();
 
-usersRouter.get("/", authorization, userController.getAllUsers);
-usersRouter.post(
-  "/",
-  authorization,
-  inputValueLoginValidation,
-  inputValuePasswordValidation,
-  inputValueUserEmailValidatioin,
-  ValueMiddleware,
-  userController.createNewUser
-);
-usersRouter.delete(
-  "/:id",
-  checkId,
-  authorization,
-  userController.deleteUserById
-);

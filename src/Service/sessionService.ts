@@ -1,14 +1,18 @@
 // import { BlackList } from './../UI/types/sessionTypes';
 import { ObjectId } from 'mongodb';
-import { sessionRepositories } from "../DataAccessLayer/session-db-repositories"
+import { SessionRepositories } from "../Repositories/session-db-repositories"
 
-class SessionService {
+export class SessionService {
+	sessionRepositories: SessionRepositories
+	constructor() {
+		this.sessionRepositories = new SessionRepositories()
+	}
 	async findRefreshToken(refreshToken: string) {
-		const findRefreshToken = await sessionRepositories.findRefreshToken(refreshToken)
+		const findRefreshToken = await this.sessionRepositories.findRefreshToken(refreshToken)
 		return findRefreshToken
 	}
 	async updateSession(currentUserId: ObjectId, newRefreshToken: string) {
-		return await sessionRepositories.addRefreshToken(currentUserId, newRefreshToken)
+		return await this.sessionRepositories.addRefreshToken(currentUserId, newRefreshToken)
 	}
 	// async addRefreshToken(refreshToken: string) {
 	// 	const newRefreshToken: BlackList  = {
@@ -20,4 +24,4 @@ class SessionService {
 	// }
 }
 
-export const sessionService = new SessionService()
+// export const sessionService = new SessionService()

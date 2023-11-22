@@ -1,13 +1,19 @@
-import { Users, UserViewType } from './../UI/types/userTypes';
-import { userRepositories } from "../DataAccessLayer/user-db-repositories";
+import { UserRepositories } from '../Repositories/user-db-repositories';
+import { Users, UserViewType } from '../types/userTypes';
 import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
-import { emailManager } from "../manager/email-manager";
+import { EmailManager } from "../manager/email-manager";
 import { v4 as uuidv4 } from "uuid";
 import add from "date-fns/add";
 import {WithId} from 'mongodb'
 
-class UserService {
+export class UserService {
+	userRepositories: UserRepositories
+	emailManager: EmailManager
+	constructor() {
+		this.userRepositories = new UserRepositories()
+		this.emailManager = new EmailManager()
+	}
 	async createNewUser(
 		login: string,
 		password: string,
@@ -39,9 +45,9 @@ class UserService {
 			};
 		  }
 		};
-		const user: Users= await userRepositories.createUser(newUser);
+		const user: Users= await this.userRepositories.createUser(newUser);
 		try {
-		  await emailManager.sendEamilConfirmationMessage(
+		  await this.emailManager.sendEamilConfirmationMessage(
 			user.accountData.email,
 			user.emailConfirmation.confirmationCode
 		  );
@@ -59,7 +65,7 @@ class UserService {
 		loginOrEmail: string,
 		password: string
 	  ): Promise<Users | null> {
-		const user: Users | null = await userRepositories.findByLoginOrEmail(
+		const user: Users | null = await this.userRepositories.findByLoginOrEmail(
 		  loginOrEmail
 		);
 		if (!user) return null;
@@ -75,25 +81,25 @@ class UserService {
 		return hash;
 	  }
 	  async deleteUserId(id: string): Promise<boolean> {
-		const deleteId: boolean = await userRepositories.deleteById(id);
+		const deleteId: boolean = await this.userRepositories.deleteById(id);
 		return deleteId;
 	  }
 	  async findUserById(userId: ObjectId): Promise<Users | null> {
-		return await userRepositories.findUserById(userId);
+		return await this.userRepositories.findUserById(userId);
 	  }
 	  async deleteAllUsers() {
-		return await userRepositories.deleteAll();
+		return await this.userRepositories.deleteAll();
 	  }
 	  async findUserByConfirmationCode(code: string): Promise<boolean> {
-		const user = await userRepositories.findUserByConfirmation(code);
-		const result = await userRepositories.updateConfirmation(user!._id);
+		const user = await this.userRepositories.findUserByConfirmation(code);
+		const result = await this.userRepositories.updateConfirmation(user!._id);
 		return result;
 	  }
 	  async confirmEmail(email: string): Promise<Users | null> {
-		return await userRepositories.findByLoginOrEmail(email);
+		return await this.userRepositories.findByLoginOrEmail(email);
 	  }
 	  async confirmEmailResendCode(email: string): Promise<boolean | null> {
-		const user: Users | null = await userRepositories.findByLoginOrEmail(
+		const user: Users | null = await this.userRepositories.findByLoginOrEmail(
 		  email
 		);
 		if (!user) return null;
@@ -105,13 +111,13 @@ class UserService {
 		  hours: 1,
 		  minutes: 10,
 		});
-		await userRepositories.updateUserConfirmation(
+		await this.userRepositories.updateUserConfirmation(
 		  user!._id,
 		  newConfirmationCode,
 		  newExpirationDate
 		);
 		try {
-		  await emailManager.sendEamilConfirmationMessage(
+		  await this.emailManager.sendEamilConfirmationMessage(
 			user.accountData.email,
 			newConfirmationCode
 		  );
@@ -121,13 +127,13 @@ class UserService {
 		return true;
 	  }
 	  async updateUserByNewToken(currentUserId: ObjectId, refreshToken: string) {
-		return await userRepositories.updateUserByToken(
+		return await this.userRepositories.updateUserByToken(
 		  currentUserId,
 		  refreshToken
 		);
 	  }
 	  async setNewPassword(newPassword: string, recoveryCode: string): Promise<boolean> {
-		const findUserByCode = await userRepositories.findUserByCode(recoveryCode)
+		const findUserByCode = await this.userRepositories.findUserByCode(recoveryCode)
 		if(!findUserByCode) {
 			return false
 		}
@@ -135,7 +141,7 @@ class UserService {
 			return false
 		}
 		const newPasswordHash = await this._generateHash(newPassword);
-		const resultUpdatePassword = await userRepositories.updatePassword(findUserByCode._id, newPasswordHash)
+		const resultUpdatePassword = await this.userRepositories.updatePassword(findUserByCode._id, newPasswordHash)
 		if(!resultUpdatePassword) {
 			return false
 		}
@@ -143,15 +149,15 @@ class UserService {
 	  }
 	  async recoveryPassword(email: string): Promise<boolean> {
 		const recoveryCode = uuidv4()
-			const findUser: WithId<Users> | null = await userRepositories.findUserByEmail(email)
+			const findUser: WithId<Users> | null = await this.userRepositories.findUserByEmail(email)
 			console.log('findUser: ', findUser)
 			if (!findUser) {
 				console.log('false: ', findUser)
 				return false
 			}
 		try {
-			await emailManager.sendEamilRecoveryCode(email, recoveryCode)
-			await userRepositories.passwordRecovery(findUser._id, recoveryCode)
+			await this.emailManager.sendEamilRecoveryCode(email, recoveryCode)
+			await this.userRepositories.passwordRecovery(findUser._id, recoveryCode)
 			return true
 		} catch (e) {
 			console.log('email: ', e)
@@ -160,4 +166,4 @@ class UserService {
 	  }
 }
 
-export const userService = new UserService()
+// export const userService = new UserService()

@@ -1,10 +1,12 @@
-import { CommentView, Comments } from '../UI/types/commentType';
-import { PaginationType } from './../UI/types/types';
-import { CommentsModel } from './../db/db';
+import { LikeStatusEnum } from '../enam/like-status-enum';
+import { LikesInfoClass } from '../types/commentType';
+import { CommentView, Comments } from '../types/commentType';
+import { PaginationType } from '../types/types';
+import { CommentsModel } from '../db/db';
 import { ObjectId } from "mongodb";
 
 
-class CommentRepositories {
+export class CommentRepositories {
 	async updateComment(commentId: string, content: string) {
 		const updateOne = await CommentsModel.updateOne(
 		  { _id: new ObjectId(commentId) },
@@ -22,7 +24,7 @@ class CommentRepositories {
 		  return false;
 		}
 	  }
-	  async findCommentById(id: string): Promise<CommentView | null> {
+	  async findCommentById(id: string, userId?: string): Promise<CommentView | null> {
 		try {
 		  const commentById: Comments | null = await CommentsModel.findOne({
 			_id: new ObjectId(id),
@@ -30,7 +32,8 @@ class CommentRepositories {
 		  if (!commentById) {
 			return null;
 		  }
-		  return commentDBToView(commentById);
+		  const resultDataLike = await this.resultLikeProcessing(id, userId)
+		  return commentDBToView(commentById, resultDataLike);
 		} catch (e) {
 		  return null;
 		}
@@ -67,15 +70,37 @@ class CommentRepositories {
 		await CommentsModel.insertMany([newComment]);
 		return commentDBToView(newComment);
 	  }
+	  async resultLikeProcessing(id: string, userId: string) {
+		const like = await LikesModel.countDocuments({})
+		const dislike = await LikesModel.countDocuments({})
+		if(!userId) {
+			return {
+				likesCount: like,
+				dislikeCount: dislike,
+				myStatus: LikeStatusEnum.None
+			}
+		}
+		const likeStatusUser = await LikesModel.findOne({$and: {}})
+		return {
+			likeCount: like,
+			dislikeCount: dislike,
+			myStatus: likeStatusUser !== null ? likeStatusUser.myStatus : LikeStatusEnum.None
+		}
+	  }
 }
 
-const commentDBToView = (item: Comments): CommentView => {
+const commentDBToView = (item: Comments, likesInfo: LikesInfoClass): CommentView => {
 	return {
 	  _id: new ObjectId(),
 	  content: item.content,
 	  commentatorInfo: item.commentatorInfo,
 	  createdAt: item.createdAt,
+	  likeInfo: {
+		likesCount: likesInfo.likesCount || 0,
+    	dislikesCount: likesInfo.dislikeCount || 0,
+    	myStatus: likesInfo.myStatus || LikeStatusEnum.None
+	  }
 	};
   };
 
-  export const commentRepositories = new CommentRepositories()
+//   export const commentRepositories = new CommentRepositories()

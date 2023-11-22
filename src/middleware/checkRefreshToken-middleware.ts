@@ -1,8 +1,8 @@
-import { sessionService } from './../Bisnes-logic-layer/sessionService';
+import { sessionService } from '../Service/sessionService';
 import  jwt  from 'jsonwebtoken';
 import {Request, Response, NextFunction} from 'express'
 import { HTTP_STATUS } from '../utils'
-import { userService } from '../Bisnes-logic-layer/userService';
+import { userService } from '../Service/userService';
 import {config} from'dotenv'
 import { ObjectId } from 'mongodb';
 config();

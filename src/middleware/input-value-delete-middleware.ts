@@ -1,4 +1,4 @@
-import { RequestWithParams } from './../UI/types/types';
+import { RequestWithParams } from '../types/types';
 import { NextFunction, Response } from "express";
 import { ParamsUserMode } from "../model/modelUser/paramsUserModel";
 import { HTTP_STATUS } from "../utils";

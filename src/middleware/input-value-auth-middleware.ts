@@ -1,6 +1,6 @@
-import { Users } from './../UI/types/userTypes';
+import { Users } from '../types/userTypes';
 import { body } from 'express-validator';
-import { userRepositories } from '../DataAccessLayer/user-db-repositories';
+import { userRepositories } from '../Repositories/user-db-repositories';
 
 export const inputValueLoginAuth = body('login')
 .isString()

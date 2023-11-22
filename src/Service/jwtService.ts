@@ -1,10 +1,10 @@
 import jwt  from 'jsonwebtoken';
-import { Users } from './../UI/types/userTypes';
+import { Users } from '../types/userTypes';
 import dotenv from 'dotenv'
 import { ObjectId } from 'mongodb';
 dotenv.config()
 
-class JWTService {
+export class JWTService {
 	async createJWT(user: Users) {
 		const token: string = await jwt.sign({userId: user._id}, process.env.JWT_SECRET!, {expiresIn: '10s'})
 		return token
@@ -44,4 +44,4 @@ class JWTService {
 	}
 }
 
-export const jwtService = new JWTService()
+// export const jwtService = new JWTService()

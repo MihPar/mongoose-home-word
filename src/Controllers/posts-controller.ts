@@ -1,7 +1,7 @@
 import { paramsIdModel } from '../model/modePosts.ts/paramsIdModel';
 import { bodyPostsModel } from '../model/modePosts.ts/bodyPostsMode';
 import { bodyPostModelContent } from '../model/modePosts.ts/bodyPostModeContent';
-import { postsRepositories } from '../DataAccessLayer/posts-db-repositories';
+import { PostsRepositories } from '../Repositories/posts-db-repositories';
 import { queryPostsModel } from '../model/modePosts.ts/queryPostsModel';
 import { paramsPostIdMode } from '../model/modePosts.ts/paramsPostIdMode';
 import {
@@ -10,7 +10,7 @@ import {
   RequestWithParamsAndBody,
   RequestWithParamsAndQuery,
   PaginationType,
-} from "./types/types";
+} from "../types/types";
 import {
   inputPostBlogValidator,
   inputPostContentValidator,
@@ -21,17 +21,27 @@ import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { authorization } from "../middleware/authorizatin";
 import { Router, Response } from "express";
 import { HTTP_STATUS } from "../utils";
-import { postsService } from "../Bisnes-logic-layer/postsService";
-import { commentService } from "../Bisnes-logic-layer/commentService";
-import { commentRepositories } from "../DataAccessLayer/comment-db-repositories";
 import { commentAuthorization } from "../middleware/commentAuthorization";
 import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
-import { Posts } from './types/postsTypes';
-import { CommentView } from './types/commentType';
+import { Posts } from '../types/postsTypes';
+import { CommentView } from '../types/commentType';
+import { CommentRepositories } from '../Repositories/comment-db-repositories';
+import { CommentService } from '../Service/commentService';
+import { PostsService } from '../Service/postsService';
 
 export const postsRouter = Router({});
 
 class RouterController {
+	postsRepositories: PostsRepositories
+	commentRepositories: CommentRepositories
+	commentService: CommentService
+	postsService: PostsService
+	constructor() {
+		this.postsRepositories = new PostsRepositories()
+		this.commentRepositories = new CommentRepositories()
+		this.commentService = new CommentService()
+		this.postsService = new PostsService()
+	}
 	async getPostByPostId (
 		req: RequestWithParamsAndQuery<paramsPostIdMode, queryPostsModel>,
 		res: Response<PaginationType<CommentView>>
@@ -43,11 +53,11 @@ class RouterController {
 		  sortBy = "createdAt",
 		  sortDirection = "desc",
 		} = req.query;
-		const isExistPots = await postsRepositories.findPostById(postId)
+		const isExistPots = await this.postsRepositories.findPostById(postId)
 		if(!isExistPots) {
 			return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 		}
-		const commentByPostsId: PaginationType<CommentView> | null = await commentRepositories.findCommentByPostId(
+		const commentByPostsId: PaginationType<CommentView> | null = await this.commentRepositories.findCommentByPostId(
 		  postId,
 		  pageNumber,
 		  pageSize,
@@ -68,12 +78,12 @@ class RouterController {
 		const { content } = req.body;
 		const user = req.user;
 		const post: Posts | null =
-		  await postsRepositories.findPostById(postId);
+		  await this.postsRepositories.findPostById(postId);
 	
 		if (!post) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
 		console.log(user)
 		const createNewCommentByPostId: CommentView| null =
-		  await commentService.createNewCommentByPostId(postId, content, user._id.toString(), user.accountData.userName);
+		  await this.commentService.createNewCommentByPostId(postId, content, user._id.toString(), user.accountData.userName);
 		if (!createNewCommentByPostId) {
 			return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
 		} else {
@@ -91,7 +101,7 @@ class RouterController {
 		  sortDirection = "desc",
 		} = req.query;
 		const getAllPosts: PaginationType<Posts> =
-		  await postsRepositories.findAllPosts(
+		  await this.postsRepositories.findAllPosts(
 			pageNumber as string,
 			pageSize as string,
 			sortBy as string,
@@ -104,7 +114,7 @@ class RouterController {
 		res: Response<Posts>
 	  ) {
 		const { title, shortDescription, content, blogId } = req.body;
-		const createNewPost: Posts | null = await postsService.createPost(
+		const createNewPost: Posts | null = await this.postsService.createPost(
 		  blogId,
 		  title,
 		  shortDescription,
@@ -120,7 +130,7 @@ class RouterController {
 		req: RequestWithParams<paramsIdModel>,
 		res: Response<Posts | null>
 	  ) {
-		const getPostById: Posts | null = await postsRepositories.findPostById(
+		const getPostById: Posts | null = await this.postsRepositories.findPostById(
 		  req.params.id
 		);
 		if (!getPostById) {
@@ -135,7 +145,7 @@ class RouterController {
 	  ) {
 		const { id } = req.params;
 		const { title, shortDescription, content, blogId } = req.body;
-		const updatePost: boolean = await postsService.updateOldPost(
+		const updatePost: boolean = await this.postsService.updateOldPost(
 		  id,
 		  title,
 		  shortDescription,
@@ -149,7 +159,7 @@ class RouterController {
 		}
 	  }
 	  async deletePostById (req: RequestWithParams<paramsIdModel>, res: Response<void>) {
-		const deletPost: boolean = await postsService.deletePostId(req.params.id);
+		const deletPost: boolean = await this.postsService.deletePostId(req.params.id);
 		if (!deletPost) {
 		  return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
 		} else {
@@ -160,10 +170,34 @@ class RouterController {
 
 export const routerController = new RouterController()
 
-postsRouter.get( "/:postId/comments", routerController.getPostByPostId);
-postsRouter.post("/:postId/comments", commentAuthorization, inputCommentValidator, ValueMiddleware, routerController.createPostByPostId);
-postsRouter.get("/", routerController.getPosts);
-postsRouter.post("/", authorization, inputPostTitleValidator, inputPostShortDescriptionValidator, inputPostContentValidator, inputPostBlogValidator, ValueMiddleware, routerController.createPost);
-postsRouter.get("/:id", routerController.getPostById);
-postsRouter.put("/:id", authorization, inputPostTitleValidator, inputPostShortDescriptionValidator, inputPostContentValidator, inputPostBlogValidator, ValueMiddleware, routerController.updatePostById);
-postsRouter.delete("/:id", authorization, routerController.deletePostById);
+postsRouter.get("/:postId/comments", routerController.getPostByPostId.bind(routerController.getPostByPostId));
+postsRouter.post(
+  "/:postId/comments",
+  commentAuthorization,
+  inputCommentValidator,
+  ValueMiddleware,
+  routerController.createPostByPostId.bind(routerController.createPostByPostId)
+);
+postsRouter.get("/", routerController.getPosts.bind(routerController.getPosts));
+postsRouter.post(
+  "/",
+  authorization,
+  inputPostTitleValidator,
+  inputPostShortDescriptionValidator,
+  inputPostContentValidator,
+  inputPostBlogValidator,
+  ValueMiddleware,
+  routerController.createPost.bind(routerController.createPost)
+);
+postsRouter.get("/:id", routerController.getPostById.bind(routerController.getPostById));
+postsRouter.put(
+  "/:id",
+  authorization,
+  inputPostTitleValidator,
+  inputPostShortDescriptionValidator,
+  inputPostContentValidator,
+  inputPostBlogValidator,
+  ValueMiddleware,
+  routerController.updatePostById.bind(routerController.updatePostById)
+);
+postsRouter.delete("/:id", authorization, routerController.deletePostById.bind(routerController.deletePostById));

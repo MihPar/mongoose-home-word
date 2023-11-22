@@ -1,5 +1,5 @@
-import { Users } from './../UI/types/userTypes';
-import { userRepositories } from '../DataAccessLayer/user-db-repositories';
+import { Users } from '../types/userTypes';
+import { userRepositories } from '../Repositories/user-db-repositories';
 import {body} from 'express-validator'
 
 export const inputValueUserEmailValidatioin = body('email')

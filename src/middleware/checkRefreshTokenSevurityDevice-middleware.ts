@@ -1,11 +1,11 @@
-import { securityDeviceRepositories } from "./../DataAccessLayer/securityDevice-db-repositories";
+import { securityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../utils";
-import { userService } from "../Bisnes-logic-layer/userService";
+import { userService } from "../Service/userService";
 import { config } from "dotenv";
 import { ObjectId } from "mongodb";
-import { jwtService } from "../Bisnes-logic-layer/jwtService";
+import { jwtService } from "../Service/jwtService";
 config();
 
 export const checkRefreshTokenSecurityDeviceMiddleware = async function (

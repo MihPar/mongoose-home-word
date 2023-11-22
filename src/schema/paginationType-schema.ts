@@ -1,5 +1,5 @@
-import { Users } from './../UI/types/userTypes';
-import { PaginationType } from './../UI/types/types';
+import { Users } from '../types/userTypes';
+import { PaginationType } from '../types/types';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 

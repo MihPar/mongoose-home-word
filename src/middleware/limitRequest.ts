@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
-import { securityDeviceRepositories } from './../DataAccessLayer/securityDevice-db-repositories';
+import { securityDeviceRepositories } from '../Repositories/securityDevice-db-repositories';
 import { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUS } from '../utils';
 import {config} from'dotenv'
-import { CollectionIP } from '../UI/types/deviceAuthSession';
+import { CollectionIP } from '../types/deviceAuthSession';
 import { IPCollectionModel } from '../db/db';
 config()
 

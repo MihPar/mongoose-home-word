@@ -1,4 +1,4 @@
-import { Users, UserViewType } from './../UI/types/userTypes';
+import { Users, UserViewType } from '../types/userTypes';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 

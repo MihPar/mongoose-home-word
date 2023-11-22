@@ -1,8 +1,8 @@
-import { BlogsModel } from './../db/db';
-import { Blogs } from './../UI/types/blogsType';
-import { PaginationType } from './../UI/types/types';
+import { BlogsModel } from '../db/db';
+import { Blogs } from '../types/blogsType';
+import { PaginationType } from '../types/types';
 
-class BlogsRepositories {
+export class BlogsRepositories {
 	async findAllBlogs(
 		searchNameTerm: string | null,
 		pageNumber: string,
@@ -65,4 +65,4 @@ class BlogsRepositories {
 	  }
 }
 
-export const blogsRepositories = new BlogsRepositories()
+// export const blogsRepositories = new BlogsRepositories()

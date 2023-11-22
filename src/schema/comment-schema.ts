@@ -1,7 +1,7 @@
-import { CommentView } from './../UI/types/commentType';
+import { CommentView } from '../types/commentType';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
-import { Comments } from '../UI/types/commentType'
+import { Comments } from '../types/commentType'
 
 export const CommentViewSchema = new mongoose.Schema<WithId<CommentView>>({
 	content: {type: String, require: true},

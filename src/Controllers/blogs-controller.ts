@@ -1,16 +1,15 @@
 import { bodyPostsModel } from "../model/modePosts.ts/bodyPostsMode";
-import { Posts } from "./types/postsTypes";
+import { Posts } from "../types/postsTypes";
 import { queryPostsModel } from "../model/modePosts.ts/queryPostsModel";
 import { paramsPostsModelBlogId } from "../model/modePosts.ts/paramsPostsModeBlogId";
-import { postsRepositories } from "../DataAccessLayer/posts-db-repositories";
 import { paramsBlogsModel } from "../model/modelBlogs/paramsBlogsModel";
 import {
   RequestWithParamsAndQuery,
   RequestWithParamsAndBody,
   RequestWithParams,
   PaginationType,
-} from "./types/types";
-import { postsService } from "../Bisnes-logic-layer/postsService";
+} from "../types/types";
+import { PostsService } from "../Service/postsService";
 import {
   inputBlogNameValidator,
   inputBlogDescription,
@@ -18,10 +17,10 @@ import {
 } from "../middleware/input-value-blogs-middleware";
 import { authorization } from "../middleware/authorizatin";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
-import { blogsService } from "../Bisnes-logic-layer/blogsService";
+import { BlogsService } from "../Service/blogsService";
 import { Router, Response } from "express";
 import { HTTP_STATUS } from "../utils";
-import { RequestWithBody, RequestWithQuery } from "./types/types";
+import { RequestWithBody, RequestWithQuery } from "../types/types";
 import {
   inputPostContentValidator,
   inputPostShortDescriptionValidator,
@@ -29,12 +28,23 @@ import {
 } from "../middleware/input-value-posts-middleware";
 import { QueryBlogsModel } from "../model/modelBlogs/QueryBlogsModel";
 import { bodyBlogsModel } from "../model/modelBlogs/bodyBlogsModel";
-import { blogsRepositories } from "../DataAccessLayer/blogs-db-repositories";
-import { Blogs } from "./types/blogsType";
+import { BlogsRepositories } from "../Repositories/blogs-db-repositories";
+import { Blogs } from "../types/blogsType";
+import { PostsRepositories } from "../Repositories/posts-db-repositories";
 
 export const blogsRouter = Router({});
 
 class BlogsComtroller {
+	blogsService: BlogsService
+	blogsRepositories: BlogsRepositories
+	postsService: PostsService
+	postsRepositories: PostsRepositories
+	constructor() {
+		this.blogsService = new BlogsService()
+		this.blogsRepositories = new BlogsRepositories()
+		this.postsService = new PostsService()
+		this.postsRepositories = new PostsRepositories()
+	}
   async getBlogs(
     req: RequestWithQuery<QueryBlogsModel>,
     res: Response<PaginationType<Blogs>>
@@ -47,7 +57,7 @@ class BlogsComtroller {
       sortDirection = "desc",
     } = req.query;
     const getAllBlogs: PaginationType<Blogs> =
-      await blogsRepositories.findAllBlogs(
+      await this.blogsRepositories.findAllBlogs(
         searchNameTerm,
         pageNumber,
         pageSize,
@@ -57,7 +67,7 @@ class BlogsComtroller {
     return res.status(HTTP_STATUS.OK_200).send(getAllBlogs);
   }
   async createBlog(req: RequestWithBody<bodyBlogsModel>, res: Response<Blogs>) {
-    const createBlog: Blogs = await blogsService.createNewBlog(
+    const createBlog: Blogs = await this.blogsService.createNewBlog(
       req.body.name,
       req.body.description,
       req.body.websiteUrl
@@ -77,11 +87,11 @@ class BlogsComtroller {
 
     const { blogId } = req.params;
 
-    const blog = await blogsRepositories.findBlogById(blogId);
+    const blog = await this.blogsRepositories.findBlogById(blogId);
     if (!blog) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
 
     const getPosts: PaginationType<Posts> =
-      await postsRepositories.findPostsByBlogsId(
+      await this.postsRepositories.findPostsByBlogsId(
         pageNumber as string,
         pageSize as string,
         sortBy as string,
@@ -97,10 +107,10 @@ class BlogsComtroller {
     const { blogId } = req.params;
     const { title, shortDescription, content } = req.body;
 
-    const blog = await blogsRepositories.findBlogById(blogId);
+    const blog = await this.blogsRepositories.findBlogById(blogId);
     if (!blog) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
 
-    const isCreatePost = await postsService.createPost(
+    const isCreatePost = await this.postsService.createPost(
       blogId,
       title,
       shortDescription,
@@ -116,7 +126,7 @@ class BlogsComtroller {
     req: RequestWithParams<paramsBlogsModel>,
     res: Response<Blogs | null>
   ) {
-    const blogById: Blogs | null = await blogsRepositories.findBlogById(
+    const blogById: Blogs | null = await this.blogsRepositories.findBlogById(
       req.params.id
     );
     if (!blogById) {
@@ -131,7 +141,7 @@ class BlogsComtroller {
   ) {
     const { id } = req.params;
     const { name, description, websiteUrl } = req.body;
-    const isUpdateBlog: boolean = await blogsService.updateBlog(
+    const isUpdateBlog: boolean = await this.blogsService.updateBlog(
       id,
       name,
       description,
@@ -147,7 +157,7 @@ class BlogsComtroller {
     req: RequestWithParams<paramsBlogsModel>,
     res: Response<void>
   ) {
-    const isDeleted: boolean = await blogsRepositories.deletedBlog(
+    const isDeleted: boolean = await this.blogsRepositories.deletedBlog(
       req.params.id
     );
     if (!isDeleted) {
@@ -160,7 +170,7 @@ class BlogsComtroller {
 
 export const blogsComtroller = new BlogsComtroller();
 
-blogsRouter.get("/", blogsComtroller.getBlogs);
+blogsRouter.get("/", blogsComtroller.getBlogs.bind(blogsComtroller.getBlogs));
 blogsRouter.post(
   "/",
   authorization,
@@ -168,9 +178,9 @@ blogsRouter.post(
   inputBlogDescription,
   inputBlogWebsiteUrl,
   ValueMiddleware,
-  blogsComtroller.createBlog
+  blogsComtroller.createBlog.bind(blogsComtroller.createBlog)
 );
-blogsRouter.get("/:blogId/posts", blogsComtroller.getBlogsByPostIdPost);
+blogsRouter.get("/:blogId/posts", blogsComtroller.getBlogsByPostIdPost.bind(blogsComtroller.getBlogsByPostIdPost));
 blogsRouter.post(
   "/:blogId/posts",
   authorization,
@@ -178,9 +188,9 @@ blogsRouter.post(
   inputPostTitleValidator,
   inputPostShortDescriptionValidator,
   ValueMiddleware,
-  blogsComtroller.createBlogsByBlogsIdPost
+  blogsComtroller.createBlogsByBlogsIdPost.bind(blogsComtroller.createBlogsByBlogsIdPost)
 );
-blogsRouter.get("/:id", blogsComtroller.getPostById);
+blogsRouter.get("/:id", blogsComtroller.getPostById.bind(blogsComtroller.getPostById));
 blogsRouter.put(
   "/:id",
   authorization,
@@ -188,6 +198,6 @@ blogsRouter.put(
   inputBlogDescription,
   inputBlogWebsiteUrl,
   ValueMiddleware,
-  blogsComtroller.updateBlogsById
+  blogsComtroller.updateBlogsById.bind(blogsComtroller.updateBlogsById)
 );
-blogsRouter.delete("/:id", authorization, blogsComtroller.deleteBlogsById);
+blogsRouter.delete("/:id", authorization, blogsComtroller.deleteBlogsById.bind(blogsComtroller.deleteBlogsById));

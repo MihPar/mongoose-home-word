@@ -1,22 +1,30 @@
+import { DeviceService } from '../Service/deviceService';
 import { checkForbiddenSecurityDevice } from "../middleware/checkForbiddenSecurityDevice";
-import { jwtService } from "../Bisnes-logic-layer/jwtService";
+import { JWTService } from "../Service/jwtService";
 import { checkRefreshTokenSecurityDeviceMiddleware } from "../middleware/checkRefreshTokenSevurityDevice-middleware";
-import { deviceService } from "../Bisnes-logic-layer/deviceService";
 import { Router, Request, Response } from "express";
-import { securityDeviceRepositories } from "../DataAccessLayer/securityDevice-db-repositories";
+import { SecurityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
 import { HTTP_STATUS } from "../utils";
-import { DeviceView } from "./types/deviceAuthSession";
+import { DeviceView } from "../types/deviceAuthSession";
 
 export const securityDeviceRouter = Router({});
 
 class SecurityDeviceController {
+	securityDeviceRepositories: SecurityDeviceRepositories
+	jwtService: JWTService
+	deviceService: DeviceService
+	constructor() {
+		this.securityDeviceRepositories = new SecurityDeviceRepositories()
+		this.jwtService = new JWTService()
+		this.deviceService = new DeviceService()
+	}
   async getDeviceUsers(
     req: Request,
     res: Response<DeviceView[]>
   ): Promise<Response<DeviceView[]>> {
     const userId = req.user._id.toString();
     const getDevicesAllUsers: DeviceView[] =
-      await securityDeviceRepositories.getDevicesAllUsers(userId);
+      await this.securityDeviceRepositories.getDevicesAllUsers(userId);
     if (!getDevicesAllUsers) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     } else {
@@ -29,7 +37,7 @@ class SecurityDeviceController {
   ): Promise<Response<boolean>> {
     const userId = req.user._id.toString();
     const refreshToken = req.cookies.refreshToken;
-    const payload = await jwtService.decodeRefreshToken(refreshToken);
+    const payload = await this.jwtService.decodeRefreshToken(refreshToken);
     if (!payload) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     }
@@ -37,7 +45,7 @@ class SecurityDeviceController {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
     const findAllCurrentDevices =
-      await deviceService.terminateAllCurrentSessions(userId, payload.deviceId);
+      await this.deviceService.terminateAllCurrentSessions(userId, payload.deviceId);
     if (!findAllCurrentDevices) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     }
@@ -48,7 +56,7 @@ class SecurityDeviceController {
     res: Response<boolean>
   ): Promise<Response<boolean>> {
     const deviceId = req.params.deviceId;
-    const deleteDeviceById = await securityDeviceRepositories.terminateSession(
+    const deleteDeviceById = await this.securityDeviceRepositories.terminateSession(
       deviceId
     );
     if (!deleteDeviceById) {
@@ -63,16 +71,16 @@ export const securityDeviceController = new SecurityDeviceController();
 securityDeviceRouter.get(
   "/",
   checkRefreshTokenSecurityDeviceMiddleware,
-  securityDeviceController.getDeviceUsers
+  securityDeviceController.getDeviceUsers.bind(securityDeviceController.getDeviceUsers)
 );
 securityDeviceRouter.delete(
   "/",
   checkRefreshTokenSecurityDeviceMiddleware,
-  securityDeviceController.terminateCurrentSessions
+  securityDeviceController.terminateCurrentSessions.bind(securityDeviceController.terminateCurrentSessions)
 );
 securityDeviceRouter.delete(
   "/:deviceId",
   checkRefreshTokenSecurityDeviceMiddleware,
   checkForbiddenSecurityDevice,
-  securityDeviceController.terminateSessionById
+  securityDeviceController.terminateSessionById.bind(securityDeviceController.terminateSessionById)
 );

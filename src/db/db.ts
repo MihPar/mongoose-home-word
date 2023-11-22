@@ -3,14 +3,14 @@ import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
 import { PostSchema } from './../schema/posts-schema';
 import { BlogsSchema } from './../schema/blogs-schema';
-import { Blogs} from './../UI/types/blogsType';
+import { Blogs} from '../types/blogsType';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
-import { Users } from '../UI/types/userTypes';
-import { Posts } from '../UI/types/postsTypes';
-import { CollectionIP, Devices } from '../UI/types/deviceAuthSession';
-import { Comments } from '../UI/types/commentType';
+import { Users } from '../types/userTypes';
+import { Posts } from '../types/postsTypes';
+import { CollectionIP, Devices } from '../types/deviceAuthSession';
+import { Comments } from '../types/commentType';
 dotenv.config()
 	 
 
@@ -41,6 +41,7 @@ export const UsersModel = mongoose.model<Users>('user', DBUserSchema)
 export const CommentsModel = mongoose.model<Comments>('comment', CommentSchema)
 export const DevicesModel = mongoose.model<Devices>('device', DeviceSchema)
 export const IPCollectionModel = mongoose.model<CollectionIP>('IP', CollectioInIPSchema)
+export const LikesModel = mongoose.model<>('like-dislike', LikeSchema)
 
 // export const blogsCollection = db.collection<BlogsType>('blogs')
 // export const postsCollection = db.collection<PostsType>('posts')

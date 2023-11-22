@@ -1,10 +1,14 @@
 import { ObjectId } from 'mongodb';
-import { BlogsModel } from './../db/db';
-import { Blogs } from './../UI/types/blogsType';
-import { Posts } from './../UI/types/postsTypes';
-import { postsRepositories } from "../DataAccessLayer/posts-db-repositories";
+import { BlogsModel } from '../db/db';
+import { Blogs } from '../types/blogsType';
+import { Posts } from '../types/postsTypes';
+import { PostsRepositories } from '../Repositories/posts-db-repositories';
 
-class PostsService {
+export class PostsService {
+	postsRepositories: PostsRepositories
+	constructor() {
+		this.postsRepositories = new PostsRepositories()
+	}
 	async createPost(
 		blogId: string,
 		title: string,
@@ -24,7 +28,7 @@ class PostsService {
 		  blogName: blog.name,
 		  createdAt: new Date().toISOString(),
 		};
-		const post = await postsRepositories.createNewBlogs(newPost);
+		const post = await this.postsRepositories.createNewBlogs(newPost);
 		return post;
 	  }
 	  async updateOldPost(
@@ -34,7 +38,7 @@ class PostsService {
 		content: string,
 		blogId: string
 	  ): Promise<boolean> {
-		const updatPostById: boolean = await postsRepositories.updatePost(
+		const updatPostById: boolean = await this.postsRepositories.updatePost(
 		  id,
 		  title,
 		  shortDescription,
@@ -44,11 +48,11 @@ class PostsService {
 		return updatPostById;
 	  }
 	  async deletePostId(id: string): Promise<boolean> {
-		return await postsRepositories.deletedPostById(id);
+		return await this.postsRepositories.deletedPostById(id);
 	  }
 	  async deleteAllPosts(): Promise<boolean> {
-		return await postsRepositories.deleteRepoPosts();
+		return await this.postsRepositories.deleteRepoPosts();
 	  }
 }
 
-export const postsService = new PostsService()
+// export const postsService = new PostsService()

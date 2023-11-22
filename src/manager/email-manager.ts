@@ -1,14 +1,18 @@
-import { emailAdapter } from "../adapter/email-adapter"
+import { EmailAdapter } from "../adapter/email-adapter"
 
-class EmailManager {
+export class EmailManager {
+	emailAdapter: EmailAdapter
+	constructor() {
+		this.emailAdapter = new EmailAdapter()
+	}
 	async sendEamilConfirmationMessage(email: string, code: string): Promise<void> {
-		const result = await emailAdapter.sendEmail(email, code)
+		const result = await this.emailAdapter.sendEmail(email, code)
 		return result
 	}
 	async sendEamilRecoveryCode(email: string, recoveryCode: string) {
-		const result = await emailAdapter.sendEmailByRecoveryCode(email, recoveryCode)
+		const result = await this.emailAdapter.sendEmailByRecoveryCode(email, recoveryCode)
 		return result
 	}
 }
 
-export const emailManager = new EmailManager()
+// export const emailManager = new EmailManager()

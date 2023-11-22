@@ -1,3 +1,6 @@
+import { DeviceService } from '../Service/deviceService';
+import { JWTService } from '../Service/jwtService';
+import { UserService } from '../Service/userService';
 import {
   inputValueEmailAuthPasswordRecovery,
   inputValueNewPasswordAuth,
@@ -12,7 +15,6 @@ import {
   limitRequestMiddleware,
   limitRequestMiddlewarePassword,
 } from "../middleware/limitRequest";
-import { deviceService } from "../Bisnes-logic-layer/deviceService";
 import { authValidationInfoMiddleware } from "../middleware/authValidationInfoMiddleware";
 import {
   inputValueEmailAuth,
@@ -26,25 +28,31 @@ import { BodyRegistrationEmailResendigModel } from "../model/modelAuth/bodyRegis
 import { BodyRegistrationConfirmationModel } from "../model/modelAuth/bodyRegistrationConfirmationModel";
 import { BodyRegistrationModel } from "../model/modelAuth/bodyRegistrationMode";
 import { ResAuthModel } from "../model/modelAuth/resAuthMode";
-import { jwtService } from "../Bisnes-logic-layer/jwtService";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { bodyAuthModel } from "../model/modelAuth/bodyAuthModel";
-import { RequestWithBody } from "./types/types";
+import { RequestWithBody } from "../types/types";
 import { Router, Response, Request } from "express";
 import { HTTP_STATUS } from "../utils";
-import { userService } from "../Bisnes-logic-layer/userService";
 import { ObjectId } from "mongodb";
-import { Users } from "./types/userTypes";
+import { Users } from "../types/userTypes";
 
 export const authRouter = Router({});
 
 class AuthContorller {
+	userService: UserService
+	jwtService: JWTService
+	deviceService: DeviceService
+	constructor() {
+		this.userService = new UserService()
+		this.jwtService = new JWTService()
+		this.deviceService = new DeviceService()
+	}
   async createNewPassword(
     req: RequestWithBody<BodyPasswordRecoveryCode>,
     res: Response
   ) {
     const { newPassword, recoveryCode } = req.body;
-    const resultUpdatePassword = await userService.setNewPassword(
+    const resultUpdatePassword = await this.userService.setNewPassword(
       newPassword,
       recoveryCode
     );
@@ -62,7 +70,7 @@ class AuthContorller {
     res: Response
   ) {
     const { email } = req.body;
-    const passwordRecovery = await userService.recoveryPassword(email);
+    const passwordRecovery = await this.userService.recoveryPassword(email);
     if (!passwordRecovery) {
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
     }
@@ -73,20 +81,20 @@ class AuthContorller {
     res: Response<{ accessToken: string }>
   ): Promise<Response<{ accessToken: string }>> {
     const { loginOrEmail, password } = req.body;
-    const user: Users | null = await userService.checkCridential(
+    const user: Users | null = await this.userService.checkCridential(
       loginOrEmail,
       password
     );
     if (!user) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     } else {
-      const token: string = await jwtService.createJWT(user);
+      const token: string = await this.jwtService.createJWT(user);
       const ip = req.socket.remoteAddress || "unknown";
       const title = req.headers["user-agent"] || "unknown";
-      const refreshToken = await jwtService.createRefreshJWT(
+      const refreshToken = await this.jwtService.createRefreshJWT(
         user._id.toString()
       );
-      await deviceService.createDevice(ip, title, refreshToken);
+      await this.deviceService.createDevice(ip, title, refreshToken);
       return res
         .cookie("refreshToken", refreshToken, {
           httpOnly: true,
@@ -102,17 +110,17 @@ class AuthContorller {
   ): Promise<void> {
     const refreshToken: string = req.cookies.refreshToken;
     const userId = req.user._id.toString();
-    const payload = await jwtService.decodeRefreshToken(refreshToken);
+    const payload = await this.jwtService.decodeRefreshToken(refreshToken);
     if (!payload) {
       res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
       return;
     }
-    const newToken: string = await jwtService.createJWT(req.user);
-    const newRefreshToken: string = await jwtService.createRefreshJWT(
+    const newToken: string = await this.jwtService.createJWT(req.user);
+    const newRefreshToken: string = await this.jwtService.createRefreshJWT(
       userId,
       payload.deviceId
     );
-    const updateDeviceUser = await deviceService.updateDevice(
+    const updateDeviceUser = await this.deviceService.updateDevice(
       userId,
       newRefreshToken
     );
@@ -126,7 +134,7 @@ class AuthContorller {
   }
   async cretaeLogout(req: Request, res: Response<void>): Promise<void> {
     const refreshToken: string = req.cookies.refreshToken;
-    const isDeleteDevice = await deviceService.logoutDevice(refreshToken);
+    const isDeleteDevice = await this.deviceService.logoutDevice(refreshToken);
     if (!isDeleteDevice) {
       res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
       return;
@@ -142,9 +150,9 @@ class AuthContorller {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     }
     const token: string = req.headers.authorization!.split(" ")[1];
-    const userId: ObjectId | null = await jwtService.getUserIdByToken(token);
+    const userId: ObjectId | null = await this.jwtService.getUserIdByToken(token);
     if (!userId) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
-    const currentUser: Users | null = await userService.findUserById(userId);
+    const currentUser: Users | null = await this.userService.findUserById(userId);
     if (!currentUser) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     return res.status(HTTP_STATUS.OK_200).send({
       userId: currentUser._id.toString(),
@@ -156,7 +164,7 @@ class AuthContorller {
     req: RequestWithBody<BodyRegistrationModel>,
     res: Response<void>
   ): Promise<Response<void>> {
-    const user = await userService.createNewUser(
+    const user = await this.userService.createNewUser(
       req.body.login,
       req.body.password,
       req.body.email
@@ -171,14 +179,14 @@ class AuthContorller {
     req: RequestWithBody<BodyRegistrationConfirmationModel>,
     res: Response<void>
   ): Promise<Response<void>> {
-    await userService.findUserByConfirmationCode(req.body.code);
+    await this.userService.findUserByConfirmationCode(req.body.code);
     return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
   async createRegistrationEmailResending(
     req: RequestWithBody<BodyRegistrationEmailResendigModel>,
     res: Response<void>
   ): Promise<Response<void> | null> {
-    const confirmUser = await userService.confirmEmailResendCode(
+    const confirmUser = await this.userService.confirmEmailResendCode(
       req.body.email
     );
     if (!confirmUser) {
@@ -197,7 +205,7 @@ authRouter.post(
   inputValueNewPasswordAuth,
   inputValueRecoveryCodeAuth,
   ValueMiddleware,
-  authContorller.createNewPassword
+  authContorller.createNewPassword.bind(authContorller.createNewPassword)
 );
 
 authRouter.post(
@@ -205,7 +213,7 @@ authRouter.post(
   limitRequestMiddlewarePassword,
   inputValueEmailAuthPasswordRecovery,
   ValueMiddleware,
-  authContorller.createPasswordRecovery
+  authContorller.createPasswordRecovery.bind(authContorller.createPasswordRecovery)
 );
 
 authRouter.post(
@@ -214,22 +222,22 @@ authRouter.post(
   inputValueLoginOrEamilAuth,
   inputValuePasswordAuth,
   ValueMiddleware,
-  authContorller.createLogin
+  authContorller.createLogin.bind(authContorller.createLogin)
 );
 
 authRouter.post(
   "/refresh-token",
   checkRefreshTokenSecurityDeviceMiddleware,
-  authContorller.cretaeRefreshToken
+  authContorller.cretaeRefreshToken.bind(authContorller.cretaeRefreshToken)
 );
 
 authRouter.post(
   "/logout",
   checkRefreshTokenSecurityDeviceMiddleware,
-  authContorller.cretaeRefreshToken
+  authContorller.cretaeRefreshToken.bind(authContorller.cretaeRefreshToken)
 );
 
-authRouter.get("/me", authValidationInfoMiddleware, authContorller.findMe);
+authRouter.get("/me", authValidationInfoMiddleware, authContorller.findMe.bind(authContorller.findMe));
 
 authRouter.post(
   "/registration",
@@ -238,7 +246,7 @@ authRouter.post(
   inputValuePasswordAuth,
   inputValueEmailRegistrationAuth,
   ValueMiddleware,
-  authContorller.creteRegistration
+  authContorller.creteRegistration.bind(authContorller.creteRegistration)
 );
 
 authRouter.post(
@@ -246,7 +254,7 @@ authRouter.post(
   limitRequestMiddleware,
   inputValueCodeAuth,
   ValueMiddleware,
-  authContorller.createRegistrationConfirmation
+  authContorller.createRegistrationConfirmation.bind(authContorller.createRegistrationConfirmation)
 );
 
 authRouter.post(
@@ -254,5 +262,5 @@ authRouter.post(
   limitRequestMiddleware,
   inputValueEmailAuth,
   ValueMiddleware,
-  authContorller.createRegistrationEmailResending
+  authContorller.createRegistrationEmailResending.bind(authContorller.createRegistrationEmailResending)
 );

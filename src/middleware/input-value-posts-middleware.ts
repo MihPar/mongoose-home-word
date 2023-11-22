@@ -1,4 +1,4 @@
-import { blogsRepositories } from "../DataAccessLayer/blogs-db-repositories";
+import { blogsRepositories } from "../Repositories/blogs-db-repositories";
 import { body } from "express-validator";
 
 export const inputPostTitleValidator = body("title")

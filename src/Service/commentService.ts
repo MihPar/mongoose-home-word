@@ -1,10 +1,14 @@
-import { CommentView, Comments } from './../UI/types/commentType';
+import { CommentRepositories } from '../Repositories/comment-db-repositories';
+import { CommentView, Comments } from '../types/commentType';
 import { ObjectId } from "mongodb";
-import { commentRepositories } from "../DataAccessLayer/comment-db-repositories";
 
-class CommentService {
+export class CommentService {
+	commentRepositories: CommentRepositories
+	constructor() {
+		this.commentRepositories = new CommentRepositories() 
+	}
 	async updateCommentByCommentId(commentId: string, content: string): Promise<boolean> {
-		const updateCommentId = await commentRepositories.updateComment(
+		const updateCommentId = await this.commentRepositories.updateComment(
 		  commentId,
 		  content
 		);
@@ -28,8 +32,8 @@ class CommentService {
 		  createdAt: new Date().toISOString(),
 		};
 		console.log((newComment.commentatorInfo))
-		return await commentRepositories.createNewCommentPostId(newComment);
+		return await this.commentRepositories.createNewCommentPostId(newComment);
 	  }
 }
 
-export const commentService = new CommentService()
+// export const commentService = new CommentService()

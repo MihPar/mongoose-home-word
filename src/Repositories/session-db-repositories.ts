@@ -1,8 +1,8 @@
 // import { BlackList } from './../UI/types/sessionTypes';
-import { DevicesModel} from './../db/db';
+import { DevicesModel} from '../db/db';
 import { ObjectId } from "mongodb";
 
-class SessionRepositories {
+export class SessionRepositories {
 	async findRefreshToken(refreshToken: string) {
 		const result = await DevicesModel.findOne({
 			refreshToken: refreshToken,
@@ -25,7 +25,7 @@ class SessionRepositories {
 	//   }
 }
 
-export const sessionRepositories = new SessionRepositories()
+// export const sessionRepositories = new SessionRepositories()
   
  
 

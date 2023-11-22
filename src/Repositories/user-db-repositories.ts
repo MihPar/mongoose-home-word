@@ -1,11 +1,11 @@
-import { PaginationType } from './../UI/types/types';
-import { UsersModel } from './../db/db';
-import { UserViewType, Users } from './../UI/types/userTypes';
+import { PaginationType } from '../types/types';
+import { UsersModel } from '../db/db';
+import { UserViewType, Users } from '../types/userTypes';
 import { ObjectId } from "mongodb";
 import {WithId} from 'mongodb'
 import add from "date-fns/add";
 
-class UserRepositories {
+export class UserRepositories {
 	async findByLoginOrEmail(loginOrEmail: string): Promise<Users | null> {
 		const user: Users | null = await UsersModel.findOne({
 		  $or: [{ 'accountData.email': loginOrEmail }, { 'accountData.userName': loginOrEmail }],
@@ -96,4 +96,4 @@ class UserRepositories {
 }
 
 
-export const userRepositories = new UserRepositories()
+// export const userRepositories = new UserRepositories()

@@ -1,4 +1,4 @@
-import { Blogs } from './../UI/types/blogsType';
+import { Blogs } from '../types/blogsType';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 

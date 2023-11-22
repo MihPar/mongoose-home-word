@@ -1,8 +1,8 @@
-import { Posts } from './../UI/types/postsTypes';
-import { PostsModel } from './../db/db';
-import { PaginationType } from './../UI/types/types';
+import { Posts } from '../types/postsTypes';
+import { PostsModel } from '../db/db';
+import { PaginationType } from '../types/types';
 
-class PostsRepositories {
+export class PostsRepositories {
 	async findAllPosts(
 		pageNumber: string,
 		pageSize: string,
@@ -97,4 +97,4 @@ class PostsRepositories {
   }
 }
 
-export const postsRepositories = new PostsRepositories()
+// export const postsRepositories = new PostsRepositories()

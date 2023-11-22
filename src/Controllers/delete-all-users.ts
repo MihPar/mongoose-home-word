@@ -1,9 +1,9 @@
-import { CommentsModel, DevicesModel, IPCollectionModel } from './../db/db';
-import { blogsService } from '../Bisnes-logic-layer/blogsService';
-import { postsService } from '../Bisnes-logic-layer/postsService';
+import { userService } from './../Bisnes-logic-layer/userService';
+import { blogsService } from './../Service/blogsService';
+import { postsService } from './../Bisnes-logic-layer/postsService';
+import { CommentsModel, DevicesModel, IPCollectionModel } from '../db/db';
 import { Router, Request, Response } from "express";
 import { HTTP_STATUS } from "../utils";
-import { userService } from '../Bisnes-logic-layer/userService';
 
 export const deleteAllRouter = Router({});
 

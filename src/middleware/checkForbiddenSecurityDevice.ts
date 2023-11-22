@@ -1,4 +1,4 @@
-import { securityDeviceRepositories } from "./../DataAccessLayer/securityDevice-db-repositories";
+import { securityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
 import { HTTP_STATUS } from "../utils";
 import { NextFunction, Request, Response } from "express";
 

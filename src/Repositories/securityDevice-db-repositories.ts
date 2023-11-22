@@ -1,7 +1,7 @@
-import { DeviceView, Devices } from './../UI/types/deviceAuthSession';
-import { DevicesModel } from './../db/db';
+import { DeviceView, Devices } from '../types/deviceAuthSession';
+import { DevicesModel } from '../db/db';
 
-class SecurityDeviceRepositories {
+export class SecurityDeviceRepositories {
 	async getDevicesAllUsers(userId: string): Promise<DeviceView[]> {
 		const getAllDevices: Devices[] = await DevicesModel
 		  .find({ userId })
@@ -46,4 +46,4 @@ class SecurityDeviceRepositories {
 	  }
 }
 
-export const securityDeviceRepositories = new SecurityDeviceRepositories()
+// export const securityDeviceRepositories = new SecurityDeviceRepositories()

@@ -1,8 +1,12 @@
 import { ObjectId } from "mongodb"
-import { Blogs } from './../UI/types/blogsType';
-import { blogsRepositories } from "../DataAccessLayer/blogs-db-repositories";
+import { Blogs } from '../types/blogsType';
+import { BlogsRepositories } from "../Repositories/blogs-db-repositories";
 
-class BlogsService {
+export class BlogsService {
+	blogsRepositories: BlogsRepositories
+	constructor() {
+		this.blogsRepositories = new BlogsRepositories()
+	}
 	async createNewBlog(
 		name: string,
 		description: string,
@@ -16,7 +20,7 @@ class BlogsService {
 		  createdAt: new Date().toISOString(),
 		  isMembership: false,
 		};
-		const createBlog = await blogsRepositories.createNewBlogs(newBlog);
+		const createBlog = await this.blogsRepositories.createNewBlogs(newBlog);
 		return createBlog;
 	  }
 	  async updateBlog(
@@ -25,7 +29,7 @@ class BlogsService {
 		description: string,
 		websiteUrl: string
 	  ): Promise<boolean> {
-		return await blogsRepositories.updateBlogById(
+		return await this.blogsRepositories.updateBlogById(
 		  id,
 		  name,
 		  description,
@@ -33,8 +37,8 @@ class BlogsService {
 		);
 	  }
 	  async deleteAllBlogs(): Promise<boolean> {
-		return await blogsRepositories.deleteRepoBlogs();
+		return await this.blogsRepositories.deleteRepoBlogs();
 	  }
 }
 
-export const blogsService = new BlogsService()
+// export const blogsService = new BlogsService()
