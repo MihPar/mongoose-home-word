@@ -72,10 +72,10 @@ export class CommentService {
       },
       postId,
       createdAt: new Date().toISOString(),
-	  likeInfo: {
-		likesCount: likesInfo?.likesCount || 0,
-    	dislikesCount: likesInfo?.dislikesCount || 0,
-    	myStatus: likesInfo?.myStatus || LikeStatusEnum.None
+	  likesInfo: {
+		likesCount: 0,
+    	dislikesCount: 0,
+    	myStatus: LikeStatusEnum.None
 	  }
     };
     console.log(newComment.commentatorInfo);
