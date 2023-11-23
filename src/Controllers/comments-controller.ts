@@ -8,13 +8,15 @@ import { RequestWithParams, RequestWithParamsAndBody } from "../types/types";
 import { bodyCommentIdMode } from "../model/modelComment/boydCommentIdMode";
 import { paramsCommentIdMode } from "../model/modelComment/paramsCommentIdModel copy";
 import { CommentView } from "../types/commentType";
+import { QueryCommentRepositories } from "../Repositories/queryRepositories/comment-query-repositories";
 
 export const commentsRouter = Router({});
 
 export class CommentController {
   constructor(
     protected commentRepositories: CommentRepositories,
-    protected commentService: CommentService
+    protected commentService: CommentService,
+	protected queryCommentRepositories: QueryCommentRepositories
   ) {}
   async updateByCommentIdLikeStatus(
     req: RequestWithParamsAndBody<paramsCommentIdMode, likeStatusModel>,
@@ -61,7 +63,7 @@ export class CommentController {
   ): Promise<Response<boolean>> {
     const { commentId } = req.params;
 	const {userId} = req.user;
-    const isExistComment = await this.commentRepositories.findCommentById(
+    const isExistComment = await this.queryCommentRepositories.findCommentById(
       commentId
     );
     if (!isExistComment) {
@@ -83,7 +85,7 @@ export class CommentController {
     res: Response<CommentView | null>
   ): Promise<Response<CommentView | null>> {
     const getCommentById: CommentView | null =
-      await this.commentRepositories.findCommentById(req.params.id);
+      await this.queryCommentRepositories.findCommentById(req.params.id);
     if (!getCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     } else {

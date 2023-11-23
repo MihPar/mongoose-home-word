@@ -11,23 +11,15 @@ import {
   RequestWithParamsAndQuery,
   PaginationType,
 } from "../types/types";
-import {
-  inputPostBlogValidator,
-  inputPostContentValidator,
-  inputPostShortDescriptionValidator,
-  inputPostTitleValidator,
-} from "../middleware/input-value-posts-middleware";
-import { ValueMiddleware } from "../middleware/validatorMiddleware";
-import { authorization } from "../middleware/authorizatin";
 import { Router, Response } from "express";
 import { HTTP_STATUS } from "../utils";
-import { commentAuthorization } from "../middleware/commentAuthorization";
-import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
 import { Posts } from '../types/postsTypes';
 import { CommentView } from '../types/commentType';
 import { CommentRepositories } from '../Repositories/comment-db-repositories';
 import { CommentService } from '../Service/commentService';
 import { PostsService } from '../Service/postsService';
+import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
+import { QueryCommentRepositories } from '../Repositories/queryRepositories/comment-query-repositories';
 
 export const postsRouter = Router({});
 
@@ -35,8 +27,10 @@ export class PostsController {
   constructor(
     protected postsRepositories: PostsRepositories,
     protected commentRepositories: CommentRepositories,
+	protected queryCommentRepositories: QueryCommentRepositories,
     protected commentService: CommentService,
-    protected postsService: PostsService
+    protected postsService: PostsService,
+	protected queryPostsRepositories: QueryPostsRepositories
   ) {
   }
   async getPostByPostId(
@@ -51,12 +45,12 @@ export class PostsController {
       sortDirection = "desc",
     } = req.query;
 	const {userId} = req.user
-    const isExistPots = await this.postsRepositories.findPostById(postId);
+    const isExistPots = await this.queryPostsRepositories.findPostById(postId);
     if (!isExistPots) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
     const commentByPostsId: PaginationType<CommentView> | null =
-      await this.commentRepositories.findCommentByPostId(
+      await this.queryCommentRepositories.findCommentByPostId(
         postId,
         pageNumber,
         pageSize,
@@ -77,7 +71,7 @@ export class PostsController {
     const { postId } = req.params;
     const { content } = req.body;
     const user = req.user;
-    const post: Posts | null = await this.postsRepositories.findPostById(
+    const post: Posts | null = await this.queryPostsRepositories.findPostById(
       postId
     );
 
@@ -107,7 +101,7 @@ export class PostsController {
       sortDirection = "desc",
     } = req.query;
     const getAllPosts: PaginationType<Posts> =
-      await this.postsRepositories.findAllPosts(
+      await this.queryPostsRepositories.findAllPosts(
         pageNumber as string,
         pageSize as string,
         sortBy as string,
@@ -133,7 +127,7 @@ export class PostsController {
     req: RequestWithParams<paramsIdModel>,
     res: Response<Posts | null>
   ) {
-    const getPostById: Posts | null = await this.postsRepositories.findPostById(
+    const getPostById: Posts | null = await this.queryPostsRepositories.findPostById(
       req.params.id
     );
     if (!getPostById) {

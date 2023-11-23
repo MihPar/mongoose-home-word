@@ -10,27 +10,17 @@ import {
   PaginationType,
 } from "../types/types";
 import { PostsService } from "../Service/postsService";
-import {
-  inputBlogNameValidator,
-  inputBlogDescription,
-  inputBlogWebsiteUrl,
-} from "../middleware/input-value-blogs-middleware";
-import { authorization } from "../middleware/authorizatin";
-import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { BlogsService } from "../Service/blogsService";
 import { Router, Response } from "express";
 import { HTTP_STATUS } from "../utils";
 import { RequestWithBody, RequestWithQuery } from "../types/types";
-import {
-  inputPostContentValidator,
-  inputPostShortDescriptionValidator,
-  inputPostTitleValidator,
-} from "../middleware/input-value-posts-middleware";
 import { QueryBlogsModel } from "../model/modelBlogs/QueryBlogsModel";
 import { bodyBlogsModel } from "../model/modelBlogs/bodyBlogsModel";
 import { BlogsRepositories } from "../Repositories/blogs-db-repositories";
 import { Blogs } from "../types/blogsType";
 import { PostsRepositories } from "../Repositories/posts-db-repositories";
+import { QueryBlogsRepositories } from "../Repositories/queryRepositories/blogs-query-repositories";
+import { QueryPostsRepositories } from "../Repositories/queryRepositories/posts-query-repositories";
 
 export const blogsRouter = Router({});
 
@@ -39,9 +29,10 @@ export class BlogsComtroller {
     protected blogsService: BlogsService,
     protected blogsRepositories: BlogsRepositories,
     protected postsService: PostsService,
-    protected postsRepositories: PostsRepositories
-  ) {
-  }
+    protected postsRepositories: PostsRepositories,
+    protected queryBlogsRepositories: QueryBlogsRepositories,
+    protected queryPostsRepositories: QueryPostsRepositories
+  ) {}
   async getBlogs(
     req: RequestWithQuery<QueryBlogsModel>,
     res: Response<PaginationType<Blogs>>
@@ -54,7 +45,7 @@ export class BlogsComtroller {
       sortDirection = "desc",
     } = req.query;
     const getAllBlogs: PaginationType<Blogs> =
-      await this.blogsRepositories.findAllBlogs(
+      await this.queryBlogsRepositories.findAllBlogs(
         searchNameTerm,
         pageNumber,
         pageSize,
@@ -84,11 +75,11 @@ export class BlogsComtroller {
 
     const { blogId } = req.params;
 
-    const blog = await this.blogsRepositories.findBlogById(blogId);
+    const blog = await this.queryBlogsRepositories.findBlogById(blogId);
     if (!blog) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
 
     const getPosts: PaginationType<Posts> =
-      await this.postsRepositories.findPostsByBlogsId(
+      await this.queryPostsRepositories.findPostsByBlogsId(
         pageNumber as string,
         pageSize as string,
         sortBy as string,
@@ -104,7 +95,7 @@ export class BlogsComtroller {
     const { blogId } = req.params;
     const { title, shortDescription, content } = req.body;
 
-    const blog = await this.blogsRepositories.findBlogById(blogId);
+    const blog = await this.queryBlogsRepositories.findBlogById(blogId);
     if (!blog) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
 
     const isCreatePost = await this.postsService.createPost(
@@ -123,9 +114,8 @@ export class BlogsComtroller {
     req: RequestWithParams<paramsBlogsModel>,
     res: Response<Blogs | null>
   ) {
-    const blogById: Blogs | null = await this.blogsRepositories.findBlogById(
-      req.params.id
-    );
+    const blogById: Blogs | null =
+      await this.queryBlogsRepositories.findBlogById(req.params.id);
     if (!blogById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     } else {

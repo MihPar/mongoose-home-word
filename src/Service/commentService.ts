@@ -1,3 +1,4 @@
+import { likeInfoType } from './../types/likesInfoType';
 import { CommentRepositories } from '../Repositories/comment-db-repositories';
 import { CommentsModel, LikesModel } from '../db/db';
 import { LikeStatusEnum } from '../enum/like-status-enum';
@@ -71,6 +72,11 @@ export class CommentService {
       },
       postId,
       createdAt: new Date().toISOString(),
+	  likeInfo: {
+		likesCount: likesInfo?.likesCount || 0,
+    	dislikesCount: likesInfo?.dislikesCount || 0,
+    	myStatus: likesInfo?.myStatus || LikeStatusEnum.None
+	  }
     };
     console.log(newComment.commentatorInfo);
     return await this.commentRepositories.createNewCommentPostId(newComment);

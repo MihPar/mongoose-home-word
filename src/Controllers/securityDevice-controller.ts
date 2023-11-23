@@ -4,6 +4,7 @@ import { Router, Request, Response } from "express";
 import { SecurityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
 import { HTTP_STATUS } from "../utils";
 import { DeviceView } from "../types/deviceAuthSessionTypes";
+import { QuerySecurityDeviceRepositories } from '../Repositories/queryRepositories/securityDevice-query-repositories';
 
 export const securityDeviceRouter = Router({});
 
@@ -11,7 +12,8 @@ export class SecurityDeviceController {
   constructor(
     protected securityDeviceRepositories: SecurityDeviceRepositories,
     protected jwtService: JWTService,
-    protected deviceService: DeviceService
+    protected deviceService: DeviceService,
+	protected querySecurityDeviceRepositories: QuerySecurityDeviceRepositories
   ) {}
   async getDeviceUsers(
     req: Request,
@@ -19,7 +21,7 @@ export class SecurityDeviceController {
   ): Promise<Response<DeviceView[]>> {
     const userId = req.user._id.toString();
     const getDevicesAllUsers: DeviceView[] =
-      await this.securityDeviceRepositories.getDevicesAllUsers(userId);
+      await this.querySecurityDeviceRepositories.getDevicesAllUsers(userId);
     if (!getDevicesAllUsers) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     } else {

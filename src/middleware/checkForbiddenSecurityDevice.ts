@@ -1,4 +1,4 @@
-import { securityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
+import { querySecurityDeviceRepositories } from "../Compositions-root/securityDevice-compostition-root";
 import { HTTP_STATUS } from "../utils";
 import { NextFunction, Request, Response } from "express";
 
@@ -19,7 +19,7 @@ export const checkForbiddenSecurityDevice = async function (
 
 console.log(deviceId, 'deviceId')
 
-  const findSession = await securityDeviceRepositories.findDeviceByDeviceId(deviceId);
+  const findSession = await querySecurityDeviceRepositories.findDeviceByDeviceId(deviceId);
 
   console.log(findSession, 'findSession')
 

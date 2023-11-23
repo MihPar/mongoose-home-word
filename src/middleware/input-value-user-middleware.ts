@@ -1,5 +1,5 @@
+import { queryUsersRepositories } from '../Compositions-root/user-composition-root';
 import { Users } from '../types/userTypes';
-import { userRepositories } from '../Repositories/user-db-repositories';
 import {body} from 'express-validator'
 
 export const inputValueUserEmailValidatioin = body('email')
@@ -7,7 +7,7 @@ export const inputValueUserEmailValidatioin = body('email')
 .trim()
 .isEmail()
 .custom(async(email): Promise<boolean> => {
-	const user: Users | null = await userRepositories.findByLoginOrEmail(email)
+	const user: Users | null = await queryUsersRepositories.findByLoginOrEmail(email)
 	if(user) {
 		throw new Error('User does not exist in DB')
 	} 

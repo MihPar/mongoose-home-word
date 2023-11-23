@@ -1,17 +1,18 @@
-import { userRepositories } from './../DataAccessLayer/user-db-repositories';
-import { UserRepositories } from '../Repositories/user-db-repositories';
-import { Users, UserViewType } from '../types/userTypes';
+import { UserRepositories } from "../Repositories/user-db-repositories";
+import { Users, UserViewType } from "../types/userTypes";
 import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
 import { EmailManager } from "../manager/email-manager";
 import { v4 as uuidv4 } from "uuid";
 import add from "date-fns/add";
-import {WithId} from 'mongodb'
+import { WithId } from "mongodb";
+import { QueryUsersRepositories } from "../Repositories/queryRepositories/users-query-repositories";
 
 export class UserService {
   constructor(
     protected userRepositories: UserRepositories,
-    protected emailManager: EmailManager
+    protected emailManager: EmailManager,
+    protected queryUsersRepositories: QueryUsersRepositories
   ) {}
   async createNewUser(
     login: string,
@@ -64,9 +65,8 @@ export class UserService {
     loginOrEmail: string,
     password: string
   ): Promise<Users | null> {
-    const user: Users | null = await this.userRepositories.findByLoginOrEmail(
-      loginOrEmail
-    );
+    const user: Users | null =
+      await this.queryUsersRepositories.findByLoginOrEmail(loginOrEmail);
     if (!user) return null;
     const resultBcryptCompare: boolean = await bcrypt.compare(
       password,
@@ -83,24 +83,23 @@ export class UserService {
     const deleteId: boolean = await this.userRepositories.deleteById(id);
     return deleteId;
   }
-  async findUserById(userId: ObjectId): Promise<Users | null> {
-    return await this.userRepositories.findUserById(userId);
-  }
+//   async findUserById(userId: ObjectId): Promise<Users | null> {
+//     return await this.queryUsersRepositories.findUserById(userId);
+//   }
   async deleteAllUsers() {
     return await this.userRepositories.deleteAll();
   }
   async findUserByConfirmationCode(code: string): Promise<boolean> {
-    const user = await this.userRepositories.findUserByConfirmation(code);
+    const user = await this.queryUsersRepositories.findUserByConfirmation(code);
     const result = await this.userRepositories.updateConfirmation(user!._id);
     return result;
   }
   async confirmEmail(email: string): Promise<Users | null> {
-    return await this.userRepositories.findByLoginOrEmail(email);
+    return await this.queryUsersRepositories.findByLoginOrEmail(email);
   }
   async confirmEmailResendCode(email: string): Promise<boolean | null> {
-    const user: Users | null = await this.userRepositories.findByLoginOrEmail(
-      email
-    );
+    const user: Users | null =
+      await this.queryUsersRepositories.findByLoginOrEmail(email);
     if (!user) return null;
     if (user.emailConfirmation.isConfirmed) {
       return null;
@@ -135,7 +134,7 @@ export class UserService {
     newPassword: string,
     recoveryCode: string
   ): Promise<boolean> {
-    const findUserByCode = await this.userRepositories.findUserByCode(
+    const findUserByCode = await this.queryUsersRepositories.findUserByCode(
       recoveryCode
     );
     if (!findUserByCode) {
@@ -157,7 +156,7 @@ export class UserService {
   async recoveryPassword(email: string): Promise<boolean> {
     const recoveryCode = uuidv4();
     const findUser: WithId<Users> | null =
-      await this.userRepositories.findUserByEmail(email);
+      await this.queryUsersRepositories.findUserByEmail(email);
     console.log("findUser: ", findUser);
     if (!findUser) {
       console.log("false: ", findUser);
@@ -173,5 +172,3 @@ export class UserService {
     }
   }
 }
-
-// export const userService = new UserService()

@@ -1,10 +1,10 @@
-import { sessionService } from '../Service/sessionService';
 import  jwt  from 'jsonwebtoken';
 import {Request, Response, NextFunction} from 'express'
 import { HTTP_STATUS } from '../utils'
-import { userService } from '../Service/userService';
 import {config} from'dotenv'
 import { ObjectId } from 'mongodb';
+import { queryUsersRepositories } from '../Compositions-root/user-composition-root';
+import { sessionService } from '../Compositions-root/session-composition-root';
 config();
 
 export const checkRefreshTokenMiddleware = async function(req: Request, res: Response, next: NextFunction) {
@@ -18,7 +18,7 @@ export const checkRefreshTokenMiddleware = async function(req: Request, res: Res
 		const result: any = await jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET!)
 		// console.log('after verify', result)
 		if(result.userId){
-			const user = await userService.findUserById(new ObjectId(result.userId))
+			const user = await queryUsersRepositories.findUserById(new ObjectId(result.userId))
 			// console.log('user:', user)
 			if(!user) {
 				return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401)

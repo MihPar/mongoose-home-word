@@ -12,13 +12,15 @@ import { HTTP_STATUS } from "../utils";
 import { UserRepositories } from "../Repositories/user-db-repositories";
 import { Router, Response } from "express";
 import { UserViewType } from "../types/userTypes";
+import { QueryUsersRepositories } from "../Repositories/queryRepositories/users-query-repositories";
 
 export const usersRouter = Router({});
 
 export class UserController {
   constructor(
     protected userRepositories: UserRepositories,
-    protected userService: UserService
+    protected userService: UserService,
+	protected queryUsersRepositories: QueryUsersRepositories
   ) {}
   async getAllUsers(
     req: RequestWithQuery<QueryUserModel>,
@@ -33,7 +35,7 @@ export class UserController {
       searchEmailTerm = "",
     } = req.query;
     const users: PaginationType<UserViewType> =
-      await this.userRepositories.getAllUsers(
+      await this.queryUsersRepositories.getAllUsers(
         sortBy,
         sortDirection,
         pageNumber,

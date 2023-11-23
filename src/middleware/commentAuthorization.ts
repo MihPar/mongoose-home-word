@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS } from "../utils";
-import { jwtService } from "../Service/jwtService";
-import { userService } from "../Service/userService";
-import { commentRepositories } from "../Repositories/comment-db-repositories";
+import { jwtService } from "../Compositions-root/auth-composition-root";
+import { queryUsersRepositories } from "../Compositions-root/user-composition-root";
 
 export const commentAuthorization = async function(req: Request, res: Response, next: NextFunction) {
 	if(!req.headers.authorization) {
@@ -11,7 +10,7 @@ export const commentAuthorization = async function(req: Request, res: Response, 
 	const token = req.headers.authorization.split(' ')[1]
 	const userId = await jwtService.getUserIdByToken(token)
 	if(userId) {
-		const resultAuth = await userService.findUserById(userId)
+		const resultAuth = await queryUsersRepositories.findUserById(userId)
 		if(resultAuth){
 			req.user = resultAuth
 			next()

@@ -1,11 +1,11 @@
-import { securityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { HTTP_STATUS } from "../utils";
-import { userService } from "../Service/userService";
 import { config } from "dotenv";
 import { ObjectId } from "mongodb";
-import { jwtService } from "../Service/jwtService";
+import { querySecurityDeviceRepositories } from "../Compositions-root/securityDevice-compostition-root";
+import { jwtService } from "../Compositions-root/auth-composition-root";
+import { queryUsersRepositories } from "../Compositions-root/user-composition-root";
 config();
 
 export const checkRefreshTokenSecurityDeviceMiddleware = async function (
@@ -24,7 +24,7 @@ export const checkRefreshTokenSecurityDeviceMiddleware = async function (
   } catch (err) {
     return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
   }
-  const session = await securityDeviceRepositories.findDeviceByDeviceId(
+  const session = await querySecurityDeviceRepositories.findDeviceByDeviceId(
     result.deviceId
   );
   if (
@@ -35,7 +35,7 @@ export const checkRefreshTokenSecurityDeviceMiddleware = async function (
     return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
   }
   if (result.userId) {
-    const user = await userService.findUserById(new ObjectId(result.userId));
+    const user = await queryUsersRepositories.findUserById(new ObjectId(result.userId));
     if (!user) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
     }

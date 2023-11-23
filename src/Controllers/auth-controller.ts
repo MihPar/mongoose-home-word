@@ -1,3 +1,4 @@
+import { queryUsersRepositories } from './../Compositions-root/user-composition-root';
 import { DeviceService } from '../Service/deviceService';
 import { JWTService } from '../Service/jwtService';
 import { UserService } from '../Service/userService';
@@ -15,6 +16,7 @@ import { Router, Response, Request } from "express";
 import { HTTP_STATUS } from "../utils";
 import { ObjectId } from "mongodb";
 import { Users } from "../types/userTypes";
+import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';
 
 export const authRouter = Router({});
 
@@ -22,7 +24,8 @@ export class AuthContorller {
   constructor(
     protected userService: UserService,
     protected jwtService: JWTService,
-    protected deviceService: DeviceService
+    protected deviceService: DeviceService,
+	protected queryUsersRepositories: QueryUsersRepositories
   ) {}
   async createNewPassword(
     req: RequestWithBody<BodyPasswordRecoveryCode>,
@@ -131,7 +134,7 @@ export class AuthContorller {
       token
     );
     if (!userId) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
-    const currentUser: Users | null = await this.userService.findUserById(
+    const currentUser: Users | null = await this.queryUsersRepositories.findUserById(
       userId
     );
     if (!currentUser) return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
