@@ -3,7 +3,7 @@ import { SecurityDeviceRepositories } from "../Repositories/securityDevice-db-re
 import { DeviceService } from "../Service/deviceService";
 import { JWTService } from '../Service/jwtService';
 
-const securityDeviceRepositories = new SecurityDeviceRepositories()
+export const securityDeviceRepositories = new SecurityDeviceRepositories()
 const jwtService = new JWTService()
 const deviceService = new DeviceService(securityDeviceRepositories, jwtService)
 export const securityDeviceController = new SecurityDeviceController(securityDeviceRepositories, jwtService, deviceService)

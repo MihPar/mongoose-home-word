@@ -1,10 +1,10 @@
 import { ObjectId } from 'mongodb';
-import { securityDeviceRepositories } from '../Repositories/securityDevice-db-repositories';
 import { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUS } from '../utils';
 import {config} from'dotenv'
 import { CollectionIP } from '../types/deviceAuthSessionTypes';
 import { IPCollectionModel } from '../db/db';
+import { securityDeviceRepositories } from '../Compositions-root/securityDevice-compostition-root';
 config()
 
 export const limitRequestMiddleware = async (req: Request, res: Response, next: NextFunction) => {
