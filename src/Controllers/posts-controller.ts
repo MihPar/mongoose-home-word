@@ -12,7 +12,7 @@ import {
   PaginationType,
 } from "../types/types";
 import { Router, Response } from "express";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { Posts } from '../types/postsTypes';
 import { CommentView } from '../types/commentType';
 import { CommentRepositories } from '../Repositories/comment-db-repositories';

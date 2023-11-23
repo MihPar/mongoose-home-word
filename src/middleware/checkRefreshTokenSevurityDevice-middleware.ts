@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { config } from "dotenv";
 import { ObjectId } from "mongodb";
 import { querySecurityDeviceRepositories } from "../Compositions-root/securityDevice-compostition-root";

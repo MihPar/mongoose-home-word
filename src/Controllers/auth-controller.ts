@@ -13,7 +13,7 @@ import { ResAuthModel } from "../model/modelAuth/resAuthMode";
 import { bodyAuthModel } from "../model/modelAuth/bodyAuthModel";
 import { RequestWithBody } from "../types/types";
 import { Router, Response, Request } from "express";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { ObjectId } from "mongodb";
 import { Users } from "../types/userTypes";
 import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';

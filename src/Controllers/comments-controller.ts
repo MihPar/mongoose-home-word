@@ -3,12 +3,13 @@ import { paramsCommentMode } from "../model/modelComment/paramsCommentModel";
 import { CommentRepositories } from "../Repositories/comment-db-repositories";
 import { Router, Response } from "express";
 import { CommentService } from "../Service/commentService";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { RequestWithParams, RequestWithParamsAndBody } from "../types/types";
 import { bodyCommentIdMode } from "../model/modelComment/boydCommentIdMode";
 import { paramsCommentIdMode } from "../model/modelComment/paramsCommentIdModel copy";
 import { CommentView } from "../types/commentType";
 import { QueryCommentRepositories } from "../Repositories/queryRepositories/comment-query-repositories";
+import { commentDBToView } from "../utils/helpers";
 
 export const commentsRouter = Router({});
 
@@ -25,12 +26,14 @@ export class CommentController {
     const { commentId } = req.params;
     const { likeStatus } = req.body;
 	const {userId} = req.user;
-    const findCommentById = await this.commentService.findCommentById(
+    const findCommentById = await this.queryCommentRepositories.findCommentByCommentIdLikeStatus(
       commentId, userId
     );
     if (!findCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
+	const resultDataLike = await this.queryCommentRepositories.resultLikeProcessing(commentId, userId)
+	commentDBToView(findCommentById, resultDataLike);
 	return res.sendStatus(HTTP_STATUS.NO_CONTENT_204)
   }
   async updateByCommentId(
@@ -39,9 +42,8 @@ export class CommentController {
   ) {
     const { commentId } = req.params;
     const { content } = req.body;
-	const {userId} = req.user;
-    const isExistComment = await this.commentService.findCommentById(
-      commentId, userId
+    const isExistComment = await this.queryCommentRepositories.findCommentById(
+      commentId
     );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { jwtService } from "../Compositions-root/auth-composition-root";
 import { queryUsersRepositories } from "../Compositions-root/user-composition-root";
 

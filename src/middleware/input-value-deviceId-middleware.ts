@@ -1,7 +1,7 @@
 import { ParamsSecurityDeviceModel } from './../model/modelSecurityDevice/modelSecurityDevice';
 import { RequestWithParams } from '../types/types';
 import { NextFunction, Response } from "express";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 
 export const checkDeviceId = function (
   req: RequestWithParams<ParamsSecurityDeviceModel>,

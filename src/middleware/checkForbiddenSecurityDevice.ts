@@ -1,5 +1,5 @@
 import { querySecurityDeviceRepositories } from "../Compositions-root/securityDevice-compostition-root";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { NextFunction, Request, Response } from "express";
 
 export const checkForbiddenSecurityDevice = async function (

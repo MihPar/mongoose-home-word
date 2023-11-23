@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import {ValidationError, validationResult} from 'express-validator'
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 
 export const errorFormater = (error: ValidationError) => {
 	switch (error.type) {

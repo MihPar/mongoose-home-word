@@ -1,7 +1,7 @@
 import { RequestWithParams } from '../types/types';
 import { NextFunction, Response } from "express";
 import { ParamsUserMode } from "../model/modelUser/paramsUserModel";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 
 export const checkId = function (
   req: RequestWithParams<ParamsUserMode>,

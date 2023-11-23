@@ -1,41 +1,11 @@
-import { likeInfoType } from './../types/likesInfoType';
 import { CommentRepositories } from '../Repositories/comment-db-repositories';
-import { CommentsModel, LikesModel } from '../db/db';
+import { LikesModel } from '../db/db';
 import { LikeStatusEnum } from '../enum/like-status-enum';
 import { CommentView, Comments } from "../types/commentType";
 import { ObjectId } from "mongodb";
-import { LikesInfoClass } from '../types/likesInfoType';
-
-export const commentDBToView = (item: Comments, likesInfo?: LikesInfoClass): CommentView => {
-	return {
-	  _id: new ObjectId(),
-	  content: item.content,
-	  commentatorInfo: item.commentatorInfo,
-	  createdAt: item.createdAt,
-	  likesInfo: {
-		likesCount: likesInfo?.likesCount || 0,
-    	dislikesCount: likesInfo?.dislikesCount || 0,
-    	myStatus: likesInfo?.myStatus || LikeStatusEnum.None
-	  }
-	};
-  };
 
 export class CommentService {
   constructor(protected commentRepositories: CommentRepositories) {}
-  async findCommentById(commentId: string, userId: ObjectId) {
-	try {
-		const commentById: Comments | null = await CommentsModel.findOne({
-		  _id: new ObjectId(commentId),
-		});
-		if (!commentById) {
-		  return null;
-		}
-		const resultDataLike = await this.resultLikeProcessing(commentId, userId)
-		return commentDBToView(commentById, resultDataLike);
-	  } catch (e) {
-		return null;
-	  }
-  }
  	async resultLikeProcessing(commentId: string, userId: ObjectId) {
 	const like = await LikesModel.countDocuments({commentId: commentId, myStatus: 'Like'})
 	const dislike = await LikesModel.countDocuments({commentId: commentId, myStatus: 'Dislike'})

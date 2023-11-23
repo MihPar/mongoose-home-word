@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { NextFunction, Request, Response } from 'express';
-import { HTTP_STATUS } from '../utils';
+import { HTTP_STATUS } from '../utils/utils';
 import {config} from'dotenv'
 import { CollectionIP } from '../types/deviceAuthSessionTypes';
 import { IPCollectionModel } from '../db/db';

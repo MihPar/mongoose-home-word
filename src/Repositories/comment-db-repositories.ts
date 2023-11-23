@@ -1,10 +1,7 @@
-import { LikeStatusEnum } from '../enum/like-status-enum';
 import { CommentView, Comments } from '../types/commentType';
-import { PaginationType } from '../types/types';
 import { CommentsModel, LikesModel } from '../db/db';
 import { ObjectId } from "mongodb";
-import { LikesInfoClass } from '../types/likesInfoType';
-import { commentDBToView } from '../Service/commentService';
+import { commentDBToView } from '../utils/helpers';
 
 
 

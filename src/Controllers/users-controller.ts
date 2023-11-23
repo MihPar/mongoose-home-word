@@ -8,7 +8,7 @@ import {
   RequestWithBody,
   RequestWithParams,
 } from "../types/types";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { UserRepositories } from "../Repositories/user-db-repositories";
 import { Router, Response } from "express";
 import { UserViewType } from "../types/userTypes";

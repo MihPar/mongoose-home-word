@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 
 const expectAuthHead = "admin:qwerty"
 const encoding = Buffer.from(expectAuthHead).toString('base64')

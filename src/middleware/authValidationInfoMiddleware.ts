@@ -1,6 +1,6 @@
 import { Users } from '../types/userTypes';
 import { Request, Response, NextFunction } from "express";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { ObjectId } from "mongodb";
 import { jwtService } from '../Compositions-root/auth-composition-root';
 import { queryUsersRepositories } from '../Compositions-root/user-composition-root';

@@ -12,7 +12,7 @@ import {
 import { PostsService } from "../Service/postsService";
 import { BlogsService } from "../Service/blogsService";
 import { Router, Response } from "express";
-import { HTTP_STATUS } from "../utils";
+import { HTTP_STATUS } from "../utils/utils";
 import { RequestWithBody, RequestWithQuery } from "../types/types";
 import { QueryBlogsModel } from "../model/modelBlogs/QueryBlogsModel";
 import { bodyBlogsModel } from "../model/modelBlogs/bodyBlogsModel";
