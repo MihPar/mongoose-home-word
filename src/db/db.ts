@@ -1,3 +1,4 @@
+import { LikesInfo } from './../types/likesInfoType';
 import { DeviceSchema, CollectioInIPSchema } from './../schema/deviceAuth-schema';
 import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
@@ -11,6 +12,7 @@ import { Users } from '../types/userTypes';
 import { Posts } from '../types/postsTypes';
 import { CollectionIP, Devices } from '../types/deviceAuthSessionTypes';
 import { Comments } from '../types/commentType';
+import { LikesInfoSchema } from '../schema/likesInfo-schema';
 dotenv.config()
 	 
 
@@ -41,7 +43,7 @@ export const UsersModel = mongoose.model<Users>('user', DBUserSchema)
 export const CommentsModel = mongoose.model<Comments>('comment', CommentSchema)
 export const DevicesModel = mongoose.model<Devices>('device', DeviceSchema)
 export const IPCollectionModel = mongoose.model<CollectionIP>('IP', CollectioInIPSchema)
-export const LikesModel = mongoose.model<>('like-dislike', LikeSchema)
+export const LikesModel = mongoose.model<LikesInfo>('like-dislike', LikesInfoSchema)
 
 // export const blogsCollection = db.collection<BlogsType>('blogs')
 // export const postsCollection = db.collection<PostsType>('posts')

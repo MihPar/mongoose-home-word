@@ -1,12 +1,21 @@
 import { LikeStatusEnum } from '../enum/like-status-enum';
-import { LikesInfoClass } from '../types/commentType';
 import { CommentView, Comments } from '../types/commentType';
 import { PaginationType } from '../types/types';
-import { CommentsModel } from '../db/db';
+import { CommentsModel, LikesModel } from '../db/db';
 import { ObjectId } from "mongodb";
+import { LikesInfoClass } from '../types/likesInfoType';
+import { commentDBToView } from '../Service/commentService';
+
 
 
 export class CommentRepositories {
+	async createLike(commentId: string, userId: ObjectId, likeStatus: string) {
+		const saveResult = await LikesModel.create({commentId: commentId, userId: userId, likeStatus: likeStatus})
+        return saveResult.id
+	}
+	async findLikesCommentByUser(commentId: string, userId: ObjectId) {
+		return LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
+	}
 	async updateComment(commentId: string, content: string) {
 		const updateOne = await CommentsModel.updateOne(
 		  { _id: new ObjectId(commentId) },
@@ -24,16 +33,15 @@ export class CommentRepositories {
 		  return false;
 		}
 	  }
-	  async findCommentById(id: string, userId?: string): Promise<CommentView | null> {
+	  async findCommentById(commentId: string): Promise<CommentView | null> {
 		try {
 		  const commentById: Comments | null = await CommentsModel.findOne({
-			_id: new ObjectId(id),
+			_id: new ObjectId(commentId),
 		  });
 		  if (!commentById) {
 			return null;
 		  }
-		  const resultDataLike = await this.resultLikeProcessing(id, userId)
-		  return commentDBToView(commentById, resultDataLike);
+		  return commentDBToView(commentById);
 		} catch (e) {
 		  return null;
 		}
@@ -43,7 +51,8 @@ export class CommentRepositories {
 		pageNumber: string,
 		pageSize: string,
 		sortBy: string,
-		sortDirection: string
+		sortDirection: string,
+		userId: ObjectId
 	  ): Promise<PaginationType<CommentView> | null> {
 		const filter = { postId: postId };
 		const commentByPostId: Comments[] = await CommentsModel
@@ -54,14 +63,22 @@ export class CommentRepositories {
 		  .lean();
 		const totalCount: number = await CommentsModel.countDocuments(filter);
 		const pagesCount: number = await Math.ceil(totalCount / +pageSize);
+
+		const items: CommentView[] = []
+
+		commentByPostId.forEach( async (item) => {
+			const likesInfo = await this.resultLikeProcessing(item._id.toString(), userId)
+			const commnent = commentDBToView(item, likesInfo)
+
+			items.push(commnent)
+		})
+
 		return {
 		  pagesCount: pagesCount,
 		  page: +pageNumber,
 		  pageSize: +pageSize,
 		  totalCount: totalCount,
-		  items: commentByPostId.map(function (item) {
-			return commentDBToView(item);
-		  }),
+		  items,
 		};
 	  }
 	  async createNewCommentPostId(
@@ -70,36 +87,18 @@ export class CommentRepositories {
 		await CommentsModel.insertMany([newComment]);
 		return commentDBToView(newComment);
 	  }
-	  async resultLikeProcessing(id: string, userId: string) {
-		const like = await LikesModel.countDocuments({})
-		const dislike = await LikesModel.countDocuments({})
-		if(!userId) {
-			return {
-				likesCount: like,
-				dislikeCount: dislike,
-				myStatus: LikeStatusEnum.None
-			}
-		}
-		const likeStatusUser = await LikesModel.findOne({$and: {}})
+	  async resultLikeProcessing(commentId: string, userId: ObjectId) {
+		const like = await LikesModel.countDocuments({commentId: commentId, myStatus: 'Like'})
+		const dislike = await LikesModel.countDocuments({commentId: commentId, myStatus: 'Dislike'})
+		
+		const likeStatusUser = await LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
 		return {
-			likeCount: like,
-			dislikeCount: dislike,
+			likesCount: like,
+			dislikesCount: dislike,
 			myStatus: likeStatusUser !== null ? likeStatusUser.myStatus : LikeStatusEnum.None
 		}
 	  }
 }
 
-const commentDBToView = (item: Comments, likesInfo: LikesInfoClass): CommentView => {
-	return {
-	  _id: new ObjectId(),
-	  content: item.content,
-	  commentatorInfo: item.commentatorInfo,
-	  createdAt: item.createdAt,
-	  likeInfo: {
-		likesCount: likesInfo.likesCount || 0,
-    	dislikesCount: likesInfo.dislikeCount || 0,
-    	myStatus: likesInfo.myStatus || LikeStatusEnum.None
-	  }
-	};
-  };
+
 

@@ -5,7 +5,7 @@ import { PostsService } from "../Service/postsService";
 import { CommentService } from '../Service/commentService';
 
 const postsRepositories = new PostsRepositories();
-const postsService = new PostsService(postsRepositories);
+export const postsService = new PostsService(postsRepositories);
 const commentRepositories = new CommentRepositories();
 const commentService = new CommentService(commentRepositories);
 export const postsController = new PostsController(

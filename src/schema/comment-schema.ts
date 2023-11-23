@@ -2,7 +2,6 @@ import { CommentView } from '../types/commentType';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 import { Comments } from '../types/commentType'
-import { LikeStatusEnum } from '../enum/like-status-enum';
 import { LikesInfoSchema } from './likesInfo-schema';
 
 export const CommentViewSchema = new mongoose.Schema<WithId<CommentView>>({

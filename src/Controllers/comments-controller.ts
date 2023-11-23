@@ -1,10 +1,7 @@
 import { likeStatusModel } from "../model/modelComment/bodyLikeStatusMode";
 import { paramsCommentMode } from "../model/modelComment/paramsCommentModel";
 import { CommentRepositories } from "../Repositories/comment-db-repositories";
-import { commentAuthorization } from "../middleware/commentAuthorization";
 import { Router, Response } from "express";
-import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
-import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { CommentService } from "../Service/commentService";
 import { HTTP_STATUS } from "../utils";
 import { RequestWithParams, RequestWithParamsAndBody } from "../types/types";
@@ -25,12 +22,14 @@ export class CommentController {
   ) {
     const { commentId } = req.params;
     const { likeStatus } = req.body;
-    const findCommentById = await this.commentRepositories.findCommentById(
-      commentId
+	const {userId} = req.user;
+    const findCommentById = await this.commentService.findCommentById(
+      commentId, userId
     );
     if (!findCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
+	return res.sendStatus(HTTP_STATUS.NO_CONTENT_204)
   }
   async updateByCommentId(
     req: RequestWithParamsAndBody<paramsCommentIdMode, bodyCommentIdMode>,
@@ -38,8 +37,9 @@ export class CommentController {
   ) {
     const { commentId } = req.params;
     const { content } = req.body;
-    const isExistComment = await this.commentRepositories.findCommentById(
-      commentId
+	const {userId} = req.user;
+    const isExistComment = await this.commentService.findCommentById(
+      commentId, userId
     );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -60,6 +60,7 @@ export class CommentController {
     res: Response<boolean>
   ): Promise<Response<boolean>> {
     const { commentId } = req.params;
+	const {userId} = req.user;
     const isExistComment = await this.commentRepositories.findCommentById(
       commentId
     );
@@ -91,5 +92,5 @@ export class CommentController {
   }
 }
 
-// export const commentController = new CommentController();
-
+// 1) Проверить comment на существование
+// 2) Найти like для текущено user 

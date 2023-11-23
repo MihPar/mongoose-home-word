@@ -50,6 +50,7 @@ export class PostsController {
       sortBy = "createdAt",
       sortDirection = "desc",
     } = req.query;
+	const {userId} = req.user
     const isExistPots = await this.postsRepositories.findPostById(postId);
     if (!isExistPots) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -60,7 +61,8 @@ export class PostsController {
         pageNumber,
         pageSize,
         sortBy,
-        sortDirection
+        sortDirection,
+		userId
       );
     if (!commentByPostsId) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -86,7 +88,7 @@ export class PostsController {
         postId,
         content,
         user._id.toString(),
-        user.accountData.userName
+        user.accountData.userName,
       );
     if (!createNewCommentByPostId) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

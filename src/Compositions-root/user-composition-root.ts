@@ -5,6 +5,6 @@ import { UserController } from '../Controllers/users-controller';
 
 const userRepositories = new UserRepositories()
 const emailManager = new EmailManager()
-const userService = new UserService(userRepositories, emailManager)
+export const userService = new UserService(userRepositories, emailManager)
 export const userController = new UserController(userRepositories, userService)
 

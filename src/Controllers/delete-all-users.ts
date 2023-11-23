@@ -1,7 +1,9 @@
-import { postsService } from './../Bisnes-logic-layer/postsService';
 import { CommentsModel, DevicesModel, IPCollectionModel } from '../db/db';
 import { Router, Request, Response } from "express";
 import { HTTP_STATUS } from "../utils";
+import { postsService } from '../Compositions-root/posts-composition-root';
+import { blogsService } from '../Compositions-root/blogs-composition.root';
+import { userService } from '../Compositions-root/user-composition-root';
 
 export const deleteAllRouter = Router({});
 

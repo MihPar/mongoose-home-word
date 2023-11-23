@@ -7,16 +7,25 @@ export type likeInfoType = {
     myStatus: LikeStatusEnum
 }
 
-export type newestLikesType = {
-    addedAt: string,
-    userId: ObjectId,
-    login: string
+export class LikesInfoClass {
+  constructor(
+    public likesCount: number,
+    public dislikesCount: number,
+    public myStatus: LikeStatusEnum
+  ) {}
 }
+
+// export type newestLikesType = {
+//     addedAt: string,
+//     userId: ObjectId,
+//     login: string
+// }
 
   export class LikesInfo {
     constructor(
-      public likesCount: number,
-      public dislikesCount: number,
+	  public _id: ObjectId,
+	  public userId: ObjectId,
+	  public commentId: String,
       public myStatus: LikeStatusEnum,
     ) {}
   }

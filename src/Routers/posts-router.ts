@@ -25,7 +25,7 @@ postsRouter.post(
   ValueMiddleware,
   postsController.createPost.bind(postsController.createPost)
 );
-postsRouter.get("/:id", postsController.getPostById.bind(postsController.getPostById));
+postsRouter.get("/:id", commentAuthorization, postsController.getPostById.bind(postsController.getPostById));
 postsRouter.put(
   "/:id",
   authorization,
