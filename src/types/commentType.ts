@@ -1,16 +1,11 @@
 import { ObjectId } from "mongodb"
-import { LikeStatusEnam } from "../enam/like-status-enum";
+import { LikeStatusEnum } from "../enum/like-status-enum";
+import { likeInfoType } from "./likesInfoType";
 
 export type CommentatorInfo = {
   userId: string;
   userLogin: string;
 };
-
-export type likeInfoType = {
-	likesCount: number
-    dislikesCount: number
-    myStatus: string
-}
 
 export class CommentView {
   constructor(
@@ -18,7 +13,7 @@ export class CommentView {
     public content: string,
     public commentatorInfo: CommentatorInfo,
     public createdAt: string,
-	public likeInfo: likeInfoType
+	public likesInfo: likeInfoType
   ) {}
 }
 
@@ -29,22 +24,6 @@ export class Comments {
 	  public commentatorInfo: CommentatorInfo,
 	  public postId: string,
 	  public createdAt: string,
+	  public likesInfo: likeInfoType
 	) {}
   }
-
-  export type newestLikesType = {
-    addedAt: string,
-    userId: ObjectId,
-    login: string
-}
-
-  export class LikesInfoClass {
-    constructor(
-      public likesCount: number,
-      public dislikeCount: number,
-      public myStatus: LikeStatusEnam,
-	  public newestLike: newestLikesType[]
-    ) {}
-  }
-
- 

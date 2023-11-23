@@ -1,4 +1,4 @@
-import { LikeStatusEnum } from '../enam/like-status-enum';
+import { LikeStatusEnum } from '../enum/like-status-enum';
 import { LikesInfoClass } from '../types/commentType';
 import { CommentView, Comments } from '../types/commentType';
 import { PaginationType } from '../types/types';
