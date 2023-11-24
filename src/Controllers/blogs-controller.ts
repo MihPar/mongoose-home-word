@@ -11,7 +11,7 @@ import {
 } from "../types/types";
 import { PostsService } from "../Service/postsService";
 import { BlogsService } from "../Service/blogsService";
-import { Router, Response } from "express";
+import { Response } from "express";
 import { HTTP_STATUS } from "../utils/utils";
 import { RequestWithBody, RequestWithQuery } from "../types/types";
 import { QueryBlogsModel } from "../model/modelBlogs/QueryBlogsModel";
@@ -22,7 +22,6 @@ import { PostsRepositories } from "../Repositories/posts-db-repositories";
 import { QueryBlogsRepositories } from "../Repositories/queryRepositories/blogs-query-repositories";
 import { QueryPostsRepositories } from "../Repositories/queryRepositories/posts-query-repositories";
 
-export const blogsRouter = Router({});
 
 export class BlogsComtroller {
   constructor(

@@ -10,11 +10,10 @@ import {
 } from "../types/types";
 import { HTTP_STATUS } from "../utils/utils";
 import { UserRepositories } from "../Repositories/user-db-repositories";
-import { Router, Response } from "express";
+import { Response } from "express";
 import { UserViewType } from "../types/userTypes";
 import { QueryUsersRepositories } from "../Repositories/queryRepositories/users-query-repositories";
 
-export const usersRouter = Router({});
 
 export class UserController {
   constructor(

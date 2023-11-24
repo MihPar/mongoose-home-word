@@ -1,23 +1,25 @@
+import { Router } from "express";
 import { commentController } from "../Compositions-root/comment-composition-root";
-import { commentsRouter } from "../Controllers/comments-controller";
 import { commentAuthorization } from "../middleware/commentAuthorization";
 import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
 
-commentsRouter.put('/:commentId/like-status', commentAuthorization, commentController.updateByCommentIdLikeStatus.bind(commentController.updateByCommentIdLikeStatus))
+export const commentsRouter = Router({});
+
+commentsRouter.put('/:commentId/like-status', commentAuthorization, commentController.updateByCommentIdLikeStatus.bind(commentController))
 
 commentsRouter.put(
 	"/:commentId",
 	commentAuthorization,
 	inputCommentValidator,
 	ValueMiddleware,
-	commentController.updateByCommentId.bind(commentController.updateByCommentId)
+	commentController.updateByCommentId.bind(commentController)
   );
   
   commentsRouter.delete(
 	"/:commentId",
 	commentAuthorization,
-	commentController.deleteByCommentId.bind(commentController.deleteByCommentId)
+	commentController.deleteByCommentId.bind(commentController)
   );
   
-  commentsRouter.get("/:id", commentController.getCommentById);
+  commentsRouter.get("/:id", commentController.getCommentById.bind(commentController));

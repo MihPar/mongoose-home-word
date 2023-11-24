@@ -28,5 +28,9 @@ export class SecurityDeviceRepositories {
 		const decayResult = await DevicesModel.deleteOne({deviceId})
 		return decayResult.deletedCount === 1
 	  }
+	  async deleteAllDevices() {
+		const deletedAll = await DevicesModel.deleteMany({})
+		return deletedAll.acknowledged;
+	  }
 }
 

@@ -33,6 +33,10 @@ export class CommentRepositories {
 		await CommentsModel.insertMany([newComment]);
 		return commentDBToView(newComment);
 	  }
+	  async deleteAllComments(): Promise<boolean> {
+		const deletedAll = await CommentsModel.deleteMany({});
+		return deletedAll.acknowledged;
+	  }
 }
 
 

@@ -1,4 +1,3 @@
-import { queryUsersRepositories } from './../Compositions-root/user-composition-root';
 import { DeviceService } from '../Service/deviceService';
 import { JWTService } from '../Service/jwtService';
 import { UserService } from '../Service/userService';
@@ -12,13 +11,11 @@ import { BodyRegistrationModel } from "../model/modelAuth/bodyRegistrationMode";
 import { ResAuthModel } from "../model/modelAuth/resAuthMode";
 import { bodyAuthModel } from "../model/modelAuth/bodyAuthModel";
 import { RequestWithBody } from "../types/types";
-import { Router, Response, Request } from "express";
+import { Response, Request } from "express";
 import { HTTP_STATUS } from "../utils/utils";
 import { ObjectId } from "mongodb";
 import { Users } from "../types/userTypes";
 import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';
-
-export const authRouter = Router({});
 
 export class AuthContorller {
   constructor(

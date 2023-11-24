@@ -76,4 +76,7 @@ export class DeviceService {
     }
     return true;
   }
+async deleteAllDevices() {
+	return await this.securityDeviceRepositories.deleteAllDevices()
+}
 }

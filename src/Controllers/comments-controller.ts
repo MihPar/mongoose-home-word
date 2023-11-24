@@ -11,7 +11,6 @@ import { CommentView } from "../types/commentType";
 import { QueryCommentRepositories } from "../Repositories/queryRepositories/comment-query-repositories";
 import { commentDBToView } from "../utils/helpers";
 
-export const commentsRouter = Router({});
 
 export class CommentController {
   constructor(
@@ -95,6 +94,5 @@ export class CommentController {
     }
   }
 }
-
 // 1) Проверить comment на существование
 // 2) Найти like для текущено user 

@@ -1,12 +1,11 @@
 import { DeviceService } from '../Service/deviceService';
 import { JWTService } from "../Service/jwtService";
-import { Router, Request, Response } from "express";
+import { Request, Response } from "express";
 import { SecurityDeviceRepositories } from "../Repositories/securityDevice-db-repositories";
 import { HTTP_STATUS } from "../utils/utils";
 import { DeviceView } from "../types/deviceAuthSessionTypes";
 import { QuerySecurityDeviceRepositories } from '../Repositories/queryRepositories/securityDevice-query-repositories';
 
-export const securityDeviceRouter = Router({});
 
 export class SecurityDeviceController {
   constructor(

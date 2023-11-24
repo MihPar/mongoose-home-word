@@ -1,12 +1,13 @@
-import { securityDeviceRouter } from './Controllers/securityDevice-controller';
-import { commentsRouter } from './Controllers/comments-controller';
-import { usersRouter } from './Controllers/users-controller';
-import { authRouter } from './Controllers/auth-controller';
-import { blogsRouter } from './Controllers/blogs-controller';
-import { deleteAllRouter } from './Controllers/delete-all-users';
-import { postsRouter } from './Controllers/posts-controller';
+
 import  cookieParser  from 'cookie-parser';
 import express from 'express'
+import { blogsRouter } from './Routers/blogs-router';
+import { postsRouter } from './Routers/posts-router';
+import { deleteAllRouter } from './Routers/deleteAllModels';
+import { authRouter } from './Routers/auth-router';
+import { usersRouter } from './Routers/user-router';
+import { commentsRouter } from './Routers/comment-router';
+import { securityDeviceRouter } from './Routers/securityDevice-router';
 
 
 export const initApp =()=>{

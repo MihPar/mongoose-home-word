@@ -5,5 +5,5 @@ import { CommentService } from "../Service/commentService";
 
 const queryCommentRepositories = new QueryCommentRepositories()
 const commentRepositories = new CommentRepositories()
-const commentService = new CommentService(commentRepositories)
+export const commentService = new CommentService(commentRepositories)
 export const commentController = new CommentController(commentRepositories, commentService, queryCommentRepositories)

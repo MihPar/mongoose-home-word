@@ -7,5 +7,5 @@ import { JWTService } from '../Service/jwtService';
 export const querySecurityDeviceRepositories = new QuerySecurityDeviceRepositories()
 export const securityDeviceRepositories = new SecurityDeviceRepositories()
 const jwtService = new JWTService()
-const deviceService = new DeviceService(securityDeviceRepositories, jwtService, querySecurityDeviceRepositories)
+export const deviceService = new DeviceService(securityDeviceRepositories, jwtService, querySecurityDeviceRepositories)
 export const securityDeviceController = new SecurityDeviceController(securityDeviceRepositories, jwtService, deviceService, querySecurityDeviceRepositories)

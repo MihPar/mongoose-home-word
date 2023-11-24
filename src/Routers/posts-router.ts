@@ -1,20 +1,23 @@
+import { Router } from "express";
 import { postsController } from "../Compositions-root/posts-composition-root";
-import { postsRouter } from "../Controllers/posts-controller";
 import { authorization } from "../middleware/authorizatin";
 import { commentAuthorization } from "../middleware/commentAuthorization";
 import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
 import { inputPostBlogValidator, inputPostContentValidator, inputPostShortDescriptionValidator, inputPostTitleValidator } from "../middleware/input-value-posts-middleware";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
 
-postsRouter.get("/:postId/comments", postsController.getPostByPostId.bind(postsController.getPostByPostId));
+
+export const postsRouter = Router({});
+
+postsRouter.get("/:postId/comments", postsController.getPostByPostId.bind(postsController));
 postsRouter.post(
   "/:postId/comments",
   commentAuthorization,
   inputCommentValidator,
   ValueMiddleware,
-  postsController.createPostByPostId.bind(postsController.createPostByPostId)
+  postsController.createPostByPostId.bind(postsController)
 );
-postsRouter.get("/", postsController.getPosts.bind(postsController.getPosts));
+postsRouter.get("/", postsController.getPosts.bind(postsController));
 postsRouter.post(
   "/",
   authorization,
@@ -23,9 +26,9 @@ postsRouter.post(
   inputPostContentValidator,
   inputPostBlogValidator,
   ValueMiddleware,
-  postsController.createPost.bind(postsController.createPost)
+  postsController.createPost.bind(postsController)
 );
-postsRouter.get("/:id", commentAuthorization, postsController.getPostById.bind(postsController.getPostById));
+postsRouter.get("/:id", commentAuthorization, postsController.getPostById.bind(postsController));
 postsRouter.put(
   "/:id",
   authorization,
@@ -34,6 +37,6 @@ postsRouter.put(
   inputPostContentValidator,
   inputPostBlogValidator,
   ValueMiddleware,
-  postsController.updatePostById.bind(postsController.updatePostById)
+  postsController.updatePostById.bind(postsController)
 );
-postsRouter.delete("/:id", authorization, postsController.deletePostById.bind(postsController.deletePostById));
+postsRouter.delete("/:id", authorization, postsController.deletePostById.bind(postsController));

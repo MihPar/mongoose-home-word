@@ -51,5 +51,8 @@ export class CommentService {
     console.log(newComment.commentatorInfo);
     return await this.commentRepositories.createNewCommentPostId(newComment);
   }
+  async deleteAllComments(): Promise<boolean> {
+	return await this.commentRepositories.deleteAllComments();
+  }
 }
 

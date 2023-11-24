@@ -21,7 +21,6 @@ import { PostsService } from '../Service/postsService';
 import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
 import { QueryCommentRepositories } from '../Repositories/queryRepositories/comment-query-repositories';
 
-export const postsRouter = Router({});
 
 export class PostsController {
   constructor(

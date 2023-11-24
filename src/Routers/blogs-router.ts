@@ -1,11 +1,13 @@
 import { blogsController } from "../Compositions-root/blogs-composition.root";
-import { blogsRouter } from "../Controllers/blogs-controller";
 import { authorization } from "../middleware/authorizatin";
 import { inputBlogDescription, inputBlogNameValidator, inputBlogWebsiteUrl } from "../middleware/input-value-blogs-middleware";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { inputPostContentValidator, inputPostShortDescriptionValidator, inputPostTitleValidator } from '../middleware/input-value-posts-middleware';
+import { Router } from "express";
 
-blogsRouter.get("/", blogsController.getBlogs.bind(blogsController.getBlogs));
+export const blogsRouter = Router({});
+
+blogsRouter.get("/", blogsController.getBlogs.bind(blogsController));
 blogsRouter.post(
   "/",
   authorization,
@@ -13,9 +15,9 @@ blogsRouter.post(
   inputBlogDescription,
   inputBlogWebsiteUrl,
   ValueMiddleware,
-  blogsController.createBlog.bind(blogsController.createBlog)
+  blogsController.createBlog.bind(blogsController)
 );
-blogsRouter.get("/:blogId/posts", blogsController.getBlogsByPostIdPost.bind(blogsController.getBlogsByPostIdPost));
+blogsRouter.get("/:blogId/posts", blogsController.getBlogsByPostIdPost.bind(blogsController));
 blogsRouter.post(
   "/:blogId/posts",
   authorization,
@@ -23,9 +25,9 @@ blogsRouter.post(
   inputPostTitleValidator,
   inputPostShortDescriptionValidator,
   ValueMiddleware,
-  blogsController.createBlogsByBlogsIdPost.bind(blogsController.createBlogsByBlogsIdPost)
+  blogsController.createBlogsByBlogsIdPost.bind(blogsController)
 );
-blogsRouter.get("/:id", blogsController.getPostById.bind(blogsController.getPostById));
+blogsRouter.get("/:id", blogsController.getPostById.bind(blogsController));
 blogsRouter.put(
   "/:id",
   authorization,
@@ -33,6 +35,6 @@ blogsRouter.put(
   inputBlogDescription,
   inputBlogWebsiteUrl,
   ValueMiddleware,
-  blogsController.updateBlogsById.bind(blogsController.updateBlogsById)
+  blogsController.updateBlogsById.bind(blogsController)
 );
-blogsRouter.delete("/:id", authorization, blogsController.deleteBlogsById.bind(blogsController.deleteBlogsById));
+blogsRouter.delete("/:id", authorization, blogsController.deleteBlogsById.bind(blogsController));
