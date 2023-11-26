@@ -24,6 +24,7 @@ export class Comments {
 	  public commentatorInfo: CommentatorInfo,
 	  public postId: string,
 	  public createdAt: string,
-	  public likesInfo: likeInfoType
+	  public likesCount: number,
+	  public dislikesCount: number
 	) {}
   }

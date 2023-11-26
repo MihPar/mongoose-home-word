@@ -6,10 +6,29 @@ import { commentDBToView } from '../utils/helpers';
 
 
 export class CommentRepositories {
-	async createLike(commentId: string, userId: ObjectId, likeStatus: string) {
+	async increase(commentId: string, likeStatus: string){
+		if(likeStatus !== 'Dislike' && likeStatus !== 'Like') {
+			return
+		} 
+		return await CommentsModel.updateOne({_id: new ObjectId(commentId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: 1} : {likesCont: 1}})
+	}
+	async decrease(commentId: string, likeStatus: string){
+		if(likeStatus !== 'Dislike' && likeStatus !== 'Like') {
+			return
+		} 
+		return await CommentsModel.updateOne({_id: new ObjectId(commentId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: -1} : {likesCont: -1}})
+	}
+	async saveLike(commentId: string, userId: ObjectId, likeStatus: string) {
 		const saveResult = await LikesModel.create({commentId: commentId, userId: userId, likeStatus: likeStatus})
         return saveResult.id
 	}
+	async updateLikeStatus(commentId: string, userId: ObjectId, likeStatus: string){
+		const saveResult = await LikesModel.updateOne({commentId: commentId, userId: userId}, {likeStatus: likeStatus})
+        return saveResult
+	}
+	async findLikeCommentByUser(commentId: string, userId: ObjectId) {
+        return LikesModel.findOne({$and: [{userId: userId}, {parentId: commentId}]})
+    }
 	async updateComment(commentId: string, content: string) {
 		const updateOne = await CommentsModel.updateOne(
 		  { _id: new ObjectId(commentId) },
@@ -28,10 +47,11 @@ export class CommentRepositories {
 		}
 	  }
 	  async createNewCommentPostId(
-		newComment: Comments
+		newComment: Comments, userId: string, postId: string
 	  ): Promise<CommentView> {
+		const findLike = LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
 		await CommentsModel.insertMany([newComment]);
-		return commentDBToView(newComment);
+		return commentDBToView(newComment, findLike?.myStatus ?? null);
 	  }
 	  async deleteAllComments(): Promise<boolean> {
 		const deletedAll = await CommentsModel.deleteMany({});

@@ -9,7 +9,6 @@ import { bodyCommentIdMode } from "../model/modelComment/boydCommentIdMode";
 import { paramsCommentIdMode } from "../model/modelComment/paramsCommentIdModel copy";
 import { CommentView } from "../types/commentType";
 import { QueryCommentRepositories } from "../Repositories/queryRepositories/comment-query-repositories";
-import { commentDBToView } from "../utils/helpers";
 
 
 export class CommentController {
@@ -25,14 +24,13 @@ export class CommentController {
     const { commentId } = req.params;
     const { likeStatus } = req.body;
 	const {userId} = req.user;
-    const findCommentById = await this.queryCommentRepositories.findCommentByCommentIdLikeStatus(
+    const findCommentById = await this.queryCommentRepositories.findCommentByCommentId(
       commentId, userId
     );
     if (!findCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
-	const resultDataLike = await this.queryCommentRepositories.resultLikeProcessing(commentId, userId)
-	commentDBToView(findCommentById, resultDataLike);
+	await this.commentService.updateltLikeStatus(likeStatus, commentId, userId)
 	return res.sendStatus(HTTP_STATUS.NO_CONTENT_204)
   }
   async updateByCommentId(
@@ -41,8 +39,9 @@ export class CommentController {
   ) {
     const { commentId } = req.params;
     const { content } = req.body;
+	const {userId} = req.user;
     const isExistComment = await this.queryCommentRepositories.findCommentById(
-      commentId
+      commentId, userId
     );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -65,7 +64,7 @@ export class CommentController {
     const { commentId } = req.params;
 	const {userId} = req.user;
     const isExistComment = await this.queryCommentRepositories.findCommentById(
-      commentId
+      commentId, userId
     );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -85,8 +84,9 @@ export class CommentController {
     req: RequestWithParams<paramsCommentMode>,
     res: Response<CommentView | null>
   ): Promise<Response<CommentView | null>> {
+	const {userId} = req.user;
     const getCommentById: CommentView | null =
-      await this.queryCommentRepositories.findCommentById(req.params.id);
+      await this.queryCommentRepositories.findCommentById(req.params.id, userId);
     if (!getCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     } else {
@@ -94,5 +94,3 @@ export class CommentController {
     }
   }
 }
-// 1) Проверить comment на существование
-// 2) Найти like для текущено user 

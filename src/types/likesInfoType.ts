@@ -15,17 +15,12 @@ export class LikesInfoClass {
   ) {}
 }
 
-// export type newestLikesType = {
-//     addedAt: string,
-//     userId: ObjectId,
-//     login: string
-// }
-
-  export class LikesInfo {
+  export class Like {
     constructor(
 	  public _id: ObjectId,
 	  public userId: ObjectId,
 	  public commentId: String,
+	  public postId: String,
       public myStatus: LikeStatusEnum,
     ) {}
   }

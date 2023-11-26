@@ -1,4 +1,4 @@
-import { LikesInfo } from './../types/likesInfoType';
+import { Like } from './../types/likesInfoType';
 import { DeviceSchema, CollectioInIPSchema } from './../schema/deviceAuth-schema';
 import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
@@ -43,7 +43,7 @@ export const UsersModel = mongoose.model<Users>('user', DBUserSchema)
 export const CommentsModel = mongoose.model<Comments>('comment', CommentSchema)
 export const DevicesModel = mongoose.model<Devices>('device', DeviceSchema)
 export const IPCollectionModel = mongoose.model<CollectionIP>('IP', CollectioInIPSchema)
-export const LikesModel = mongoose.model<LikesInfo>('like-dislike', LikesInfoSchema)
+export const LikesModel = mongoose.model<Like>('like-dislike', LikesInfoSchema)
 
 // export const blogsCollection = db.collection<BlogsType>('blogs')
 // export const postsCollection = db.collection<PostsType>('posts')

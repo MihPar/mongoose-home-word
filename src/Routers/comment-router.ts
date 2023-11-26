@@ -22,4 +22,4 @@ commentsRouter.put(
 	commentController.deleteByCommentId.bind(commentController)
   );
   
-  commentsRouter.get("/:id", commentController.getCommentById.bind(commentController));
+  commentsRouter.get("/:id",commentAuthorization, commentController.getCommentById.bind(commentController));

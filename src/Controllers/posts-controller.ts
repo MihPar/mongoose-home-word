@@ -11,7 +11,7 @@ import {
   RequestWithParamsAndQuery,
   PaginationType,
 } from "../types/types";
-import { Router, Response } from "express";
+import { Response } from "express";
 import { HTTP_STATUS } from "../utils/utils";
 import { Posts } from '../types/postsTypes';
 import { CommentView } from '../types/commentType';

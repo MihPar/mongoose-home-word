@@ -3,7 +3,6 @@ import { CommentsModel, LikesModel } from "../../db/db";
 import { CommentView, Comments } from "../../types/commentType";
 import { PaginationType } from "../../types/types";
 import { LikeStatusEnum } from "../../enum/like-status-enum";
-import { LikesInfoClass } from "../../types/likesInfoType";
 import { commentDBToView } from "../../utils/helpers";
 
 export class QueryCommentRepositories {
@@ -19,9 +18,13 @@ export class QueryCommentRepositories {
     if (!commentById) {
       return null;
     }
-    return commentById;
+	const findLike = await this.findLikeCommentByUser(commentId, userId)
+	return commentDBToView(commentById, findLike?.myStatus ?? null)
   }
-  async findCommentById(commentId: string): Promise<CommentView | null> {
+  async findLikeCommentByUser(commentId: string, userId: ObjectId) {
+	return LikesModel.findOne({$and: [{userId: userId}, {parentId: commentId}]})
+}
+  async findCommentById(commentId: string, userId: ObjectId): Promise<CommentView | null> {
     try {
       const commentById: Comments | null = await CommentsModel.findOne({
         _id: new ObjectId(commentId),
@@ -29,7 +32,8 @@ export class QueryCommentRepositories {
       if (!commentById) {
         return null;
       }
-      return commentDBToView(commentById);
+	  const findLike = await this.findLikeCommentByUser(commentId, userId)
+      return commentDBToView(commentById, findLike?.myStatus ?? null);
     } catch (e) {
       return null;
     }
@@ -52,14 +56,9 @@ export class QueryCommentRepositories {
     const pagesCount: number = await Math.ceil(totalCount / +pageSize);
 
     const items: CommentView[] = [];
-
+	const findLike = await LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
     commentByPostId.forEach(async (item) => {
-      const likesInfo = await this.resultLikeProcessing(
-        item._id.toString(),
-        userId
-      );
-      const commnent = commentDBToView(item, likesInfo);
-
+      const commnent = commentDBToView(item, findLike?.myStatus ?? null);
       items.push(commnent);
     });
 
@@ -91,4 +90,32 @@ export class QueryCommentRepositories {
         likeStatusUser !== null ? likeStatusUser.myStatus : LikeStatusEnum.None,
     };
   }
+//   findLikeCommentByUser(commentById: Comments, userId: ObjectId): likeInfoType {
+// 	// const like = await LikesModel.countDocuments({commentId: commentId, myStatus: 'Like'})
+// 	// const dislike = await LikesModel.countDocuments({commentId: commentId, myStatus: 'Dislike'})
+
+// 	// const likeStatusUser = await LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
+	
+// 	const likes = commentById.likes
+
+// 	let dislikesCount = 0
+// 	let likesCount = 0
+// 	let myStatus = likes.find((elem: Like) => {
+// 		return elem.userId.toString() === userId.toString()
+// 	})?.myStatus || LikeStatusEnum.None
+
+// 	likes.forEach(function(item: Like) {
+// 		if(item.myStatus === LikeStatusEnum.Like) {
+// 			likesCount++
+// 		} else if(item.myStatus === LikeStatusEnum.Dislike) {
+// 			dislikesCount++
+// 		} 
+// 	})
+
+// 	return {
+// 		likesCount,
+// 		dislikesCount,
+// 		myStatus,
+// 	}
+//   }
 }
