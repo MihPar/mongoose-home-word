@@ -12,7 +12,7 @@ export class QueryCommentRepositories {
       $and: [{ userId: userId }, { commentId: commentId }],
     });
   }
-  async findCommentByCommentIdLikeStatus(commentId: string, userId: ObjectId) {
+  async findCommentByCommentId(commentId: string, userId: ObjectId) {
     const commentById: Comments | null = await CommentsModel.findOne({
       _id: new ObjectId(commentId),
     });
@@ -71,7 +71,7 @@ export class QueryCommentRepositories {
       items,
     };
   }
-  async resultLikeProcessing(commentId: string, userId: ObjectId) {
+  async resultLikeProcessing(likeStatus: string, commentId: string, userId: ObjectId) {
     const like = await LikesModel.countDocuments({
       commentId: commentId,
       myStatus: "Like",
