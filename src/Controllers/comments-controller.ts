@@ -1,7 +1,7 @@
 import { likeStatusModel } from "../model/modelComment/bodyLikeStatusMode";
 import { paramsCommentMode } from "../model/modelComment/paramsCommentModel";
 import { CommentRepositories } from "../Repositories/comment-db-repositories";
-import { Router, Response } from "express";
+import { Response } from "express";
 import { CommentService } from "../Service/commentService";
 import { HTTP_STATUS } from "../utils/utils";
 import { RequestWithParams, RequestWithParamsAndBody } from "../types/types";

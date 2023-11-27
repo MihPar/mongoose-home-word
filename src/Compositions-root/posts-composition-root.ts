@@ -11,7 +11,7 @@ const queryPostsRepositories = new QueryPostsRepositories()
 const postsRepositories = new PostsRepositories();
 export const postsService = new PostsService(postsRepositories);
 const commentRepositories = new CommentRepositories();
-const commentService = new CommentService(commentRepositories);
+const commentService = new CommentService(commentRepositories, queryCommentRepositories);
 export const postsController = new PostsController(
   postsRepositories,
   commentRepositories,

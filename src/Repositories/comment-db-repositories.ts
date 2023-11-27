@@ -27,7 +27,7 @@ export class CommentRepositories {
         return saveResult
 	}
 	async findLikeCommentByUser(commentId: string, userId: ObjectId) {
-        return LikesModel.findOne({$and: [{userId: userId}, {parentId: commentId}]})
+        return LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
     }
 	async updateComment(commentId: string, content: string) {
 		const updateOne = await CommentsModel.updateOne(
