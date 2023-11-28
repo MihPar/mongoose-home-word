@@ -9,7 +9,7 @@ import { ValueMiddleware } from "../middleware/validatorMiddleware";
 
 export const postsRouter = Router({});
 
-postsRouter.get("/:postId/comments", postsController.getPostByPostId.bind(postsController));
+postsRouter.get("/:postId/comments",commentAuthorization, postsController.getPostByPostId.bind(postsController));
 postsRouter.post(
   "/:postId/comments",
   commentAuthorization,

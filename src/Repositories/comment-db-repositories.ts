@@ -43,15 +43,15 @@ export class CommentRepositories {
 		  });
 		  return deleteComment.deletedCount === 1;
 		} catch (err) {
-		  return false;
+		  return false; 
 		}
 	  }
 	  async createNewCommentPostId(
 		newComment: Comments, userId: string, postId: string
 	  ): Promise<CommentView> {
-		const findLike = LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
+		// const findLike = LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
 		await CommentsModel.insertMany([newComment]);
-		return commentDBToView(newComment, findLike?.myStatus ?? null);
+		return commentDBToView(newComment, null);
 	  }
 	  async deleteAllComments(): Promise<boolean> {
 		const deletedAll = await CommentsModel.deleteMany({});

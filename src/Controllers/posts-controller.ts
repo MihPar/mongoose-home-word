@@ -44,6 +44,7 @@ export class PostsController {
       sortDirection = "desc",
     } = req.query;
 	const {userId} = req.user
+	// const {likeStatus} = req.body
     const isExistPots = await this.queryPostsRepositories.findPostById(postId);
     if (!isExistPots) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

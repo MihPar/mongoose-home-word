@@ -46,13 +46,15 @@ export class QueryUsersRepositories {
       ],
     };
 
-    const getAllUsers = await UsersModel.find(filter, {
-      projection: { passwordHash: 0 },
-    })
+    const getAllUsers = await UsersModel.find(filter, 
+		//{      projection: { passwordHash: 0 },
+    //}
+	)
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
       .skip((+pageNumber - 1) * +pageSize)
       .limit(+pageSize)
-      .lean();
+	  .lean()
+      
 
     const totalCount: number = await UsersModel.countDocuments(filter);
     const pagesCount: number = await Math.ceil(totalCount / +pageSize);
@@ -61,7 +63,12 @@ export class QueryUsersRepositories {
       page: +pageNumber,
       pageSize: +pageSize,
       totalCount: totalCount,
-      items: getAllUsers.map((user: Users): UserViewType => user.getViewUser()),
+      items: getAllUsers.map((user: Users): UserViewType => ({
+		id: user._id.toString(),
+    login: user.accountData.userName,
+    email: user.accountData.email,
+    createdAt: user.accountData.createdAt,
+	  })),
     };
   }
   async findUserById(userId: ObjectId): Promise<Users | null> {

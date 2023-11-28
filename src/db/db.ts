@@ -21,7 +21,7 @@ let dbName = process.env.MONGOOSE_DB_NAME || 'mongoose-example'
 
 
 
-export const client = new MongoClient(mongoURI)
+//export const client = new MongoClient(mongoURI)
 export async function runDb() {
 	try {
 		
@@ -34,7 +34,7 @@ export async function runDb() {
 }
 
 export const stopDb = async () => {
-	await client.close()
+	await mongoose.connection.close()
 }
 
 export const BlogsModel = mongoose.model<Blogs>('blogs', BlogsSchema)
