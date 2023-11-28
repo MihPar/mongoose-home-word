@@ -4,7 +4,7 @@ import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
 import { PostSchema } from './../schema/posts-schema';
 import { BlogsSchema } from './../schema/blogs-schema';
-import { Blogs} from '../types/blogsType';
+import { Blogs, BlogsDB} from '../types/blogsType';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
@@ -37,7 +37,7 @@ export const stopDb = async () => {
 	await mongoose.connection.close()
 }
 
-export const BlogsModel = mongoose.model<Blogs>('blogs', BlogsSchema)
+export const BlogsModel = mongoose.model<BlogsDB>('blogs', BlogsSchema)
 export const PostsModel = mongoose.model<Posts>('posts', PostSchema)
 export const UsersModel = mongoose.model<Users>('user', DBUserSchema)
 export const CommentsModel = mongoose.model<Comments>('comment', CommentSchema)

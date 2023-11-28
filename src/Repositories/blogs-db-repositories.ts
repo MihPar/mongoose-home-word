@@ -1,9 +1,9 @@
 import { BlogsModel } from "../db/db";
-import { Blogs } from "../types/blogsType";
+import { Blogs, BlogsDB } from "../types/blogsType";
 
 export class BlogsRepositories {
-  async createNewBlogs(newBlog: Blogs): Promise<Blogs> {
-    const result = await BlogsModel.insertMany([newBlog]);
+  async createNewBlogs(newBlog: BlogsDB): Promise<BlogsDB> {
+    const result = await BlogsModel.create(newBlog);
     return newBlog;
   }
   async updateBlogById(

@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb"
-import { Blogs } from '../types/blogsType';
+import { Blogs, BlogsDB } from '../types/blogsType';
 import { BlogsRepositories } from "../Repositories/blogs-db-repositories";
 
 export class BlogsService {
@@ -9,16 +9,9 @@ export class BlogsService {
     description: string,
     websiteUrl: string
   ): Promise<Blogs> {
-    const newBlog: Blogs = {
-      _id: new ObjectId(),
-      name,
-      description,
-      websiteUrl,
-      createdAt: new Date().toISOString(),
-      isMembership: false,
-    };
-    const createBlog = await this.blogsRepositories.createNewBlogs(newBlog);
-    return createBlog;
+    const newBlog: BlogsDB = new BlogsDB(name, description, websiteUrl, true)
+    const createBlog: BlogsDB = await this.blogsRepositories.createNewBlogs(newBlog);
+    return createBlog.getViewModel();
   }
   async updateBlog(
     id: string,

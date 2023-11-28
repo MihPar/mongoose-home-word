@@ -27,10 +27,10 @@ export function createErrorsMessageTest(fields: string[]) {
 		const wipeAllRes = await request(app).delete('/testing/all-data').send()
 		expect(wipeAllRes.status).toBe(HTTP_STATUS.NO_CONTENT_204)
 
-		const getPosts = await request(app).get('/users').auth("admin", "qwerty")
-		expect(getPosts.status).toBe(HTTP_STATUS.OK_200)
+		const getUsers = await request(app).get('/users').auth("admin", "qwerty")
+		expect(getUsers.status).toBe(HTTP_STATUS.OK_200)
 
-		expect(getPosts.body.items).toHaveLength(0)
+		expect(getUsers.body.items).toHaveLength(0)
 	})
 
 
