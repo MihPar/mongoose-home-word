@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { BlogsModel } from "../../db/db";
 import { Blogs } from "../../types/blogsType";
 import { PaginationType } from "../../types/types";
@@ -32,8 +33,8 @@ export class QueryBlogsRepositories {
 		}
 		return result
 	  }
-	  async findBlogById(blogId: string): Promise<Blogs | null> {
-		return await BlogsModel.findOne({ id: blogId }, { projection: { _id: 0 } });
+	  async findBlogById(id: string): Promise<Blogs | null> {
+		return await BlogsModel.findOne({ _id: new ObjectId(id) }, { projection: { _id: 0 } });
 	  }
 	  async findBlogs(): Promise<Blogs[]> {
 		const filtered: any = {};

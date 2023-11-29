@@ -2,8 +2,11 @@ import { runDb, stopDb } from "../../db/db";
 import request from 'supertest'
 import { initApp } from "../../settings";
 import { HTTP_STATUS } from "../../utils/utils";
+import mongoose from "mongoose";
+import dotenv from 'dotenv'
+dotenv.config()
 
-const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017";
+const mongoURI = process.env.MONGO_URL || "mongodb://0.0.0.0:27017";
 let dbName = process.env.mongoDBName || 'mongoose-example'
 
 const app = initApp()
@@ -21,12 +24,15 @@ export function createErrorsMessageTest(fields: string[]) {
 
   describe('/posts', () => {
 	beforeAll(async() => {
-		await runDb()
+		// await runDb()
+		console.log(mongoURI, ': MongoURI')
+		console.log(mongoURI, ': e')
+		await mongoose.connect(mongoURI)
 
-		const wipeAllRes = await request(app).delete('/testing/all-data').send()
+		const wipeAllRes = await request(app).delete('/testing/all-data')
 		expect(wipeAllRes.status).toBe(HTTP_STATUS.NO_CONTENT_204)
 
-		const getPosts = await request(app).get('/posts').send()
+		const getPosts = await request(app).get('/posts')
 		expect(getPosts.status).toBe(HTTP_STATUS.OK_200)
 
 		expect(getPosts.body.items).toHaveLength(0)
@@ -85,7 +91,7 @@ export function createErrorsMessageTest(fields: string[]) {
 				"email": "mpara7472@gmail.com",
 				"createdAt": expect.any(String)
 			})
-			console.log(createUser.body.login)
+			// console.log(createUser.body.login)
 
 			const loginOrEmail = createUser.body.login
 			const createAccessToken = await request(app).post('/auth/login').send({
@@ -93,7 +99,7 @@ export function createErrorsMessageTest(fields: string[]) {
   				"password": "qwerty"
 			})
 
-			console.log(createAccessToken.body);
+			// console.log(createAccessToken.body);
 
 			expect(createAccessToken.status).toBe(HTTP_STATUS.OK_200)
 			expect(createAccessToken.body).toEqual({
@@ -121,12 +127,15 @@ export function createErrorsMessageTest(fields: string[]) {
 			const blogId = createBlogs.body.id
 			const blogName = createBlogs.body.name
 
+			console.log("blogId: ", blogId)
 			const createPosts = await request(app).post('/posts').auth("admin", "qwerty").send({
 				"title": "new title",
 				"shortDescription": "new shortDescription",
 				"content": "myContent",
 				"blogId": blogId
 			})
+			console.log(createPosts.body)
+
 			expect(createPosts.status).toBe(HTTP_STATUS.CREATED_201)
 			expect(createPosts.body).toEqual({
 				"id":  expect.any(String),

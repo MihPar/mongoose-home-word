@@ -101,7 +101,8 @@ export class BlogsComtroller {
       blogId,
       title,
       shortDescription,
-      content
+      content,
+	  blog.name
     );
     if (!isCreatePost) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

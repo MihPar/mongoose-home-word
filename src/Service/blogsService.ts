@@ -11,7 +11,7 @@ export class BlogsService {
   ): Promise<Blogs> {
     const newBlog: BlogsDB = new BlogsDB(name, description, websiteUrl, true)
     const createBlog: BlogsDB = await this.blogsRepositories.createNewBlogs(newBlog);
-    return createBlog.getViewModel();
+    return createBlog.getBlogsViewModel();
   }
   async updateBlog(
     id: string,

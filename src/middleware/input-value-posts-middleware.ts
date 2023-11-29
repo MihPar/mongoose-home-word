@@ -26,11 +26,13 @@ export const inputPostBlogValidator = body("blogId")
   .isString()
   .trim()
   .notEmpty()
-  .custom(async (id) => {
+  .custom(async (id, {req}) => {
+	// console.log("costum checkIn!!!!!")
     const blogExist = await queryBlogsRepositories.findBlogById(id);
+	console.log('blogExist: ', blogExist)
     if (!blogExist) {
       throw new Error("Blog is not exists");
     }
-    return true;
+	req.blog = blogExist
   })
   .withMessage("Invalid blogId");

@@ -17,7 +17,7 @@ export class SecurityDeviceRepositories {
 		return reqData;
 	  }
 	  async countDocs(filter: any) {
-		console.log(filter)
+		// console.log(filter)
 		const result = await DevicesModel.countDocuments(filter);
 		return result
 	  }

@@ -9,7 +9,7 @@ import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
 import { Users } from '../types/userTypes';
-import { Posts } from '../types/postsTypes';
+import { Posts, PostsDB } from '../types/postsTypes';
 import { CollectionIP, Devices } from '../types/deviceAuthSessionTypes';
 import { Comments } from '../types/commentType';
 import { LikesInfoSchema } from '../schema/likesInfo-schema';
@@ -24,7 +24,6 @@ let dbName = process.env.MONGOOSE_DB_NAME || 'mongoose-example'
 //export const client = new MongoClient(mongoURI)
 export async function runDb() {
 	try {
-		
 		await mongoose.connect(mongoURI)
 		console.log('Connect successfully to mongo server')
 	} catch(e) {
@@ -38,7 +37,7 @@ export const stopDb = async () => {
 }
 
 export const BlogsModel = mongoose.model<BlogsDB>('blogs', BlogsSchema)
-export const PostsModel = mongoose.model<Posts>('posts', PostSchema)
+export const PostsModel = mongoose.model<PostsDB>('posts', PostSchema)
 export const UsersModel = mongoose.model<Users>('user', DBUserSchema)
 export const CommentsModel = mongoose.model<Comments>('comment', CommentSchema)
 export const DevicesModel = mongoose.model<Devices>('device', DeviceSchema)

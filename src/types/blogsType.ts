@@ -25,9 +25,9 @@ export class Blogs {
 				isMembership)
 				this._id = new ObjectId()
 		 }
-		 getViewModel() {
+		 getBlogsViewModel() {
 			return {
-				id: this._id,
+				id: this._id.toString(),
 				name: this.name,
 				description: this.description,
 				websiteUrl: this.websiteUrl,

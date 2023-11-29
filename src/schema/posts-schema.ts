@@ -1,8 +1,8 @@
-import { Posts } from '../types/postsTypes';
+import { PostsDB } from '../types/postsTypes';
 import mongoose from 'mongoose'
 import { WithId } from 'mongodb'
 
-export const PostSchema = new mongoose.Schema<WithId<Posts>>({
+export const PostSchema = new mongoose.Schema<WithId<PostsDB>>({
 	title: {type: String, require: true},
 	shortDescription: {type: String, require: true},
 	content: {type: String, require: true},

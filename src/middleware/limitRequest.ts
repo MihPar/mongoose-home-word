@@ -14,7 +14,7 @@ export const limitRequestMiddleware = async (req: Request, res: Response, next: 
 		URL: req.originalUrl,
 		date: new Date(),
 	}
-	console.log('url/endpoit: ', reqData.URL)
+	// console.log('url/endpoit: ', reqData.URL)
 	await securityDeviceRepositories.createCollectionIP(reqData)
     const tenSecondsAgo = new Date(Date.now() - 10000)
     const filter = {IP: reqData.IP, URL: reqData.URL, date: {$gt: tenSecondsAgo}}

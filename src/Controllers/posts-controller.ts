@@ -111,12 +111,15 @@ export class PostsController {
   }
   async createPost(req: RequestWithBody<bodyPostsModel>, res: Response<Posts>) {
     const { title, shortDescription, content, blogId } = req.body;
+	const blog = req.blog
     const createNewPost: Posts | null = await this.postsService.createPost(
       blogId,
       title,
       shortDescription,
-      content
+      content,
+	  blog!.name
     );
+	console.log('create new post: ', createNewPost)
     if (!createNewPost) {
       return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
     } else {

@@ -1,7 +1,4 @@
-import { ObjectId } from 'mongodb';
-import { BlogsModel } from '../db/db';
-import { Blogs } from '../types/blogsType';
-import { Posts } from '../types/postsTypes';
+import { PostsDB } from '../types/postsTypes';
 import { PostsRepositories } from '../Repositories/posts-db-repositories';
 
 export class PostsService {
@@ -11,23 +8,26 @@ export class PostsService {
 		blogId: string,
 		title: string,
 		shortDescription: string,
-		content: string
-	  ): Promise<Posts | null> {
-		const blog: Blogs | null = await BlogsModel.findOne({
-		  id: blogId,
-		});
-		if (!blog) return null;
-		const newPost: Posts = {
-		  _id: new ObjectId(),
-		  title,
-		  shortDescription,
-		  content,
-		  blogId,
-		  blogName: blog.name,
-		  createdAt: new Date().toISOString(),
-		};
-		const post = await this.postsRepositories.createNewBlogs(newPost);
-		return post;
+		content: string,
+		blogName: string
+	  ): Promise<PostsDB | null> {
+		// const blog: BlogsDB | null = await BlogsModel.findOne({
+		//   id: blogId,
+		// });
+		// if (!blog) return null;
+		const newPost: PostsDB = new PostsDB(blogId, title, shortDescription, content, blogName,)
+
+		// const newPost: Posts = {
+		//   _id: new ObjectId(),
+		//   title,
+		//   shortDescription,
+		//   content,
+		//   blogId,
+		//   blogName: blog.name,
+		//   createdAt: new Date().toISOString(),
+		// };
+		const createPost: PostsDB = await this.postsRepositories.createNewBlogs(newPost);
+		return createPost.getPostsViewModel();
 	  }
 	  async updateOldPost(
 		id: string,
