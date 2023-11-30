@@ -13,13 +13,13 @@ import {
 } from "../types/types";
 import { Response } from "express";
 import { HTTP_STATUS } from "../utils/utils";
-import { Posts } from '../types/postsTypes';
-import { CommentView } from '../types/commentType';
+import { Posts, PostsDB } from '../types/postsTypes';
 import { CommentRepositories } from '../Repositories/comment-db-repositories';
 import { CommentService } from '../Service/commentService';
 import { PostsService } from '../Service/postsService';
 import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
 import { QueryCommentRepositories } from '../Repositories/queryRepositories/comment-query-repositories';
+import { CommentViewModel } from '../types/commentType';
 
 
 export class PostsController {
@@ -34,7 +34,7 @@ export class PostsController {
   }
   async getPostByPostId(
     req: RequestWithParamsAndQuery<paramsPostIdMode, queryPostsModel>,
-    res: Response<PaginationType<CommentView>>
+    res: Response<PaginationType<CommentViewModel>>
   ) {
     const { postId } = req.params;
     const {
@@ -49,7 +49,7 @@ export class PostsController {
     if (!isExistPots) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
-    const commentByPostsId: PaginationType<CommentView> | null =
+    const commentByPostsId: PaginationType<CommentViewModel> | null =
       await this.queryCommentRepositories.findCommentByPostId(
         postId,
         pageNumber,
@@ -64,20 +64,20 @@ export class PostsController {
       return res.status(HTTP_STATUS.OK_200).send(commentByPostsId);
     }
   }
-  async createPostByPostId(
+  async createCommentForPostByPostId(
     req: RequestWithParamsAndBody<paramsPostIdMode, bodyPostModelContent>,
-    res: Response<CommentView>
+    res: Response<CommentViewModel>
   ) {
     const { postId } = req.params;
     const { content } = req.body;
     const user = req.user;
-    const post: Posts | null = await this.queryPostsRepositories.findPostById(
+    const post: PostsDB | null = await this.queryPostsRepositories.findPostById(
       postId
     );
 
     if (!post) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    console.log(user);
-    const createNewCommentByPostId: CommentView | null =
+    // console.log(user);
+    const createNewCommentByPostId: CommentViewModel | null =
       await this.commentService.createNewCommentByPostId(
         postId,
         content,
@@ -119,7 +119,7 @@ export class PostsController {
       content,
 	  blog!.name
     );
-	console.log('create new post: ', createNewPost)
+	// console.log('create new post: ', createNewPost)
     if (!createNewPost) {
       return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
     } else {

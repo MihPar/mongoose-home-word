@@ -3,6 +3,7 @@ import { commentController } from "../Compositions-root/comment-composition-root
 import { commentAuthorization } from "../middleware/commentAuthorization";
 import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
+import { getCommentAuthorization } from "../middleware/getCommentsAuthorization";
 
 export const commentsRouter = Router({});
 
@@ -22,4 +23,4 @@ commentsRouter.put(
 	commentController.deleteByCommentId.bind(commentController)
   );
   
-  commentsRouter.get("/:id",commentAuthorization, commentController.getCommentById.bind(commentController));
+  commentsRouter.get("/:id", getCommentAuthorization, commentController.getCommentById.bind(commentController));

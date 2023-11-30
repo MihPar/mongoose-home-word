@@ -1,8 +1,9 @@
 import { Posts, PostsDB } from "../types/postsTypes";
 import { PostsModel } from "../db/db";
+import { ObjectId } from "mongodb";
 
 export class PostsRepositories {
-  async createNewBlogs(newPost: PostsDB): Promise<PostsDB> {
+  async createNewPosts(newPost: PostsDB): Promise<PostsDB> {
     const result = await PostsModel.create(newPost);
     return newPost;
   }
@@ -10,11 +11,11 @@ export class PostsRepositories {
     id: string,
     title: string,
     shortDescription: string,
-    content: string,
+    content: string, 
     blogId: string
   ): Promise<boolean> {
     const result = await PostsModel.updateOne(
-      { id: id },
+      { _id: new ObjectId(id) },
       {
         $set: {
           title: title,

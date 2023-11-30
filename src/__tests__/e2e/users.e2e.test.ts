@@ -1,10 +1,12 @@
-import mongoose from "mongoose";
-import { runDb, stopDb } from "../../db/db";
+import { stopDb } from "../../db/db";
 import request from 'supertest'
 import { initApp } from "../../settings";
 import { HTTP_STATUS } from "../../utils/utils";
+import dotenv from 'dotenv'
+import mongoose from "mongoose";
+dotenv.config()
 
-const mongoURI = process.env.mongoURI || "mongodb://0.0.0.0:27017";
+const mongoURI = process.env.MONGO_URL || "mongodb://0.0.0.0:27017";
 let dbName = process.env.mongoDBName || 'mongoose-example'
 
 const app = initApp()
@@ -22,7 +24,8 @@ export function createErrorsMessageTest(fields: string[]) {
 
   describe('/users', () => {
 	beforeAll(async() => {
-		await runDb()
+		// await runDb()
+		await mongoose.connect(mongoURI)
 		
 		const wipeAllRes = await request(app).delete('/testing/all-data').send()
 		expect(wipeAllRes.status).toBe(HTTP_STATUS.NO_CONTENT_204)

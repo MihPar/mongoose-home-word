@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { BlogsModel } from "../db/db";
 import { Blogs, BlogsDB } from "../types/blogsType";
 
@@ -13,7 +14,7 @@ export class BlogsRepositories {
     websiteUrl: string
   ): Promise<boolean> {
     const result = await BlogsModel.updateOne(
-      { id: id },
+      { _id: new ObjectId(id) },
       { $set: { name: name, description: description, websiteUrl: websiteUrl } }
     );
     return result.modifiedCount === 1;

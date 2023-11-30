@@ -1,10 +1,10 @@
 import { ObjectId } from "mongodb";
-import { CommentView, Comments } from "../types/commentType";
 import { LikeStatusEnum } from "../enum/like-status-enum";
+import { CommentViewModel, CommentsDB } from "../types/commentType";
 
-export const commentDBToView = (item: Comments, myStatus: LikeStatusEnum | null): CommentView => {
+export const commentDBToView = (item: CommentsDB, myStatus: LikeStatusEnum | null): CommentViewModel => {
 	return {
-	  _id: new ObjectId(),
+	  id: item._id.toString(),
 	  content: item.content,
 	  commentatorInfo: item.commentatorInfo,
 	  createdAt: item.createdAt,

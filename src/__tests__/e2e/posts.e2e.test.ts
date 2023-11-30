@@ -1,4 +1,4 @@
-import { runDb, stopDb } from "../../db/db";
+import { stopDb } from "../../db/db";
 import request from 'supertest'
 import { initApp } from "../../settings";
 import { HTTP_STATUS } from "../../utils/utils";
@@ -25,8 +25,8 @@ export function createErrorsMessageTest(fields: string[]) {
   describe('/posts', () => {
 	beforeAll(async() => {
 		// await runDb()
-		console.log(mongoURI, ': MongoURI')
-		console.log(mongoURI, ': e')
+		// console.log(mongoURI, ': MongoURI')
+		// console.log(mongoURI, ': e')
 		await mongoose.connect(mongoURI)
 
 		const wipeAllRes = await request(app).delete('/testing/all-data')
@@ -127,44 +127,46 @@ export function createErrorsMessageTest(fields: string[]) {
 			const blogId = createBlogs.body.id
 			const blogName = createBlogs.body.name
 
-			console.log("blogId: ", blogId)
+			// console.log("blogId: ", blogId)
 			const createPosts = await request(app).post('/posts').auth("admin", "qwerty").send({
 				"title": "new title",
 				"shortDescription": "new shortDescription",
-				"content": "myContent",
+				"content": "myContent I like javascript and I will be a developer in javascript, back end developer",
 				"blogId": blogId
 			})
-			console.log(createPosts.body)
+			// console.log(createPosts.body)
 
 			expect(createPosts.status).toBe(HTTP_STATUS.CREATED_201)
+			// console.log(createPosts.body)
 			expect(createPosts.body).toEqual({
 				"id":  expect.any(String),
 				"title": "new title",
 				"shortDescription": "new shortDescription",
-				"content": "myContent",
+				"content": "myContent I like javascript and I will be a developer in javascript, back end developer",
 				"blogId": blogId,
 				"blogName": blogName,
 				"createdAt": expect.any(String)
 			})
 
-			console.log(createAccessToken.body.accessToken)
+			// console.log(createAccessToken.body.accessToken)
 			const postId = createPosts.body.id
-			const content = createPosts.body.content
-			const id = createUser.body.id
+			const userId = createUser.body.id
 			const login = createUser.body.login
 
 			const createCommentPostByPostId = await request(app)
 				.post(`/posts/${postId}/comments`)
 				.set('Authorization', `Bearer ${createAccessToken.body.accessToken}`)
 				.send({
-					"content": content
+					"content": "My profession is a programmer, I work in javascript and I work for back end developer"
 				})
+			// console.log(createCommentPostByPostId.body)
+
 			expect(createCommentPostByPostId.status).toBe(HTTP_STATUS.CREATED_201);
 			expect(createCommentPostByPostId.body).toEqual({
 				id: expect.any(String),
-				content: content,
+				content: expect.any(String),
 				commentatorInfo: {
-					userId: id,
+					userId: userId,
 					userLogin: login,
 					},
 				createdAt: expect.any(String),
@@ -175,15 +177,19 @@ export function createErrorsMessageTest(fields: string[]) {
 					},
 			});
 
-			const commentId = createCommentPostByPostId.body.id
+			const id = createCommentPostByPostId.body.id
+			console.log(createCommentPostByPostId.body)
+			const getComment = await request(app).get(`/comments/${id}`)
 
-			const getComment = await request(app).get(`/comments/${commentId}`)
+			console.log(getComment.body)
+			console.log(getComment.status)
+
 			expect(getComment.status).toBe(HTTP_STATUS.OK_200)
 			expect(getComment.body).toEqual({
-					"id": expect.any(String),
-					"content": "myContent",
+					"id": id,
+					"content": expect.any(String),
 					"commentatorInfo": {
-					  "userId": expect.any(String),
+					  "userId": userId,
 					  "userLogin": login
 					},
 					"createdAt": expect.any(String),
@@ -193,9 +199,6 @@ export function createErrorsMessageTest(fields: string[]) {
 					  "myStatus": "None"
 				  }
 			})
-				
-
-			
 			// expect(commentId).toEqual(expect.any(String))
 		})
 

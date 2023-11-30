@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
 import { CommentsModel, LikesModel } from "../../db/db";
-import { CommentView, Comments } from "../../types/commentType";
 import { PaginationType } from "../../types/types";
 import { LikeStatusEnum } from "../../enum/like-status-enum";
 import { commentDBToView } from "../../utils/helpers";
+import { CommentViewModel, CommentsDB } from "../../types/commentType";
 
 export class QueryCommentRepositories {
   async findLikesCommentByUser(commentId: string, userId: ObjectId) {
@@ -12,7 +12,7 @@ export class QueryCommentRepositories {
     });
   }
   async findCommentByCommentId(commentId: string, userId: ObjectId) {
-    const commentById: Comments | null = await CommentsModel.findOne({
+    const commentById: CommentsDB | null = await CommentsModel.findOne({
       _id: new ObjectId(commentId),
     });
     if (!commentById) {
@@ -22,17 +22,22 @@ export class QueryCommentRepositories {
 	return commentDBToView(commentById, findLike?.myStatus ?? null)
   }
   async findLikeCommentByUser(commentId: string, userId: ObjectId) {
-	return LikesModel.findOne({$and: [{userId: userId}, {parentId: commentId}]})
+	return LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
 }
-  async findCommentById(commentId: string, userId: ObjectId): Promise<CommentView | null> {
+  async findCommentById(commentId: string, userId: ObjectId): Promise<CommentViewModel | null> {
+	console.log("28: ", commentId)
     try {
-      const commentById: Comments | null = await CommentsModel.findOne({
+      const commentById: CommentsDB | null = await CommentsModel.findOne({
         _id: new ObjectId(commentId),
       });
+	  
+	  console.log("findCommentById: ", commentById)
+
       if (!commentById) {
         return null;
       }
 	  const findLike = await this.findLikeCommentByUser(commentId, userId)
+	  console.log("findLike: ", findLike)
       return commentDBToView(commentById, findLike?.myStatus ?? null);
     } catch (e) {
       return null;
@@ -45,9 +50,9 @@ export class QueryCommentRepositories {
     sortBy: string,
     sortDirection: string,
     userId: ObjectId
-  ): Promise<PaginationType<CommentView> | null> {
+  ): Promise<PaginationType<CommentViewModel> | null> {
     const filter = { postId: postId };
-    const commentByPostId: Comments[] = await CommentsModel.find(filter)
+    const commentByPostId: CommentsDB[] = await CommentsModel.find(filter)
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
       .skip((+pageNumber - 1) * +pageSize)
       .limit(+pageSize)
@@ -55,7 +60,7 @@ export class QueryCommentRepositories {
     const totalCount: number = await CommentsModel.countDocuments(filter);
     const pagesCount: number = await Math.ceil(totalCount / +pageSize);
 
-    const items: CommentView[] = [];
+    const items: CommentViewModel[] = [];
 	const findLike = await LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
     commentByPostId.forEach(async (item) => {
       const commnent = commentDBToView(item, findLike?.myStatus ?? null);

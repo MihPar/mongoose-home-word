@@ -72,7 +72,7 @@ export class QueryUsersRepositories {
     };
   }
   async findUserById(userId: ObjectId): Promise<Users | null> {
-    let user = await UsersModel.findOne({ _id: userId });
+    let user = await UsersModel.findOne({ _id: new ObjectId(userId) });
     return user;
   }
   async findUserByCode(recoveryCode: string): Promise<WithId<Users> | null> {

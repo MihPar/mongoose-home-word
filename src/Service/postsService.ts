@@ -1,4 +1,4 @@
-import { PostsDB } from '../types/postsTypes';
+import { PostsDB, PostsViewModel } from '../types/postsTypes';
 import { PostsRepositories } from '../Repositories/posts-db-repositories';
 
 export class PostsService {
@@ -10,12 +10,12 @@ export class PostsService {
 		shortDescription: string,
 		content: string,
 		blogName: string
-	  ): Promise<PostsDB | null> {
+	  ): Promise<PostsViewModel | null> {
 		// const blog: BlogsDB | null = await BlogsModel.findOne({
 		//   id: blogId,
 		// });
 		// if (!blog) return null;
-		const newPost: PostsDB = new PostsDB(blogId, title, shortDescription, content, blogName,)
+		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName,)
 
 		// const newPost: Posts = {
 		//   _id: new ObjectId(),
@@ -26,7 +26,7 @@ export class PostsService {
 		//   blogName: blog.name,
 		//   createdAt: new Date().toISOString(),
 		// };
-		const createPost: PostsDB = await this.postsRepositories.createNewBlogs(newPost);
+		const createPost: PostsDB = await this.postsRepositories.createNewPosts(newPost);
 		return createPost.getPostsViewModel();
 	  }
 	  async updateOldPost(

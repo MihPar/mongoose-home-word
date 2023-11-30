@@ -7,8 +7,8 @@ import { HTTP_STATUS } from "../utils/utils";
 import { RequestWithParams, RequestWithParamsAndBody } from "../types/types";
 import { bodyCommentIdMode } from "../model/modelComment/boydCommentIdMode";
 import { paramsCommentIdMode } from "../model/modelComment/paramsCommentIdModel copy";
-import { CommentView } from "../types/commentType";
 import { QueryCommentRepositories } from "../Repositories/queryRepositories/comment-query-repositories";
+import { CommentViewModel } from "../types/commentType";
 
 
 export class CommentController {
@@ -82,11 +82,13 @@ export class CommentController {
   }
   async getCommentById(
     req: RequestWithParams<paramsCommentMode>,
-    res: Response<CommentView | null>
-  ): Promise<Response<CommentView | null>> {
-	const {userId} = req.user;
-    const getCommentById: CommentView | null =
+    res: Response<CommentViewModel | null>
+  ): Promise<Response<CommentViewModel | null>> {
+	console.log("Req.user: ", req.user)
+	const userId = req.user?.userId ?? null;
+    const getCommentById: CommentViewModel | null =
       await this.queryCommentRepositories.findCommentById(req.params.id, userId);
+	  console.log("getCommentById: ", getCommentById)
     if (!getCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     } else {

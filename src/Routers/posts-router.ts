@@ -15,7 +15,7 @@ postsRouter.post(
   commentAuthorization,
   inputCommentValidator,
   ValueMiddleware,
-  postsController.createPostByPostId.bind(postsController)
+  postsController.createCommentForPostByPostId.bind(postsController)
 );
 postsRouter.get("/", postsController.getPosts.bind(postsController));
 postsRouter.post(

@@ -1,5 +1,6 @@
+import { ObjectId } from "mongodb";
 import { PostsModel } from "../../db/db";
-import { Posts } from "../../types/postsTypes";
+import { Posts, PostsDB } from "../../types/postsTypes";
 import { PaginationType } from "../../types/types";
 
 export class QueryPostsRepositories {
@@ -58,7 +59,7 @@ export class QueryPostsRepositories {
       items: posts,
     };
   }
-  async findPostById(id: string): Promise<Posts | null> {
-    return await PostsModel.findOne({ id: id }, { projection: { _id: 0 } });
+  async findPostById(id: string): Promise<PostsDB | null> {
+    return await PostsModel.findOne({ _id: new ObjectId(id) }, { projection: { _id: 0 } });
   }
 }
