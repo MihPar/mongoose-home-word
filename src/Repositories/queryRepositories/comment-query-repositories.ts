@@ -11,18 +11,20 @@ export class QueryCommentRepositories {
       $and: [{ userId: userId }, { commentId: commentId }],
     });
   }
-  async findCommentByCommentId(commentId: string, userId: ObjectId) {
+  async findCommentByCommentId(commentId: string, userId?: ObjectId | null) {
     const commentById: CommentsDB | null = await CommentsModel.findOne({
       _id: new ObjectId(commentId),
     });
     if (!commentById) {
       return null;
     }
-	const findLike = await this.findLikeCommentByUser(commentId, userId)
-	return commentDBToView(commentById, findLike?.myStatus ?? null)
+	return commentById
+	
   }
   async findLikeCommentByUser(commentId: string, userId: ObjectId) {
-	return LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
+	const likeModel = LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
+	console.log("We are heare - 26: ", likeModel)
+	return likeModel
 }
   async findCommentById(commentId: string, userId: ObjectId): Promise<CommentViewModel | null> {
 	console.log("28: ", commentId)

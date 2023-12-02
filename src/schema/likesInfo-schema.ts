@@ -5,8 +5,8 @@ import { Like } from "../types/likesInfoType";
 
 export const LikesInfoSchema = new mongoose.Schema<WithId<Like>>({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true },
-  commentId: { type: String, required: true },
-  postId: {type: String, required: true},
+  commentId: { type: String, nullable: true },
+  postId: {type: String, nullable: true},
   myStatus: {
     type: String,
     default: LikeStatusEnum.None,

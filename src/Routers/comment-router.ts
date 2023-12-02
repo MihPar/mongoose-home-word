@@ -4,10 +4,11 @@ import { commentAuthorization } from "../middleware/commentAuthorization";
 import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { getCommentAuthorization } from "../middleware/getCommentsAuthorization";
+import { likeValidationRule } from "../middleware/input-value-likeStatus-middleware";
 
 export const commentsRouter = Router({});
 
-commentsRouter.put('/:commentId/like-status', commentAuthorization, commentController.updateByCommentIdLikeStatus.bind(commentController))
+commentsRouter.put('/:commentId/like-status', commentAuthorization, likeValidationRule, ValueMiddleware, commentController.updateByCommentIdLikeStatus.bind(commentController))
 
 commentsRouter.put(
 	"/:commentId",

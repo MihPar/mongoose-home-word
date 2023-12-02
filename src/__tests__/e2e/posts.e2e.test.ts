@@ -178,12 +178,7 @@ export function createErrorsMessageTest(fields: string[]) {
 			});
 
 			const id = createCommentPostByPostId.body.id
-			console.log(createCommentPostByPostId.body)
 			const getComment = await request(app).get(`/comments/${id}`)
-
-			console.log(getComment.body)
-			console.log(getComment.status)
-
 			expect(getComment.status).toBe(HTTP_STATUS.OK_200)
 			expect(getComment.body).toEqual({
 					"id": id,
@@ -199,11 +194,12 @@ export function createErrorsMessageTest(fields: string[]) {
 					  "myStatus": "None"
 				  }
 			})
-			// expect(commentId).toEqual(expect.any(String))
+			
+
 		})
 
 			
-
+// expect(commentId).toEqual(expect.any(String))
 // 			
 // 			
 

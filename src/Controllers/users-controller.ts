@@ -58,6 +58,7 @@ export class UserController {
       password,
       email
     );
+	// console.log(newUser, ": newUser")
     return res.status(HTTP_STATUS.CREATED_201).send(newUser);
   }
   async deleteUserById(

@@ -1,3 +1,4 @@
+import { commentDBToView } from './../utils/helpers';
 import { likeStatusModel } from "../model/modelComment/bodyLikeStatusMode";
 import { paramsCommentMode } from "../model/modelComment/paramsCommentModel";
 import { CommentRepositories } from "../Repositories/comment-db-repositories";
@@ -8,7 +9,7 @@ import { RequestWithParams, RequestWithParamsAndBody } from "../types/types";
 import { bodyCommentIdMode } from "../model/modelComment/boydCommentIdMode";
 import { paramsCommentIdMode } from "../model/modelComment/paramsCommentIdModel copy";
 import { QueryCommentRepositories } from "../Repositories/queryRepositories/comment-query-repositories";
-import { CommentViewModel } from "../types/commentType";
+import { CommentViewModel, CommentsDB } from "../types/commentType";
 
 
 export class CommentController {
@@ -17,26 +18,39 @@ export class CommentController {
     protected commentService: CommentService,
 	protected queryCommentRepositories: QueryCommentRepositories
   ) {}
+
   async updateByCommentIdLikeStatus(
     req: RequestWithParamsAndBody<paramsCommentIdMode, likeStatusModel>,
-    res: Response
-  ) {
+    res: Response<boolean>
+  ): Promise<Response<boolean>> {
     const { commentId } = req.params;
+	// console.log("commentId: ", commentId)
+
     const { likeStatus } = req.body;
-	const {userId} = req.user;
-    const findCommentById = await this.queryCommentRepositories.findCommentByCommentId(
-      commentId, userId
+	// console.log("likeStatus: ", req.body.likeStatus)
+
+	const userId = req.user.id;
+	// console.log("userId: ", req.user.id)
+	
+    const findCommentById:  CommentsDB | null = await this.queryCommentRepositories.findCommentByCommentId(
+      commentId
     );
-    if (!findCommentById) {
-      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    }
-	await this.commentService.updateltLikeStatus(likeStatus, commentId, userId)
+	if (!findCommentById) {
+		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+	  }
+	const findLike = await this.queryCommentRepositories.findLikeCommentByUser(commentId, userId)
+	const commentDBBiew = commentDBToView(findCommentById, findLike?.myStatus ?? null)
+	// console.log("findCommentById: ", findCommentById)
+    
+	let updateLikeStatus = await this.commentService.updateltLikeStatus(likeStatus, commentId, userId)
+	// console.log(updateLikeStatus)
 	return res.sendStatus(HTTP_STATUS.NO_CONTENT_204)
   }
+
   async updateByCommentId(
     req: RequestWithParamsAndBody<paramsCommentIdMode, bodyCommentIdMode>,
     res: Response<boolean>
-  ) {
+  ): Promise<Response<boolean>> {
     const { commentId } = req.params;
     const { content } = req.body;
 	const {userId} = req.user;
