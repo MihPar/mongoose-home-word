@@ -44,7 +44,6 @@ export class PostsController {
       sortDirection = "desc",
     } = req.query;
 	const userId = req.user?.id ?? null;
-	// const {likeStatus} = req.body
     const isExistPots = await this.queryPostsRepositories.findPostById(postId);
     if (!isExistPots) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -76,7 +75,6 @@ export class PostsController {
     );
 
     if (!post) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    // console.log(user);
     const createNewCommentByPostId: CommentViewModel | null =
       await this.commentService.createNewCommentByPostId(
         postId,
@@ -119,7 +117,6 @@ export class PostsController {
       content,
 	  blog!.name
     );
-	// console.log('create new post: ', createNewPost)
     if (!createNewPost) {
       return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
     } else {

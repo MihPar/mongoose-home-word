@@ -23,24 +23,17 @@ export class QueryCommentRepositories {
   }
   async findLikeCommentByUser(commentId: string, userId: ObjectId) {
 	const likeModel = LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
-	// console.log("We are heare - 26: ", likeModel)
 	return likeModel
 }
   async findCommentById(commentId: string, userId: string): Promise<CommentViewModel | null> {
-	// console.log("30: ", userId)
-	// console.log("31: ", commentId)
     try {
       const commentById: CommentsDB | null = await CommentsModel.findOne({
         _id: new ObjectId(commentId),
       });
-	  
-	//   console.log("findCommentById: ", commentById)
-
       if (!commentById) {
         return null;
       }
 	  const findLike = await this.findLikeCommentByUser(commentId, new ObjectId(userId))
-	//   console.log("findLike: ", findLike)
       return commentDBToView(commentById, findLike?.myStatus ?? null);
     } catch (e) {
       return null;
@@ -64,10 +57,8 @@ export class QueryCommentRepositories {
     const pagesCount: number = await Math.ceil(totalCount / +pageSize);
 
     const items: CommentViewModel[] = [];
-	// console.log("comment by post id: ", commentByPostId)
     await Promise.race(commentByPostId.map(async (item) => {
 		const findLike = await LikesModel.findOne({$and: [{userId: new ObjectId(userId)}, {commentId: item._id.toString()}]})
-		// for each comment find findStatus
       const commnent = commentDBToView(item, findLike?.myStatus ?? null);
 	  console.log("comment: ", commnent)
       items.push(commnent);
@@ -81,52 +72,4 @@ console.log("items: ", items)
       items,
     };
   }
-  async resultLikeProcessing(likeStatus: string, commentId: string, userId: ObjectId) {
-    const like = await LikesModel.countDocuments({
-      commentId: commentId,
-      myStatus: "Like",
-    });
-    const dislike = await LikesModel.countDocuments({
-      commentId: commentId,
-      myStatus: "Dislike",
-    });
-
-    const likeStatusUser = await LikesModel.findOne({
-      $and: [{ userId: userId }, { commentId: commentId }],
-    });
-    return {
-      likesCount: like,
-      dislikesCount: dislike,
-      myStatus:
-        likeStatusUser !== null ? likeStatusUser.myStatus : LikeStatusEnum.None,
-    };
-  }
-//   findLikeCommentByUser(commentById: Comments, userId: ObjectId): likeInfoType {
-// 	// const like = await LikesModel.countDocuments({commentId: commentId, myStatus: 'Like'})
-// 	// const dislike = await LikesModel.countDocuments({commentId: commentId, myStatus: 'Dislike'})
-
-// 	// const likeStatusUser = await LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
-	
-// 	const likes = commentById.likes
-
-// 	let dislikesCount = 0
-// 	let likesCount = 0
-// 	let myStatus = likes.find((elem: Like) => {
-// 		return elem.userId.toString() === userId.toString()
-// 	})?.myStatus || LikeStatusEnum.None
-
-// 	likes.forEach(function(item: Like) {
-// 		if(item.myStatus === LikeStatusEnum.Like) {
-// 			likesCount++
-// 		} else if(item.myStatus === LikeStatusEnum.Dislike) {
-// 			dislikesCount++
-// 		} 
-// 	})
-
-// 	return {
-// 		likesCount,
-// 		dislikesCount,
-// 		myStatus,
-// 	}
-//   }
 }

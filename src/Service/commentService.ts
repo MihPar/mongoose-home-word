@@ -12,15 +12,10 @@ export class CommentService {
 	protected likesRepositories: LikesRepositories
 	) {}
  	async updateltLikeStatus(likeStatus: string, commentId: string, userId: string) {
-		// console.log("informatioin!!!!")
 		const findLike = await this.likesRepositories.findLikeCommentByUser(commentId, new ObjectId(userId))
-		// console.log("findLike2: ", findLike)
 		if(!findLike) {
-			// console.log("no like: ", commentId, userId, likeStatus)
 			await this.likesRepositories.saveLikeForComment(commentId, new ObjectId(userId), likeStatus)
-			// console.log('before resultCheckListOrDislike')
 			const resultCheckListOrDislike = await this.commentRepositories.increase(commentId, likeStatus)
-			// console.log(resultCheckListOrDislike, "resultCheckListOrDislike")
 			return true
 		} 
 		

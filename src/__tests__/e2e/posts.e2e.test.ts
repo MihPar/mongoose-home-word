@@ -82,8 +82,6 @@ export function createErrorsMessageTest(fields: string[]) {
 				"password": "qwerty",
 				"email": "mpara7472@gmail.com"
 			})
-			// console.log(createUser.body)
-
 			expect(createUser.status).toBe(HTTP_STATUS.CREATED_201)
 			expect(createUser.body).toEqual({
 				"id": expect.any(String),
@@ -91,7 +89,6 @@ export function createErrorsMessageTest(fields: string[]) {
 				"email": "mpara7472@gmail.com",
 				"createdAt": expect.any(String)
 			})
-			// console.log(createUser.body.login)
 
 			const loginOrEmail = createUser.body.login
 			const createAccessToken = await request(app).post('/auth/login').send({
@@ -99,7 +96,6 @@ export function createErrorsMessageTest(fields: string[]) {
   				"password": "qwerty"
 			})
 
-			// console.log(createAccessToken.body);
 
 			expect(createAccessToken.status).toBe(HTTP_STATUS.OK_200)
 			expect(createAccessToken.body).toEqual({
@@ -127,17 +123,14 @@ export function createErrorsMessageTest(fields: string[]) {
 			const blogId = createBlogs.body.id
 			const blogName = createBlogs.body.name
 
-			// console.log("blogId: ", blogId)
 			const createPosts = await request(app).post('/posts').auth("admin", "qwerty").send({
 				"title": "new title",
 				"shortDescription": "new shortDescription",
 				"content": "myContent I like javascript and I will be a developer in javascript, back end developer",
 				"blogId": blogId
 			})
-			// console.log(createPosts.body)
 
 			expect(createPosts.status).toBe(HTTP_STATUS.CREATED_201)
-			// console.log(createPosts.body)
 			expect(createPosts.body).toEqual({
 				"id":  expect.any(String),
 				"title": "new title",
@@ -148,7 +141,6 @@ export function createErrorsMessageTest(fields: string[]) {
 				"createdAt": expect.any(String)
 			})
 
-			// console.log(createAccessToken.body.accessToken)
 			const postId = createPosts.body.id
 			const userId = createUser.body.id
 			const login = createUser.body.login
@@ -159,7 +151,6 @@ export function createErrorsMessageTest(fields: string[]) {
 				.send({
 					"content": "My profession is a programmer, I work in javascript and I work for back end developer"
 				})
-			// console.log(createCommentPostByPostId.body)
 
 			expect(createCommentPostByPostId.status).toBe(HTTP_STATUS.CREATED_201);
 			expect(createCommentPostByPostId.body).toEqual({
@@ -194,60 +185,5 @@ export function createErrorsMessageTest(fields: string[]) {
 					  "myStatus": "None"
 				  }
 			})
-			
-
 		})
-
-			
-// expect(commentId).toEqual(expect.any(String))
-// 			
-// 			
-
-			
-// //create comment
-// 			let commentId = expect.any(String)
-			
-
-//     });
-
-
-/*******************************************************************************************************/
-
-	// 	it('create post by id', async() => {
-	// 		const inputDate = {
-	// 			postId: '',
-	// 			content: '',
-	// 			user: ''
-	// 		}
-	// 		const createPostByPostId = await request(app).post('/posts').send(inputDate)
-	// 		expect(createPostByPostId.status).toBe(HTTP_STATUS.CREATED_201)
-	// 	})
-
-	// 	it('get all posts', async() => {
-	// 		const inputData = {
-	// 			pageNumber: "1",
-	// 			pageSize: "10",
-	// 			sortBy: "createdAt",
-	// 			sortDirection: "desc",
-	// 		  }
-	// 		  const getAllPosts = await request(app).get('/posts').send(inputData)
-	// 		  expect(getAllPosts.status).toBe(HTTP_STATUS.OK_200)
-	// 	})
-
-	// 	it('create post', async() => {
-	// 		const inputData =  { title: 'title', shortDescription: 'string', content: 'None', blogId: '' }
-	// 		const createPost = await request(app).post('/posts').send(inputData)
-	// 		expect(createPost.status).toBe(HTTP_STATUS.CREATED_201)
-	// 	})
-
-	// 	it('find post by postId', async() => {
-	// 		const id = ''
-	// 		const getPostByPostId = await request(app).get('/posts').send(id)
-	// 		expect(getPostByPostId.status).toBe(HTTP_STATUS.OK_200)
-	// 	})
-
-	// 	it('update post by id', async() => {
-	// 		const 
-	// 	})
-	//   })
 	})

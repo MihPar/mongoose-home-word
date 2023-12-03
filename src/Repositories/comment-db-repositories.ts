@@ -1,7 +1,6 @@
-import { CommentViewModel, CommentsDB } from '../types/commentType';
-import { CommentsModel, LikesModel } from '../db/db';
+import { CommentsDB } from '../types/commentType';
+import { CommentsModel } from '../db/db';
 import { ObjectId } from "mongodb";
-import { commentDBToView } from '../utils/helpers';
 
 
 
@@ -37,12 +36,9 @@ export class CommentRepositories {
 	  }
 	  async createNewCommentPostId(
 		newComment: CommentsDB
-		// userId: string, postId: string
 	  ): Promise<CommentsDB> {
-		// const findLike = LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
 		await CommentsModel.create(newComment);
 		return newComment
-		// return commentDBToView(newComment, null);
 	  }
 	  async deleteAllComments(): Promise<boolean> {
 		const deletedAll = await CommentsModel.deleteMany({});

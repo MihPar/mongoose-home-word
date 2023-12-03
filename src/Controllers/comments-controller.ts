@@ -98,12 +98,9 @@ export class CommentController {
     req: RequestWithParams<paramsCommentMode>,
     res: Response<CommentViewModel | null>
   ): Promise<Response<CommentViewModel | null>> {
-	// console.log("Req.user: ", req.user)
 	const userId = req.user?.id ?? null;
-	// console.log("userId; ",userId)
     const getCommentById: CommentViewModel | null =
       await this.queryCommentRepositories.findCommentById(req.params.id, userId);
-	//   console.log("getCommentById: ", getCommentById)
     if (!getCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     } else {
