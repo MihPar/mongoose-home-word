@@ -8,13 +8,13 @@ export const getCommentAuthorization = async function(req: Request, res: Respons
 		 next()
 		 return
 	}
-	console.log("getCommentAuthoris: ", req.headers.authorization)
+	// console.log("getCommentAuthoris: ", req.headers.authorization)
 	const token = req.headers.authorization.split(' ')[1]
 	const userId = await jwtService.getUserIdByToken(token)
 	if(userId) {
 		const resultAuth = await queryUsersRepositories.findUserById(userId)
 		if(resultAuth){
-			console.log(resultAuth)
+			// console.log(resultAuth)
 			req.user = resultAuth
 			next()
 			return 

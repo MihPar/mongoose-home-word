@@ -288,9 +288,10 @@ describe("/posts", () => {
 // console.log(updateCommentByCommentId1.status)
 // console.log(updateCommentByCommentId1.body)
   const id = createCommentPostByPostId.body.id;
-  const likeStatus = updateCommentByCommentId1.body.likeStatus;
 
-  getCommentUser1 = await request(app).get(`/comments/${id}`);
+  getCommentUser1 = await request(app)
+  .get(`/comments/${id}`)
+  .set("Authorization", `Bearer ${createAccessToken1.body.accessToken}`)
 //   console.log(getCommentUser1.body)
 
   expect(getCommentUser1.status).toBe(HTTP_STATUS.OK_200);
@@ -303,9 +304,9 @@ describe("/posts", () => {
     },
     createdAt: expect.any(String),
     likesInfo: {
-      likesCount: 0,
+      likesCount: 1,
       dislikesCount: 0,
-      myStatus: likeStatus,
+      myStatus: "Like",
     },
   });
 	  
@@ -317,7 +318,10 @@ describe("/posts", () => {
 	  console.log(updateCommentByCommentId2.body)
 	  expect(updateCommentByCommentId2.status).toBe(HTTP_STATUS.NO_CONTENT_204)
 
-	  getCommentUser1 = await request(app).get(`/comments/${id}`);
+	  getCommentUser1 = await request(app)
+	  .get(`/comments/${id}`)
+	  .set("Authorization", `Bearer ${createAccessToken2.body.accessToken}`)
+
   console.log(getCommentUser1.body)
 
     expect(getCommentUser1.status).toBe(HTTP_STATUS.OK_200);
@@ -330,9 +334,9 @@ describe("/posts", () => {
       },
       createdAt: expect.any(String),
       likesInfo: {
-        likesCount: 0,
+        likesCount: 2,
         dislikesCount: 0,
-        myStatus: likeStatus,
+        myStatus: "Like",
       },
     });
 
@@ -343,7 +347,9 @@ describe("/posts", () => {
 	  console.log(updateCommentByCommentId3.body)
 	  expect(updateCommentByCommentId3.status).toBe(HTTP_STATUS.NO_CONTENT_204)
 
-	  getCommentUser1 = await request(app).get(`/comments/${id}`);
+	  getCommentUser1 = await request(app)
+	  .get(`/comments/${id}`)
+	  .set("Authorization", `Bearer ${createAccessToken3.body.accessToken}`)
   console.log(getCommentUser1.body)
 
     expect(getCommentUser1.status).toBe(HTTP_STATUS.OK_200);
@@ -356,9 +362,9 @@ describe("/posts", () => {
       },
       createdAt: expect.any(String),
       likesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: likeStatus,
+        likesCount: 2,
+        dislikesCount: 1,
+        myStatus: "Dislike",
       },
     });
 
@@ -370,7 +376,9 @@ describe("/posts", () => {
 	  console.log(updateCommentByCommentId4.body)
 	  expect(updateCommentByCommentId4.status).toBe(HTTP_STATUS.NO_CONTENT_204)
 
-	  getCommentUser1 = await request(app).get(`/comments/${id}`);
+	  getCommentUser1 = await request(app)
+	  .get(`/comments/${id}`)
+	  .set("Authorization", `Bearer ${createAccessToken4.body.accessToken}`)
   console.log(getCommentUser1.body)
 
     expect(getCommentUser1.status).toBe(HTTP_STATUS.OK_200);
@@ -383,9 +391,9 @@ describe("/posts", () => {
       },
       createdAt: expect.any(String),
       likesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: likeStatus,
+        likesCount: 2,
+        dislikesCount: 1,
+        myStatus: "None",
       },
     });
   });

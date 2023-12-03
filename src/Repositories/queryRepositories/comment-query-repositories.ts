@@ -23,23 +23,24 @@ export class QueryCommentRepositories {
   }
   async findLikeCommentByUser(commentId: string, userId: ObjectId) {
 	const likeModel = LikesModel.findOne({$and: [{userId: userId}, {commentId: commentId}]})
-	console.log("We are heare - 26: ", likeModel)
+	// console.log("We are heare - 26: ", likeModel)
 	return likeModel
 }
-  async findCommentById(commentId: string, userId: ObjectId): Promise<CommentViewModel | null> {
-	console.log("28: ", commentId)
+  async findCommentById(commentId: string, userId: string): Promise<CommentViewModel | null> {
+	console.log("30: ", userId)
+	console.log("31: ", commentId)
     try {
       const commentById: CommentsDB | null = await CommentsModel.findOne({
         _id: new ObjectId(commentId),
       });
 	  
-	  console.log("findCommentById: ", commentById)
+	//   console.log("findCommentById: ", commentById)
 
       if (!commentById) {
         return null;
       }
-	  const findLike = await this.findLikeCommentByUser(commentId, userId)
-	  console.log("findLike: ", findLike)
+	  const findLike = await this.findLikeCommentByUser(commentId, new ObjectId(userId))
+	//   console.log("findLike: ", findLike)
       return commentDBToView(commentById, findLike?.myStatus ?? null);
     } catch (e) {
       return null;

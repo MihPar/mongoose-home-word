@@ -11,13 +11,13 @@ export class CommentService {
 	protected queryCommentRepositories: QueryCommentRepositories,
 	protected likesRepositories: LikesRepositories
 	) {}
- 	async updateltLikeStatus(likeStatus: string, commentId: string, userId: ObjectId) {
+ 	async updateltLikeStatus(likeStatus: string, commentId: string, userId: string) {
 		// console.log("informatioin!!!!")
-		const findLike = await this.likesRepositories.findLikeCommentByUser(commentId, userId)
+		const findLike = await this.likesRepositories.findLikeCommentByUser(commentId, new ObjectId(userId))
 		// console.log("findLike2: ", findLike)
 		if(!findLike) {
-			// console.log("no like")
-			await this.likesRepositories.saveLikeForComment(commentId, userId, likeStatus)
+			console.log("no like: ", commentId, userId, likeStatus)
+			await this.likesRepositories.saveLikeForComment(commentId, new ObjectId(userId), likeStatus)
 			// console.log('before resultCheckListOrDislike')
 			const resultCheckListOrDislike = await this.commentRepositories.increase(commentId, likeStatus)
 			// console.log(resultCheckListOrDislike, "resultCheckListOrDislike")
@@ -25,25 +25,25 @@ export class CommentService {
 		} 
 		
 		if((findLike.myStatus === 'Dislike' || findLike.myStatus === 'Like') && likeStatus === 'None'){
-			await this.likesRepositories.updateLikeStatusForComment(commentId, userId, likeStatus)
+			await this.likesRepositories.updateLikeStatusForComment(commentId, new ObjectId(userId), likeStatus)
 			const resultCheckListOrDislike = await this.commentRepositories.decrease(commentId, likeStatus)
 			return true
 		}
 
 		if(findLike.myStatus === 'None' && (likeStatus === 'Dislike' || likeStatus === 'Like')) {
-			await this.likesRepositories.updateLikeStatusForComment(commentId, userId, likeStatus)
+			await this.likesRepositories.updateLikeStatusForComment(commentId, new ObjectId(userId), likeStatus)
 			const resultCheckListOrDislike = await this.commentRepositories.increase(commentId, likeStatus)
 			return true
 		}
 
 		if(findLike.myStatus === 'Dislike' && likeStatus === 'Like') {
-			await this.likesRepositories.updateLikeStatusForComment(commentId, userId, likeStatus)
+			await this.likesRepositories.updateLikeStatusForComment(commentId, new ObjectId(userId), likeStatus)
 			const changeDislikeOnLike = await this.commentRepositories.increase(commentId, likeStatus)
 			const changeLikeOnDislike = await this.commentRepositories.decrease(commentId, findLike.myStatus)
 			return true
 		}
 		if(findLike.myStatus === 'Like' && likeStatus === 'Dislike') {
-			await this.likesRepositories.updateLikeStatusForComment(commentId, userId, likeStatus)
+			await this.likesRepositories.updateLikeStatusForComment(commentId, new ObjectId(userId), likeStatus)
 			const changeLikeOnDislike = await this.commentRepositories.decrease(commentId, findLike.myStatus)
 			const changeDislikeOnLike = await this.commentRepositories.increase(commentId, likeStatus)
 			return true
