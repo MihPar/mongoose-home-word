@@ -11,7 +11,7 @@ export class JWTService {
 	}
 	async createRefreshJWT(userId: string, existDeviceId?: ObjectId) {
 		const deviceId: ObjectId = new ObjectId()
-		const refreshToken: string = await jwt.sign({deviceId: existDeviceId ?? deviceId, userId}, process.env.REFRESH_JWT_SECRET as string, {expiresIn: '5m'})
+		const refreshToken: string = await jwt.sign({deviceId: existDeviceId ?? deviceId, userId}, process.env.REFRESH_JWT_SECRET as string, {expiresIn: '24h'})
 		return refreshToken
 	}
 	async getUserIdByToken(token: string) {

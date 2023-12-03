@@ -22,7 +22,7 @@ export function createErrorsMessageTest(fields: string[]) {
   return { errorsMessages: errorsMessages };
 }
 
-describe("/posts", () => {
+describe("/like", () => {
   beforeAll(async () => {
     // await runDb()
     // console.log(mongoURI, ': MongoURI')
