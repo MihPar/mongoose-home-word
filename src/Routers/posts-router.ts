@@ -5,11 +5,12 @@ import { commentAuthorization } from "../middleware/commentAuthorization";
 import { inputCommentValidator } from "../middleware/input-value-comment-middleware";
 import { inputPostBlogValidator, inputPostContentValidator, inputPostShortDescriptionValidator, inputPostTitleValidator } from "../middleware/input-value-posts-middleware";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
+import { getCommentAuthorization } from "../middleware/getCommentsAuthorization";
 
 
 export const postsRouter = Router({});
 
-postsRouter.get("/:postId/comments",commentAuthorization, postsController.getPostByPostId.bind(postsController));
+postsRouter.get("/:postId/comments",getCommentAuthorization, postsController.getPostByPostId.bind(postsController));
 postsRouter.post(
   "/:postId/comments",
   commentAuthorization,

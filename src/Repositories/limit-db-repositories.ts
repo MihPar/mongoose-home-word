@@ -3,11 +3,11 @@ import { LikesModel } from "../db/db"
 
 export class LikesRepositories  {
 	async saveLikeForComment(commentId: string, userId: ObjectId, likeStatus: string) {
-		console.log("typeof userId: ", typeof userId)
+		// console.log("typeof userId: ", typeof userId)
 		const saveResult = await LikesModel.create({commentId: commentId, userId: userId, myStatus: likeStatus, postId: null})
 		// console.log(saveResult, "we are in saveResult")
 		const usesrComment = await LikesModel.findOne({userId: userId, commentId: commentId})
-		console.log("userComment: ", usesrComment)
+		// console.log("userComment: ", usesrComment)
 		return saveResult.id
 	}
 	async updateLikeStatusForComment(commentId: string, userId: ObjectId, likeStatus: string){

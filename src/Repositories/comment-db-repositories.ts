@@ -10,13 +10,13 @@ export class CommentRepositories {
 		if(likeStatus !== 'Dislike' && likeStatus !== 'Like') {
 			return
 		} 
-		return await CommentsModel.updateOne({_id: new ObjectId(commentId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: 1} : {likesCont: 1}})
+		return await CommentsModel.updateOne({_id: new ObjectId(commentId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: 1} : {likesCount: 1}})
 	}
 	async decrease(commentId: string, likeStatus: string){
 		if(likeStatus !== 'Dislike' && likeStatus !== 'Like') {
 			return
 		} 
-		return await CommentsModel.updateOne({_id: new ObjectId(commentId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: -1} : {likesCont: -1}})
+		return await CommentsModel.updateOne({_id: new ObjectId(commentId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: -1} : {likesCount: -1}})
 	}
 	async updateComment(commentId: string, content: string) {
 		const updateOne = await CommentsModel.updateOne(

@@ -16,7 +16,7 @@ export class CommentService {
 		const findLike = await this.likesRepositories.findLikeCommentByUser(commentId, new ObjectId(userId))
 		// console.log("findLike2: ", findLike)
 		if(!findLike) {
-			console.log("no like: ", commentId, userId, likeStatus)
+			// console.log("no like: ", commentId, userId, likeStatus)
 			await this.likesRepositories.saveLikeForComment(commentId, new ObjectId(userId), likeStatus)
 			// console.log('before resultCheckListOrDislike')
 			const resultCheckListOrDislike = await this.commentRepositories.increase(commentId, likeStatus)
@@ -26,7 +26,7 @@ export class CommentService {
 		
 		if((findLike.myStatus === 'Dislike' || findLike.myStatus === 'Like') && likeStatus === 'None'){
 			await this.likesRepositories.updateLikeStatusForComment(commentId, new ObjectId(userId), likeStatus)
-			const resultCheckListOrDislike = await this.commentRepositories.decrease(commentId, likeStatus)
+			const resultCheckListOrDislike = await this.commentRepositories.decrease(commentId, findLike.myStatus)
 			return true
 		}
 

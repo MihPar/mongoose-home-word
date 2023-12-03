@@ -292,7 +292,7 @@ describe("/posts", () => {
   getCommentUser1 = await request(app)
   .get(`/comments/${id}`)
   .set("Authorization", `Bearer ${createAccessToken1.body.accessToken}`)
-//   console.log(getCommentUser1.body)
+  console.log(getCommentUser1.body.myStatus)
 
   expect(getCommentUser1.status).toBe(HTTP_STATUS.OK_200);
   expect(getCommentUser1.body).toEqual({

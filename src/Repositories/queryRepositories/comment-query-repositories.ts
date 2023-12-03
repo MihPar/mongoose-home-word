@@ -27,8 +27,8 @@ export class QueryCommentRepositories {
 	return likeModel
 }
   async findCommentById(commentId: string, userId: string): Promise<CommentViewModel | null> {
-	console.log("30: ", userId)
-	console.log("31: ", commentId)
+	// console.log("30: ", userId)
+	// console.log("31: ", commentId)
     try {
       const commentById: CommentsDB | null = await CommentsModel.findOne({
         _id: new ObjectId(commentId),
@@ -64,12 +64,15 @@ export class QueryCommentRepositories {
     const pagesCount: number = await Math.ceil(totalCount / +pageSize);
 
     const items: CommentViewModel[] = [];
-	const findLike = await LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
-    commentByPostId.forEach(async (item) => {
+	// console.log("comment by post id: ", commentByPostId)
+    await Promise.race(commentByPostId.map(async (item) => {
+		const findLike = await LikesModel.findOne({$and: [{userId: new ObjectId(userId)}, {commentId: item._id.toString()}]})
+		// for each comment find findStatus
       const commnent = commentDBToView(item, findLike?.myStatus ?? null);
+	  console.log("comment: ", commnent)
       items.push(commnent);
-    });
-
+    }))
+console.log("items: ", items)
     return {
       pagesCount: pagesCount,
       page: +pageNumber,
