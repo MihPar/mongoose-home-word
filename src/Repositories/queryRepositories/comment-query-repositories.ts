@@ -54,14 +54,21 @@ export class QueryCommentRepositories {
       .limit(+pageSize)
       .lean();
     const totalCount: number = await CommentsModel.countDocuments(filter);
-    const pagesCount: number = await Math.ceil(totalCount / +pageSize);
+    const pagesCount: number = Math.ceil(totalCount / +pageSize);
 
-    const items: CommentViewModel[] = [];
-    await Promise.race(commentByPostId.map(async (item) => {
-		const findLike = await LikesModel.findOne({$and: [{userId: new ObjectId(userId)}, {commentId: item._id.toString()}]})
-      const commnent = commentDBToView(item, findLike?.myStatus ?? null);
+    //const items: CommentViewModel[] = [];
+    const items: CommentViewModel[] = await Promise.all(commentByPostId.map(async (item) => {
+		let findLike = null;
+		if(userId){
+		const status = await LikesModel.findOne({
+			userId,
+			commentId: item._id.toString()
+		});
+		findLike = status ? status.myStatus : null
+		}
+      const commnent = commentDBToView(item, findLike);
 	  console.log("comment: ", commnent)
-      items.push(commnent);
+      return commnent;
     }))
 console.log("items: ", items)
     return {
