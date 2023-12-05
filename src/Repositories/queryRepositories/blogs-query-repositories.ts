@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { BlogsModel } from "../../db/db";
-import { Blogs } from "../../types/blogsType";
+import { Blogs, BlogsDB } from "../../types/blogsType";
 import { PaginationType } from "../../types/types";
 
 export class QueryBlogsRepositories {
@@ -14,8 +14,8 @@ export class QueryBlogsRepositories {
 		const filtered = searchNameTerm
 		  ? { name: { $regex: searchNameTerm ?? '', $options: 'i' } }
 		  : {}; // todo finished filter
-		const blogs: Blogs[] = await BlogsModel
-		  .find(filtered, { projection: { _id: 0 } })
+		const blogs: BlogsDB[] = await BlogsModel
+		  .find(filtered, { __v: 0 } )
 		  .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
 		  .skip((+pageNumber - 1) * +pageSize) //todo find how we can skip
 		  .limit(+pageSize)
@@ -29,12 +29,12 @@ export class QueryBlogsRepositories {
 			page: +pageNumber,
 			pageSize: +pageSize,
 			totalCount: totalCount,
-			items: blogs,
+			items: blogs.map((item) => BlogsDB.getBlogsViewModel(item)),
 		}
 		return result
 	  }
 	  async findBlogById(id: string): Promise<Blogs | null> {
-		return await BlogsModel.findOne({ _id: new ObjectId(id) }, { projection: { _id: 0 } });
+		return await BlogsModel.findOne({ _id: new ObjectId(id) }, { _v: 0 });
 	  }
 	  async findBlogs(): Promise<Blogs[]> {
 		const filtered: any = {};

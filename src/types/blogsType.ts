@@ -25,7 +25,17 @@ export class Blogs {
 				isMembership)
 				this._id = new ObjectId()
 		 }
-		 getBlogsViewModel() {
+		static getBlogsViewModel(blog: BlogsDB): BlogsViewType {
+			return {
+				id: blog._id.toString(),
+				name: blog.name,
+				description: blog.description,
+				websiteUrl: blog.websiteUrl,
+				createdAt: blog.createdAt,
+				isMembership: blog.isMembership
+			}
+		}
+		 getBlogViewModel(): BlogsViewType {
 			return {
 				id: this._id.toString(),
 				name: this.name,
@@ -38,8 +48,8 @@ export class Blogs {
 		 
   };
 
-  export type BlogsType = {
-	_id: ObjectId
+  export type BlogsViewType = {
+	id: string
 	name: string
 	description: string
 	websiteUrl: string

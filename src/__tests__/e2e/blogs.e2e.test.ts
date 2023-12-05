@@ -323,8 +323,27 @@ describe("/blogs", () => {
       });
 
       it("create blog with incorrect input data => return 400 errorMessage", async () => {
+        const createBlogs = await request(app)
+          .post("/blogs")
+          .auth("admin", "qwerty")
+          .send({
+            name: "Mickle",
+            description: "I am a programmer",
+            websiteUrl: "https://google.com",
+          });
+        expect(createBlogs.status).toBe(HTTP_STATUS.CREATED_201);
+        expect(createBlogs.body).toEqual({
+          id: expect.any(String),
+          name: name,
+          description: description,
+          websiteUrl: websiteUrl,
+          createdAt: expect.any(String),
+          isMembership: true,
+        });
+        const blogId = createBlogs.body.id;
+
         const createPostWithIncorrectData = await request(app)
-          .post(`/blogs${blogId}/posts`)
+          .post(`/blogs/${blogId}/posts`)
           .auth("admin", "qwerty")
           .send({
             title: 123,
@@ -335,32 +354,68 @@ describe("/blogs", () => {
           HTTP_STATUS.BAD_REQUEST_400
         );
         expect(createPostWithIncorrectData.body).toStrictEqual(
-          blogsValidationErrRes
+          createErrorsMessageTest(["content", "title", "shortDescription"])
         );
       });
 
       it("create blog with incorrect input data => return 400 status code errorMessage", async () => {
+        const createBlogs = await request(app)
+          .post("/blogs")
+          .auth("admin", "qwerty")
+          .send({
+            name: "Mickle",
+            description: "I am a programmer",
+            websiteUrl: "https://google.com",
+          });
+        expect(createBlogs.status).toBe(HTTP_STATUS.CREATED_201);
+        expect(createBlogs.body).toEqual({
+          id: expect.any(String),
+          name: name,
+          description: description,
+          websiteUrl: websiteUrl,
+          createdAt: expect.any(String),
+          isMembership: true,
+        });
+        const blogId = createBlogs.body.id;
         const createPostWithIncorrectData = await request(app)
-          .post(`/blogs${blogId}/posts`)
+          .post(`/blogs/${blogId}/posts`)
           .auth("admin", "qwerty")
           .send({});
         expect(createPostWithIncorrectData.status).toBe(
           HTTP_STATUS.BAD_REQUEST_400
         );
         expect(createPostWithIncorrectData.body).toStrictEqual(
-          createErrorsMessageTest(["title", "shortDescription", "content"])
+          createErrorsMessageTest(["content", "title", "shortDescription"])
         );
       });
 
       it("create new blog without authorization => return 401 status code", async () => {
-        const createNewPostWithoutAuth = await request(app)
-          .post(`/blogs${blogId}/posts`)
+        const createBlogs = await request(app)
+          .post("/blogs")
+          .auth("admin", "qwerty")
           .send({
-			title: "New title",
-			shortDescription: "My new short description",
-			content:
-				"I am a progremmer and I like coding, my profession the back end developer.",
-		  });
+            name: "Mickle",
+            description: "I am a programmer",
+            websiteUrl: "https://google.com",
+          });
+        expect(createBlogs.status).toBe(HTTP_STATUS.CREATED_201);
+        expect(createBlogs.body).toEqual({
+          id: expect.any(String),
+          name: name,
+          description: description,
+          websiteUrl: websiteUrl,
+          createdAt: expect.any(String),
+          isMembership: true,
+        });
+        const blogId = createBlogs.body.id;
+        const createNewPostWithoutAuth = await request(app)
+          .post(`/blogs/${blogId}/posts`)
+          .send({
+            title: "New title",
+            shortDescription: "My new short description",
+            content:
+              "I am a progremmer and I like coding, my profession the back end developer.",
+          });
         expect(createNewPostWithoutAuth.status).toBe(
           HTTP_STATUS.NOT_AUTHORIZATION_401
         );
@@ -375,26 +430,50 @@ describe("/blogs", () => {
       });
     });
 
-    // describe("return blog by id", () => {
-    //   const id = blogId;
-    //   it("return blog by id", async () => {
-    //     const getblogById = await request(app).get(`/blogs/${id}`);
-    //     expect(getblogById.status).toBe(HTTP_STATUS.OK_200);
-    //     expect(getblogById.body).toStrictEqual({
-    //       id: id,
-    //       name: name,
-    //       description: description,
-    //       websiteUrl: websiteUrl,
-    //       createdAt: expect.any(String),
-    //       isMembership: true,
-    //     });
-    //   });
+    describe("return blog by id", () => {
+    	let id: any
+      it("return blog by id", async () => {
+		const modelObj = {
+            name: "Mickle",
+            description: "I am a programmer",
+            websiteUrl: "https://google.com",
+          }
+    	const createBlogs = await request(app)
+          .post("/blogs")
+          .auth("admin", "qwerty")
+          .send(modelObj);
+
+    	  expect(createBlogs.status).toBe(HTTP_STATUS.CREATED_201);
+    	  expect(createBlogs.body).toEqual({
+    		id: expect.any(String),
+    		name: modelObj.name,
+    		description: modelObj.description,
+    		websiteUrl: modelObj.websiteUrl,
+    		createdAt: expect.any(String),
+    		isMembership: true,
+    	  });
+    	id = createBlogs.body.id
+		let name = createBlogs.body.name
+		let description = createBlogs.body.description
+		let websiteUrl = createBlogs.body.websiteUrl
+
+        const getblogById = await request(app).get(`/blogs/${id}`);
+        expect(getblogById.status).toBe(HTTP_STATUS.OK_200);
+        expect(getblogById.body).toEqual({
+          id: id,
+          name: name,
+          description: description,
+          websiteUrl: websiteUrl,
+          createdAt: expect.any(String),
+          isMembership: true,
+        });
+      });
 
     //   it("get post by incorrect blogId => return 404 status code", async () => {
     //     const getblogById = await request(app).get(`/blogs/${id + 333333}`);
     //     expect(getblogById.status).toBe(HTTP_STATUS.NOT_FOUND_404);
     //   });
-    // });
+    });
 
     // describe("update existing blog by id with input date", () => {
     //   const id = blogId;
@@ -453,24 +532,47 @@ describe("/blogs", () => {
     //         description: "I am a wife",
     //         websiteUrl: "https://GG5I65-a7ercNP.ru",
     //       });
-	// 	  expect(updateBlog.status).toBe(HTTP_STATUS.NOT_FOUND_404)
+    // 	  expect(updateBlog.status).toBe(HTTP_STATUS.NOT_FOUND_404)
     //   });
     // });
 
-	describe("delete blog specified by id", () => {
-		const id = blogId;
-		it("delete blog by id", async() => {
-			const wipeBlogById = await request(app).delete(`/blogs/${id}`).auth("admin", "qwerty")
-			expect(wipeBlogById.status).toBe(HTTP_STATUS.NO_CONTENT_204)
-		})
-		it("delete blog by id without authorization", async() => {
-			const wipeBlogById = await request(app).delete(`/blogs/${id}`)
-			expect(wipeBlogById.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401)
-		})
-		it("delete blog by id with incorrect id", async() => {
-			const wipeBlogId = await request(app).delete(`/blogs/${id + 1209347}`)
-			expect(wipeBlogId.status).toBe(HTTP_STATUS.NOT_FOUND_404)
-		})
-	})
+    describe("delete blog specified by id", () => {
+      let id: string;
+      it("delete blog by id", async () => {
+        const createBlogs = await request(app)
+          .post("/blogs")
+          .auth("admin", "qwerty")
+          .send({
+            name: "Mickle",
+            description: "I am a programmer",
+            websiteUrl: "https://google.com",
+          });
+        expect(createBlogs.status).toBe(HTTP_STATUS.CREATED_201);
+        expect(createBlogs.body).toEqual({
+          id: expect.any(String),
+          name: name,
+          description: description,
+          websiteUrl: websiteUrl,
+          createdAt: expect.any(String),
+          isMembership: true,
+        });
+        id = createBlogs.body.id;
+
+        const wipeBlogById = await request(app)
+          .delete(`/blogs/${id}`)
+          .auth("admin", "qwerty");
+        expect(wipeBlogById.status).toBe(HTTP_STATUS.NO_CONTENT_204);
+      });
+      it("delete blog by id without authorization", async () => {
+        const wipeBlogById = await request(app).delete(`/blogs/${id}`);
+        expect(wipeBlogById.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401);
+      });
+      it("delete blog by id with incorrect id", async () => {
+        const wipeBlogId = await request(app)
+          .delete(`/blogs/${id + 1209347}`)
+          .auth("admin", "qwerty");
+        expect(wipeBlogId.status).toBe(HTTP_STATUS.NOT_FOUND_404);
+      });
+    });
   });
 });
