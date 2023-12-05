@@ -38,10 +38,10 @@ export class QueryPostsRepositories {
   ): Promise<PaginationType<Posts>> {
     const filter = { blogId: blogId };
 
-    console.log(filter);
-    console.log({ [sortBy]: sortDirection === "asc" ? 1 : -1 });
-    console.log((+pageNumber - 1) * +pageSize);
-    console.log(+pageSize);
+    // console.log(filter);
+    // console.log({ [sortBy]: sortDirection === "asc" ? 1 : -1 });
+    // console.log((+pageNumber - 1) * +pageSize);
+    // console.log(+pageSize);
 
     const posts = await PostsModel.find(filter, { projection: { _id: 0 } })
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
