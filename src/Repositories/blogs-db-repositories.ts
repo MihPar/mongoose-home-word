@@ -20,7 +20,9 @@ export class BlogsRepositories {
     return result.modifiedCount === 1;
   }
   async deletedBlog(id: string): Promise<boolean> {
-    const result = await BlogsModel.deleteOne({ id: id });
+	// console.log('ID', id)
+    const result = await BlogsModel.deleteOne({ _id: new ObjectId(id) });
+	// console.log('result', result)
     return result.deletedCount === 1;
   }
   async deleteRepoBlogs(): Promise<boolean> {

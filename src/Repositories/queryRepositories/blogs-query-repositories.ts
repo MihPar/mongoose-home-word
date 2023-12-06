@@ -34,7 +34,9 @@ export class QueryBlogsRepositories {
 		return result
 	  }
 	  async findBlogById(id: string): Promise<Blogs | null> {
-		return await BlogsModel.findOne({ _id: new ObjectId(id) }, { _v: 0 });
+		const blog =  await BlogsModel.findOne({ _id: new ObjectId(id) }, {__v: 0}).lean();
+		
+		return blog ? BlogsDB.getBlogsViewModel(blog) : null;
 	  }
 	  async findBlogs(): Promise<Blogs[]> {
 		const filtered: any = {};

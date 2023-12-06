@@ -25,15 +25,15 @@ export class PostsDB extends Posts {
     super(title, shortDescription, content, blogId, blogName);
     this._id = new ObjectId();
   }
-  getPostsViewModel(): PostsViewModel {
+  static getPostsViewModel(post: PostsDB): PostsViewModel {
     return {
-      id: this._id.toString(),
-      title: this.title,
-      shortDescription: this.shortDescription,
-      content: this.content,
-      blogId: this.blogId,
-      blogName: this.blogName,
-      createdAt: this.createdAt,
+      id: post._id.toString(),
+      title: post.title,
+      shortDescription: post.shortDescription,
+      content: post.content,
+      blogId: post.blogId,
+      blogName: post.blogName,
+      createdAt: post.createdAt,
     };
   }
 }

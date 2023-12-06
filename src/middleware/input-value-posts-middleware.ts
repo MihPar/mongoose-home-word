@@ -27,7 +27,7 @@ export const inputPostBlogValidator = body("blogId")
   .trim()
   .notEmpty()
   .custom(async (id, {req}) => {
-	// console.log("costum checkIn!!!!!")
+	//  console.log("costum checkIn!!!!!")
     const blogExist = await queryBlogsRepositories.findBlogById(id);
 	// console.log('blogExist: ', blogExist)
     if (!blogExist) {

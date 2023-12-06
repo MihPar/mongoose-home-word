@@ -43,7 +43,7 @@ export class QueryPostsRepositories {
     // console.log((+pageNumber - 1) * +pageSize);
     // console.log(+pageSize);
 
-    const posts = await PostsModel.find(filter, { projection: { _id: 0 } })
+    const posts = await PostsModel.find(filter, {__v: 0 })
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
       .skip((+pageNumber - 1) * +pageSize) //todo find how we can skip
       .limit(+pageSize)
@@ -51,13 +51,15 @@ export class QueryPostsRepositories {
     const totalCount: number = await PostsModel.countDocuments(filter);
     const pagesCount: number = Math.ceil(totalCount / +pageSize);
 
-    return {
-      pagesCount: pagesCount,
-      page: +pageNumber,
-      pageSize: +pageSize,
-      totalCount: totalCount,
-      items: posts,
-    };
+	const result: PostsDB = {
+		pagesCount: pagesCount,
+		page: +pageNumber,
+		pageSize: +pageSize,
+		totalCount: totalCount,
+		items: posts.map((item) => {PostsDB.getPostsViewModel(item)}),
+	  };
+
+    return result
   }
   async findPostById(id: string): Promise<PostsDB | null> {
     return await PostsModel.findOne({ _id: new ObjectId(id) }, { projection: { _id: 0 } });

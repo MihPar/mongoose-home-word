@@ -73,6 +73,7 @@ export class BlogsComtroller {
     } = req.query;
 
     const { blogId } = req.params;
+	console.log(blogId)
 
     const blog = await this.queryBlogsRepositories.findBlogById(blogId);
     if (!blog) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -149,8 +150,8 @@ export class BlogsComtroller {
     );
     if (!isDeleted) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    } else {
+    } 
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
-    }
+    
   }
 }
