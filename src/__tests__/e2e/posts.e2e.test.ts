@@ -234,6 +234,8 @@ describe("/posts", () => {
     let inputDataBlog: inputDataBlogType;
 	let inputDataPost: inputDataPostType
 
+	let id: string
+
     it("create new post with correnct input data => return 201 status code", async () => {
       inputDataBlog = {
         name: "Mickhael",
@@ -277,6 +279,8 @@ describe("/posts", () => {
         blogName: inputDataBlog.name,
         createdAt: expect.any(String),
       });
+
+	  id = createNewPost.body.id
     });
     it("create new post with incorrect input data => return 400 status code", async () => {
       const inputDataPost = {
@@ -323,7 +327,6 @@ describe("/posts", () => {
       expect(createNewPost.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401);
     });
 
-	let idOneUser: string
     it("return all posts with correct input data => return 200 status code", async () => {
       const pageNumber = "1";
       const pageSize = "10";
@@ -333,7 +336,6 @@ describe("/posts", () => {
       const getAllPost = await request(app).get(
         `/posts?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}`
       );
-	  console.log(getAllPost.body, 'body')
       // .get('/posts').query({pageNumber: "1", pageSize: "10", sortBy: "createAt", sortDirection: "desc"})
       expect(getAllPost.status).toBe(HTTP_STATUS.OK_200);
 	  expect(getAllPost.body.pagesCount).toEqual(1);
@@ -356,14 +358,71 @@ describe("/posts", () => {
             createdAt: expect.any(String),
           },
         ]);
-		idOneUser = getAllPost.body.id
     });
 
 	it("get post by id => return 200 status code", async() => {
-		const getPostById = await request(app).get(`/posts/${idOneUser}`).auth("admin", "qwerty")
+	// 	const userObj = {
+	// 		"login": "Mihail",
+	// 		"password": "qwerty",
+	// 		"email": "mpara7274@gmail.ru"
+	// 	}
+	// 	const createUser = await request(app).post("/users").auth("admin", "qwerty").send(userObj)
+	// 	expect(createUser.status).toBe(HTTP_STATUS.CREATED_201)
+	// 	expect(createUser.body).toEqual({
+    //   id: expect.any(String),
+    //   login: userObj.login,
+    //   email: userObj.email,
+    //   createdAt: expect.any(String),
+    // });
+
+    // const loginOrEmail = createUser.body.login;
+    // const accessToken = await request(app).post("/auth/login").send({
+    //   loginOrEmail: loginOrEmail,
+    //   password: "qwerty",
+    // });
+
+    // const createBlog = await request(app)
+    //   .post("/blogs")
+    //   .auth("admin", "qwerty")
+    //   .send(inputDataBlog);
+    // expect(createBlog.status).toBe(HTTP_STATUS.CREATED_201);
+    // expect(createBlog.body).toEqual({
+    //   id: expect.any(String),
+    //   name: inputDataBlog.name,
+    //   description: inputDataBlog.description,
+    //   websiteUrl: inputDataBlog.websiteUrl,
+    //   createdAt: expect.any(String),
+    //   isMembership: true,
+    // });
+
+    // blogId = createBlog.body.id;
+    // inputDataPost = {
+    //   title: "New title",
+    //   shortDescription: "new shortDescription",
+    //   content:
+    //     "My live is variable, I maked many diferent things and I had diferent profession",
+    //   blogId: blogId,
+    // };
+
+    // const createNewPost = await request(app)
+    //   .post("/posts")
+    //   .auth("admin", "qwerty")
+    //   .send(inputDataPost);
+    // expect(createNewPost.status).toBe(HTTP_STATUS.CREATED_201);
+    // expect(createNewPost.body).toEqual({
+    //   id: expect.any(String),
+    //   title: inputDataPost.title,
+    //   shortDescription: inputDataPost.shortDescription,
+    //   content: inputDataPost.content,
+    //   blogId: blogId,
+    //   blogName: inputDataBlog.name,
+    //   createdAt: expect.any(String),
+    // });
+
+		const getPostById = await request(app).get(`/posts/${id}`).auth("admin", "qwerty")
 		expect(getPostById.status).toBe(HTTP_STATUS.OK_200)
 		expect(getPostById.body).toStrictEqual({
-			"id": idOneUser,
+			"id": id,
 			"title": inputDataPost.title,
 			"shortDescription": inputDataPost.shortDescription,
 			"content": inputDataPost.content,
@@ -374,9 +433,10 @@ describe("/posts", () => {
 	})
 
 	it("get post by id with incorrect input data => return 400 status code", async() => {
-		const getPostByIdWithIncorrectData = await request(app).get(`/posts/123456789012345678901234`)
+		const id = "123456789012345678901234"
+		const getPostByIdWithIncorrectData = await request(app).get(`/posts/id`)
 		expect(getPostByIdWithIncorrectData.status).toBe(HTTP_STATUS.NOT_FOUND_404)
-		expect(getPostByIdWithIncorrectData.body).toStrictEqual(createErrorsMessageTest(["idOneUser"]))
+		expect(getPostByIdWithIncorrectData.body).toStrictEqual(createErrorsMessageTest(["id"]))
 	})
   });
 
