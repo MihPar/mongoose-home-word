@@ -55,7 +55,8 @@ export class QueryPostsRepositories {
 
     return result
   }
-  async findPostById(id: string): Promise<PostsDB | null> {
-    return await PostsModel.findOne({ _id: new ObjectId(id) }, {__v: 0 });
+  async findPostById(id: string): Promise<Posts | null> {
+    const post = await PostsModel.findOne({ _id: new ObjectId(id) }, {__v: 0 }).lean();
+	return post ? PostsDB.getPostsViewModel(post) : null
   }
 }

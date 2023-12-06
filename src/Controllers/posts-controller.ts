@@ -70,7 +70,7 @@ export class PostsController {
     const { postId } = req.params;
     const { content } = req.body;
     const user = req.user;
-    const post: PostsDB | null = await this.queryPostsRepositories.findPostById(
+    const post: Posts | null = await this.queryPostsRepositories.findPostById(
       postId
     );
 

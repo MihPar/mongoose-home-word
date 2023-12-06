@@ -215,7 +215,6 @@ describe("/like", () => {
       createdAt: expect.any(String),
       isMembership: true,
     });
-console.log("new blog: ", createBlogs1.body)
     const blogId1 = createBlogs1.body.id;
     const blogName1 = createBlogs1.body.name;
 

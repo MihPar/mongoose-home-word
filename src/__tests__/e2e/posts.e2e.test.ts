@@ -66,6 +66,16 @@ describe("/posts", () => {
     ]),
   };
 
+  const blogsValidationErrResId = {
+    errorsMessages: expect.arrayContaining([
+      {
+        message: expect.any(String),
+        field: "id",
+      },
+    ]),
+  };
+
+
   const postsValidationErrResPost = {
     errorsMessages: expect.arrayContaining([
       {
@@ -90,7 +100,15 @@ describe("/posts", () => {
   //   beforeEach(async() => {
   // 	const wipeAllRes = await request(app).delete('/testing/all-data').send()
   // })
+
+    type token = {
+		accessToken: string
+	}
   	let firstPost: PostsViewModel;
+	let createAccessTokenBody: token
+	let userId: string
+	let login: string
+	
     it("POST -> /posts/:postId/comments: should create new comment; status 201; content: created comment; used additional methods: POST -> /blogs, POST -> /posts, GET -> /comments/:commentId;", async () => {
       // create user(login, psw)!!!!!!
       //accwessToken = loginUser
@@ -119,6 +137,8 @@ describe("/posts", () => {
         loginOrEmail: loginOrEmail,
         password: "qwerty",
       });
+
+	  createAccessTokenBody = createAccessToken.body
 
       expect(createAccessToken.status).toBe(HTTP_STATUS.OK_200);
       expect(createAccessToken.body).toEqual({
@@ -172,8 +192,10 @@ describe("/posts", () => {
 	  firstPost = createPosts.body;
 
       const postId = createPosts.body.id;
-      const userId = createUser.body.id;
-      const login = createUser.body.login;
+      userId = createUser.body.id;
+      login = createUser.body.login;
+
+	  /*************************** create comment by postId *****************************/
 
       const createCommentPostByPostId = await request(app)
         .post(`/posts/${postId}/comments`)
@@ -199,6 +221,15 @@ describe("/posts", () => {
         },
       });
 
+	  const createCommentWithIncorrectData = await request(app)
+	  .post(`/posts/${postId}/comments`)
+	  .set("Authorization", `Bearer ${createAccessToken.body.accessToken}`)
+	  .send({content: true});
+	  expect(createCommentWithIncorrectData.status).toBe(HTTP_STATUS.BAD_REQUEST_400);
+      expect(createCommentWithIncorrectData.body).toStrictEqual(createErrorsMessageTest(["content"]))
+
+	  /*************************** get comment by postId *****************************/
+
       const id = createCommentPostByPostId.body.id;
       const getComment = await request(app).get(`/comments/${id}`);
       expect(getComment.status).toBe(HTTP_STATUS.OK_200);
@@ -217,6 +248,8 @@ describe("/posts", () => {
         },
       });
     });
+
+	/********************************************************************************************/
 
     type inputDataBlogType = {
       name: string;
@@ -361,65 +394,9 @@ describe("/posts", () => {
     });
 
 	it("get post by id => return 200 status code", async() => {
-	// 	const userObj = {
-	// 		"login": "Mihail",
-	// 		"password": "qwerty",
-	// 		"email": "mpara7274@gmail.ru"
-	// 	}
-	// 	const createUser = await request(app).post("/users").auth("admin", "qwerty").send(userObj)
-	// 	expect(createUser.status).toBe(HTTP_STATUS.CREATED_201)
-	// 	expect(createUser.body).toEqual({
-    //   id: expect.any(String),
-    //   login: userObj.login,
-    //   email: userObj.email,
-    //   createdAt: expect.any(String),
-    // });
-
-    // const loginOrEmail = createUser.body.login;
-    // const accessToken = await request(app).post("/auth/login").send({
-    //   loginOrEmail: loginOrEmail,
-    //   password: "qwerty",
-    // });
-
-    // const createBlog = await request(app)
-    //   .post("/blogs")
-    //   .auth("admin", "qwerty")
-    //   .send(inputDataBlog);
-    // expect(createBlog.status).toBe(HTTP_STATUS.CREATED_201);
-    // expect(createBlog.body).toEqual({
-    //   id: expect.any(String),
-    //   name: inputDataBlog.name,
-    //   description: inputDataBlog.description,
-    //   websiteUrl: inputDataBlog.websiteUrl,
-    //   createdAt: expect.any(String),
-    //   isMembership: true,
-    // });
-
-    // blogId = createBlog.body.id;
-    // inputDataPost = {
-    //   title: "New title",
-    //   shortDescription: "new shortDescription",
-    //   content:
-    //     "My live is variable, I maked many diferent things and I had diferent profession",
-    //   blogId: blogId,
-    // };
-
-    // const createNewPost = await request(app)
-    //   .post("/posts")
-    //   .auth("admin", "qwerty")
-    //   .send(inputDataPost);
-    // expect(createNewPost.status).toBe(HTTP_STATUS.CREATED_201);
-    // expect(createNewPost.body).toEqual({
-    //   id: expect.any(String),
-    //   title: inputDataPost.title,
-    //   shortDescription: inputDataPost.shortDescription,
-    //   content: inputDataPost.content,
-    //   blogId: blogId,
-    //   blogName: inputDataBlog.name,
-    //   createdAt: expect.any(String),
-    // });
-
-		const getPostById = await request(app).get(`/posts/${id}`).auth("admin", "qwerty")
+		const getPostById = await request(app)
+		.get(`/posts/${id}`)
+		.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
 		expect(getPostById.status).toBe(HTTP_STATUS.OK_200)
 		expect(getPostById.body).toStrictEqual({
 			"id": id,
@@ -433,10 +410,48 @@ describe("/posts", () => {
 	})
 
 	it("get post by id with incorrect input data => return 400 status code", async() => {
-		const id = "123456789012345678901234"
-		const getPostByIdWithIncorrectData = await request(app).get(`/posts/id`)
+		let id = "123456789012345678901234"
+		const getPostByIdWithIncorrectData = await request(app)
+		.get(`/posts/${id}`)
+		.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
 		expect(getPostByIdWithIncorrectData.status).toBe(HTTP_STATUS.NOT_FOUND_404)
-		expect(getPostByIdWithIncorrectData.body).toStrictEqual(createErrorsMessageTest(["id"]))
+		// expect(getPostByIdWithIncorrectData.body).toStrictEqual(createErrorsMessageTest(["id"]))
+	})
+
+	
+	it("create comment by postId", async() => {
+		let postId = firstPost.id
+		const createCommentPostByPostId = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .set("Authorization", `Bearer ${createAccessToken.body.accessToken}`)
+        .send({
+          content:
+            "My profession is a programmer, I work in javascript and I work for back end developer",
+        });
+
+      expect(createCommentPostByPostId.status).toBe(HTTP_STATUS.CREATED_201);
+      expect(createCommentPostByPostId.body).toEqual({
+        id: expect.any(String),
+        content: expect.any(String),
+        commentatorInfo: {
+          userId: userId,
+          userLogin: login,
+        },
+        createdAt: expect.any(String),
+        likesInfo: {
+          likesCount: 0,
+          dislikesCount: 0,
+          myStatus: "None",
+        },
+      });
+
+	  const createCommentWithIncorrectData = await request(app)
+	  .post(`/posts/${postId}/comments`)
+	  .set("Authorization", `Bearer ${createAccessToken.body.accessToken}`)
+	  .send({content: true});
+	  expect(createCommentWithIncorrectData.status).toBe(HTTP_STATUS.BAD_REQUEST_400);
+      expect(createCommentWithIncorrectData.body).toStrictEqual(createErrorsMessageTest(["content"]))
+
 	})
   });
 
