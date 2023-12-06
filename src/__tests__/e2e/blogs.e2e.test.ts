@@ -7,7 +7,6 @@ import { UserViewType } from "../../types/userTypes";
 import { initApp } from "../../settings";
 import { tr } from "date-fns/locale";
 import { PostsViewModel } from "../../types/postsTypes";
-import { ObjectId } from "mongodb";
 dotenv.config();
 
 const app = initApp();
@@ -241,18 +240,22 @@ describe("/blogs", () => {
 
     describe("return all posts for specified blog", () => {
       it("return all posts for specified blog", async () => {
-        const createPost = await request(app).post("/posts").auth("admin", "qwerty").send({
-          title: "PROGRAMMER",
-          shortDescription: "My profession the back end developer!",
-          content:
-            "I am a programmere and work at backend, I like javascript!!!",
-          blogId: blogId,
-        }).expect(201);
+        const createPost = await request(app)
+          .post("/posts")
+          .auth("admin", "qwerty")
+          .send({
+            title: "PROGRAMMER",
+            shortDescription: "My profession the back end developer!",
+            content:
+              "I am a programmere and work at backend, I like javascript!!!",
+            blogId: blogId,
+          })
+          .expect(201);
 
         const title = createPost.body.title;
         const shortDescription = createPost.body.shortDescription;
         const content = createPost.body.content;
-		const postIdBy = createPost.body.blogId
+        const postIdBy = createPost.body.blogId;
 
         const pageNumber = "1";
         const pageSize = "10";
@@ -260,7 +263,7 @@ describe("/blogs", () => {
         const getAllPostForBlogs = await request(app).get(
           `/blogs/${blogId}/posts`
         );
-console.log("getAllPostForBlogs.body: ", getAllPostForBlogs.body)
+        console.log("getAllPostForBlogs.body: ", getAllPostForBlogs.body);
 
         expect(getAllPostForBlogs.status).toBe(HTTP_STATUS.OK_200);
         expect(getAllPostForBlogs.body).toEqual({
@@ -280,13 +283,12 @@ console.log("getAllPostForBlogs.body: ", getAllPostForBlogs.body)
             },
           ],
         });
-
-        it("if specified blog is not exist", async () => {
-          const getAllPostForBlogs = await request(app).get(
-            `/blogs/147896321598741563258745/posts`
-          );
-          expect(getAllPostForBlogs.status).toBe(HTTP_STATUS.NOT_FOUND_404);
-        });
+      });
+      it("if specified blog is not exist", async () => {
+        const getAllPostForBlogs = await request(app).get(
+          `/blogs/147896321598741563258745/posts`
+        );
+        expect(getAllPostForBlogs.status).toBe(HTTP_STATUS.NOT_FOUND_404);
       });
     });
 
@@ -467,7 +469,7 @@ console.log("getAllPostForBlogs.body: ", getAllPostForBlogs.body)
           description: description,
           websiteUrl: websiteUrl,
           createdAt: expect.any(String),
-          isMembership: true,     
+          isMembership: true,
         });
       });
 

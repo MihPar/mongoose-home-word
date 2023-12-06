@@ -11,7 +11,7 @@ export class QueryPostsRepositories {
     sortDirection: string
   ): Promise<PaginationType<Posts>> {
     const filtered = {};
-    const allPosts = await PostsModel.find(filtered, { projection: { _id: 0 } })
+    const allPosts: PostsDB[] = await PostsModel.find(filtered, {__v: 0 })
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
       .skip((+pageNumber - 1) * +pageSize)
       .limit(+pageSize)
@@ -25,7 +25,7 @@ export class QueryPostsRepositories {
       page: +pageNumber,
       pageSize: +pageSize,
       totalCount: totalCount,
-      items: allPosts,
+      items: allPosts.map((item) => PostsDB.getPostsViewModel(item)),
     };
     return result;
   }
@@ -37,13 +37,7 @@ export class QueryPostsRepositories {
     blogId: string
   ): Promise<PaginationType<Posts>> {
     const filter = { blogId: blogId };
-
-    // console.log(filter);
-    // console.log({ [sortBy]: sortDirection === "asc" ? 1 : -1 });
-    // console.log((+pageNumber - 1) * +pageSize);
-    // console.log(+pageSize);
-
-    const posts = await PostsModel.find(filter, {__v: 0 })
+    const posts: PostsDB[] = await PostsModel.find(filter, {__v: 0 })
       .sort({ [sortBy]: sortDirection === "asc" ? 1 : -1 })
       .skip((+pageNumber - 1) * +pageSize) //todo find how we can skip
       .limit(+pageSize)
@@ -51,17 +45,17 @@ export class QueryPostsRepositories {
     const totalCount: number = await PostsModel.countDocuments(filter);
     const pagesCount: number = Math.ceil(totalCount / +pageSize);
 
-	const result: PostsDB = {
+	const result: PaginationType<Posts> = {
 		pagesCount: pagesCount,
 		page: +pageNumber,
 		pageSize: +pageSize,
 		totalCount: totalCount,
-		items: posts.map((item) => {PostsDB.getPostsViewModel(item)}),
+		items: posts.map((item) => PostsDB.getPostsViewModel(item)),
 	  };
 
     return result
   }
   async findPostById(id: string): Promise<PostsDB | null> {
-    return await PostsModel.findOne({ _id: new ObjectId(id) }, { projection: { _id: 0 } });
+    return await PostsModel.findOne({ _id: new ObjectId(id) }, {__v: 0 });
   }
 }

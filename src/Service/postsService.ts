@@ -11,23 +11,9 @@ export class PostsService {
 		content: string,
 		blogName: string
 	  ): Promise<PostsViewModel | null> {
-		// const blog: BlogsDB | null = await BlogsModel.findOne({
-		//   id: blogId,
-		// });
-		// if (!blog) return null;
 		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName,)
-
-		// const newPost: Posts = {
-		//   _id: new ObjectId(),
-		//   title,
-		//   shortDescription,
-		//   content,
-		//   blogId,
-		//   blogName: blog.name,
-		//   createdAt: new Date().toISOString(),
-		// };
 		const createPost: PostsDB = await this.postsRepositories.createNewPosts(newPost);
-		return createPost.getPostsViewModel();
+		return createPost.getPostViewModel();
 	  }
 	  async updateOldPost(
 		id: string,

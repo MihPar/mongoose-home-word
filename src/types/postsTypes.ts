@@ -36,6 +36,17 @@ export class PostsDB extends Posts {
       createdAt: post.createdAt,
     };
   }
+  getPostViewModel(): PostsViewModel {
+    return {
+      id: this._id.toString(),
+      title: this.title,
+      shortDescription: this.shortDescription,
+      content: this.content,
+      blogId: this.blogId,
+      blogName: this.blogName,
+      createdAt: this.createdAt,
+    };
+  }
 }
 
 // const func = (): PostsDB => {
