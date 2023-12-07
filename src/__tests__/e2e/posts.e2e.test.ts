@@ -515,8 +515,6 @@ describe("/posts", () => {
         sortDirection: "desc",
       });
     expect(getCommentByPost.status).toBe(HTTP_STATUS.OK_200);
-    // console.log(getCommentByPost.body)
-
     expect(getCommentByPost.body).toEqual({
       pagesCount: 1,
       page: 1,
@@ -540,22 +538,6 @@ describe("/posts", () => {
       },
     });
   });
-//   [
-// 	{
-// 	  "id": expect.any(String),
-// 	  "content": content,
-// 	  "commentatorInfo": {
-// 		"userId": userId,
-// 		"userLogin": login
-// 	  },
-// 	  "createdAt": createdAt,
-// 	  "likesInfo": {
-// 		"likesCount": 0,
-// 		"dislikesCount": 0,
-// 		"myStatus": "None"
-// 	  }
-// 	}
-//   ]
   it("get comment by specified postId with incorrect postId => return 404 status code", async() => {
 	const postId = createCommentByPostId.id;
 	const pageNumber = "1"

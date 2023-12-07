@@ -63,11 +63,12 @@ describe("/users", () => {
     ]),
   };
 
-  //   beforeEach(async () => {
-  //     const wipeAllRes = await request(app).delete("/testing/all-data").send();
-  //   });
-  let createUser: UserViewType;
+    beforeEach(async () => {
+      const wipeAllRes = await request(app).delete("/testing/all-data").send();
+    });
+
   describe("add new user to the system", () => {
+	let createUser: UserViewType;
     it("should create new user with correct input data => return status 201", async () => {
       const user = {
         login: "qwerty",
@@ -79,6 +80,8 @@ describe("/users", () => {
         .auth("admin", "qwerty")
         .send(user);
       createUser = resultOfUserCreation.body;
+	//   console.log(createUser.id)
+
       expect(resultOfUserCreation.status).toBe(HTTP_STATUS.CREATED_201);
       expect(createUser).toEqual({
         id: expect.any(String),
@@ -91,7 +94,7 @@ describe("/users", () => {
       const user = {
         login: true,
         password: 123,
-        email: "mpara7473@gmail.com",
+        email: true,
       };
       const resultOfUserCreation = await request(app)
         .post("/users")
@@ -99,7 +102,7 @@ describe("/users", () => {
         .send(user);
       createUser = resultOfUserCreation.body;
       expect(resultOfUserCreation.status).toBe(HTTP_STATUS.BAD_REQUEST_400);
-	  expect(createUser).toEqual(
+	  expect(createUser).toStrictEqual(
 		createErrorsMessageTest(["login", "password", "email"])
 	  );
     });
@@ -119,6 +122,21 @@ describe("/users", () => {
   });
   describe("return all users", () => {
     it("get all users with correct input data => return 200 status code", async () => {
+      const user = {
+        login: "qwerty",
+        password: "string",
+        email: "mpara7473@gmail.com",
+      };
+      const resultOfUserCreation = await request(app)
+        .post("/users")
+        .auth("admin", "qwerty")
+        .send(user);
+		// console.log(resultOfUserCreation.body.id)
+
+      const id = resultOfUserCreation.body.id;
+      const login = resultOfUserCreation.body.login;
+      const email = resultOfUserCreation.body.email;
+
       let sortBy = "createdAt";
       let sortDirection = "desc";
       let pageNumber = "1";
@@ -130,21 +148,26 @@ describe("/users", () => {
           `/users?sortBy=${sortBy}&sortDirection=${sortDirection}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchLoginTerm=${searchLoginTerm}&searchEmailTerm=${searchEmailTerm}`
         )
         .auth("admin", "qwerty");
+		console.log(findUser.body.items)
       expect(findUser.status).toBe(HTTP_STATUS.OK_200);
-      expect(findUser.body).toEqual({
+	  expect(findUser.body.pagesCount).toEqual(0)
+	  expect(findUser.body.page).toEqual(1)
+	  expect(findUser.body.pageSize).toEqual(50)
+	  expect(findUser.body.totalCount).toEqual(0)
+	  expect(findUser.body.items).toEqual({
         pagesCount: 0,
         page: 1,
         pageSize: 50,
         totalCount: 0,
         items: [
           {
-            id: createUser.id,
-            login: createUser.login,
-            email: createUser.email,
+            id: id,
+            login: login,
+            email: email,
             createdAt: expect.any(String),
           },
         ],
-      });
+      })
     });
 	it("get all users without authorization => return 401 status code", async () => {
 		let sortBy = "createdAt";
@@ -162,15 +185,29 @@ describe("/users", () => {
   });
 
   describe("delete user specified by id", () => {
+	let id: string
 	it("delete user with correct input data => return 204 status code", async() => {
+		const user = {
+			login: "qwerty",
+			password: "string",
+			email: "mpara7473@gmail.com",
+		  };
+		  const resultOfUserCreation = await request(app)
+			.post("/users")
+			.auth("admin", "qwerty")
+			.send(user);
+	
+		  id = resultOfUserCreation.body.id;
+		  const login = resultOfUserCreation.body.login;
+		  const email = resultOfUserCreation.body.email;
 		const deleteUserById = await request(app)
-		.delete(`/users/${createUser.id}`)
+		.delete(`/users/${id}`)
 		.auth("admin", "qwerty")
 		expect(deleteUserById.status).toBe(HTTP_STATUS.NO_CONTENT_204)
 	})
 	it("delete user without authorization => return 401 status code", async() => {
 		const deleteUserById = await request(app)
-		.delete(`/users/${createUser.id}`)
+		.delete(`/users/${id}`)
 		expect(deleteUserById.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401)
 	})
 	it("delete user with incorrect input data => return 404 status code", async() => {

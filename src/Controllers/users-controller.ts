@@ -44,9 +44,8 @@ export class UserController {
       );
     if (!users) {
       return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
-    } else {
+    } 
       return res.status(HTTP_STATUS.OK_200).send(users);
-    }
   }
   async createNewUser(
     req: RequestWithBody<bodyUserModel>,
@@ -65,7 +64,7 @@ export class UserController {
     req: RequestWithParams<ParamsUserMode>,
     res: Response<void>
   ): Promise<Response<void>> {
-    console.log(req.params.id);
+    // console.log(req.params.id);
     const deleteUserById = await this.userService.deleteUserId(req.params.id);
     if (!deleteUserById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

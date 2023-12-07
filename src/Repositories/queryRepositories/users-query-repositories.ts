@@ -64,11 +64,11 @@ export class QueryUsersRepositories {
       pageSize: +pageSize,
       totalCount: totalCount,
       items: getAllUsers.map((user: Users): UserViewType => ({
-		id: user._id.toString(),
-    login: user.accountData.userName,
-    email: user.accountData.email,
-    createdAt: user.accountData.createdAt,
-	  })),
+			id: user._id.toString(),
+			login: user.accountData.userName,
+			email: user.accountData.email,
+			createdAt: user.accountData.createdAt,
+		})),
     };
   }
   async findUserById(userId: ObjectId): Promise<Users | null> {
