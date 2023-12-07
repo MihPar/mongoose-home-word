@@ -293,6 +293,7 @@ describe("/blogs", () => {
     });
 
     let reqBodyResponse: PostsViewModel;
+	
     describe("create new post for specific blog", () => {
       type BodyBlog = {
         title: string;

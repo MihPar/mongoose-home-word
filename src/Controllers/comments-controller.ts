@@ -16,7 +16,7 @@ export class CommentController {
   constructor(
     protected commentRepositories: CommentRepositories,
     protected commentService: CommentService,
-	protected queryCommentRepositories: QueryCommentRepositories
+    protected queryCommentRepositories: QueryCommentRepositories
   ) {}
 
   async updateByCommentIdLikeStatus(
@@ -24,27 +24,36 @@ export class CommentController {
     res: Response<boolean>
   ): Promise<Response<boolean>> {
     const { commentId } = req.params;
-	// console.log("commentId: ", commentId)
+    // console.log("commentId: ", commentId)
 
     const { likeStatus } = req.body;
-	// console.log("likeStatus: ", req.body.likeStatus)
+    // console.log("likeStatus: ", req.body.likeStatus)
 
-	const userId = req.user.id;
-	// console.log("userId: ", req.user.id)
-	
-    const findCommentById:  CommentsDB | null = await this.queryCommentRepositories.findCommentByCommentId(
-      commentId
+    const userId = req.user.id;
+    // console.log("userId: ", req.user.id)
+
+    const findCommentById: CommentsDB | null =
+      await this.queryCommentRepositories.findCommentByCommentId(commentId);
+    if (!findCommentById) {
+      return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    }
+    const findLike = await this.queryCommentRepositories.findLikeCommentByUser(
+      commentId,
+      userId
     );
-	if (!findCommentById) {
-		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-	  }
-	const findLike = await this.queryCommentRepositories.findLikeCommentByUser(commentId, userId)
-	const commentDBBiew = commentDBToView(findCommentById, findLike?.myStatus ?? null)
-	// console.log("findCommentById: ", findCommentById)
-    
-	let updateLikeStatus = await this.commentService.updateltLikeStatus(likeStatus, commentId, userId)
-	// console.log(updateLikeStatus)
-	return res.sendStatus(HTTP_STATUS.NO_CONTENT_204)
+    const commentDBBiew = commentDBToView(
+      findCommentById,
+      findLike?.myStatus ?? null
+    );
+    // console.log("findCommentById: ", findCommentById)
+
+    let updateLikeStatus = await this.commentService.updateltLikeStatus(
+      likeStatus,
+      commentId,
+      userId
+    );
+    // console.log(updateLikeStatus)
+    return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
 
   async updateByCommentId(
@@ -53,9 +62,10 @@ export class CommentController {
   ): Promise<Response<boolean>> {
     const { commentId } = req.params;
     const { content } = req.body;
-	const {userId} = req.user;
+    const { userId } = req.user;
     const isExistComment = await this.queryCommentRepositories.findCommentById(
-      commentId, userId
+      commentId,
+      userId
     );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -76,9 +86,10 @@ export class CommentController {
     res: Response<boolean>
   ): Promise<Response<boolean>> {
     const { commentId } = req.params;
-	const {userId} = req.user;
+    const { userId } = req.user;
     const isExistComment = await this.queryCommentRepositories.findCommentById(
-      commentId, userId
+      commentId,
+      userId
     );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -98,13 +109,15 @@ export class CommentController {
     req: RequestWithParams<paramsCommentMode>,
     res: Response<CommentViewModel | null>
   ): Promise<Response<CommentViewModel | null>> {
-	const userId = req.user?.id ?? null;
+    const userId = req.user?.id ?? null;
     const getCommentById: CommentViewModel | null =
-      await this.queryCommentRepositories.findCommentById(req.params.id, userId);
+      await this.queryCommentRepositories.findCommentById(
+        req.params.id,
+        userId
+      );
     if (!getCommentById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    } else {
-      return res.status(HTTP_STATUS.OK_200).send(getCommentById);
     }
+    return res.status(HTTP_STATUS.OK_200).send(getCommentById);
   }
 }

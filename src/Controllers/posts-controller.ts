@@ -158,13 +158,13 @@ export class PostsController {
     req: RequestWithParams<paramsIdModel>,
     res: Response<void>
   ) {
+	console.log(req.params.id)
     const deletPost: boolean = await this.postsService.deletePostId(
       req.params.id
     );
     if (!deletPost) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    } else {
+    } 
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
-    }
   }
 }

@@ -500,39 +500,62 @@ describe("/posts", () => {
   });
 
   it("return comments for specified post by postId", async () => {
-    const postId = createCommentByPostId.id;
-	const pageNumber = "1"
-	const pageSize = "10"
-	const sortBy = "createdAt"
-	const sortDirection = "desc"
+    const postId = firstPost.id;
+    const pageNumber = "1";
+    const pageSize = "10";
+    const sortBy = "createdAt";
+    const sortDirection = "desc";
 
     const getCommentByPost = await request(app)
-	.get(`/comments/${postId}`)
-	.query({pageNumber: "1", pageSize: "10", sortBy: "createdAt", sortDirection: "desc"})
+      .get(`/posts/${postId}/comments`)
+      .query({
+        pageNumber: "1",
+        pageSize: "10",
+        sortBy: "createdAt",
+        sortDirection: "desc",
+      });
     expect(getCommentByPost.status).toBe(HTTP_STATUS.OK_200);
+    // console.log(getCommentByPost.body)
+
     expect(getCommentByPost.body).toEqual({
-		"pagesCount": 0,
-		"page": 0,
-		"pageSize": 0,
-		"totalCount": 0,
-		"items": [
-		  {
-			"id": expect.any(String),
-			"content": content,
-			"commentatorInfo": {
-			  "userId": userId,
-			  "userLogin": login
-			},
-			"createdAt": createdAt,
-			"likesInfo": {
-			  "likesCount": 0,
-			  "dislikesCount": 0,
-			  "myStatus": "None"
-			}
-		  }
-		]
+      pagesCount: 1,
+      page: 1,
+      pageSize: 10,
+      totalCount: 2,
+      items: expect.any(Array),
+    });
+    expect(getCommentByPost.body.items).toHaveLength(2);
+    expect(getCommentByPost.body.items[0]).toEqual({
+      id: expect.any(String),
+      content: content,
+      commentatorInfo: {
+        userId: userId,
+        userLogin: login,
+      },
+      createdAt: createdAt,
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: "None",
+      },
     });
   });
+//   [
+// 	{
+// 	  "id": expect.any(String),
+// 	  "content": content,
+// 	  "commentatorInfo": {
+// 		"userId": userId,
+// 		"userLogin": login
+// 	  },
+// 	  "createdAt": createdAt,
+// 	  "likesInfo": {
+// 		"likesCount": 0,
+// 		"dislikesCount": 0,
+// 		"myStatus": "None"
+// 	  }
+// 	}
+//   ]
   it("get comment by specified postId with incorrect postId => return 404 status code", async() => {
 	const postId = createCommentByPostId.id;
 	const pageNumber = "1"
@@ -547,7 +570,6 @@ describe("/posts", () => {
   })
 
   it("update existign post by id with input data => return 204 staus code", async() => {
-	const id = createCommentByPostId.id
 	const objUpdate = {
 		"title": "my new title",
 		"shortDescription": "my new shortDescription",
@@ -555,7 +577,7 @@ describe("/posts", () => {
 		"blogId": blogId
 	}
 	const updatePostById = await request(app)
-	.put(`/posts/${id}`)
+	.put(`/posts/${postId}`)
 	.auth("admin", "qwerty")
 	.send(objUpdate)
 	expect(updatePostById.status).toBe(HTTP_STATUS.NO_CONTENT_204)
@@ -614,18 +636,19 @@ describe("/posts", () => {
 
   it("delete post specified by id => return 204 status code", async() => {
 	const deletePostById = await request(app)
-	.delete(`posts/${id}`)
+	.delete(`/posts/${id}`)
 	.auth("admin", "qwerty")
 	expect(deletePostById.status).toBe(HTTP_STATUS.NO_CONTENT_204)
   })
   it("delete post specified by id => return 401 status code", async() => {
 	const deletePostById = await request(app)
-	.delete(`posts/${id}`)
+	.delete(`/posts/${id}`)
 	expect(deletePostById.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401)
   })
   it("delete post specified by id => return 404 status code", async() => {
 	const deletePostById = await request(app)
-	.delete(`posts/123456789012345678901234`)
+	.delete(`/posts/123456789012345678901234`)
+	.auth("admin", "qwerty")
 	expect(deletePostById.status).toBe(HTTP_STATUS.NOT_FOUND_404)
   })
 });

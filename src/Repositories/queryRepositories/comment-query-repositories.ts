@@ -82,7 +82,7 @@ export class QueryCommentRepositories {
 	// 	items: commentByPostId.map((item) => CommentsDB.getNewComments(item, status!.myStatus))
 	// }
 	// return result
-
+	console.log("85 items: ", items)
     return {
       pagesCount: pagesCount,
       page: +pageNumber,
