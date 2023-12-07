@@ -151,9 +151,8 @@ export class PostsController {
     );
     if (!updatePost) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    } else {
-      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
     }
+      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
   async deletePostById(
     req: RequestWithParams<paramsIdModel>,

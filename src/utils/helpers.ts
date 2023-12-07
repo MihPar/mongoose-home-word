@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { LikeStatusEnum } from "../enum/like-status-enum";
 import { CommentViewModel, CommentsDB } from "../types/commentType";
 

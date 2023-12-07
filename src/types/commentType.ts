@@ -45,6 +45,20 @@ export class CommentsDB extends Comment {
 	  }
     };
   }
+
+static getNewComments(comment: CommentsDB, myStatus: LikeStatusEnum): CommentViewModel {
+    return {
+      id: comment._id.toString(),
+      content: comment.content,
+      commentatorInfo: comment.commentatorInfo,
+      createdAt: comment.createdAt,
+	  likesInfo: {
+		likesCount: comment.likesCount,
+		dislikesCount: comment.dislikesCount,
+		myStatus: myStatus
+	  }
+    };
+  }
 }
 
 // export class Comments {

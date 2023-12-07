@@ -4,6 +4,7 @@ import { PaginationType } from "../../types/types";
 import { LikeStatusEnum } from "../../enum/like-status-enum";
 import { commentDBToView } from "../../utils/helpers";
 import { CommentViewModel, CommentsDB } from "../../types/commentType";
+import { Like } from "../../types/likesInfoType";
 
 export class QueryCommentRepositories {
   async findLikesCommentByUser(commentId: string, userId: ObjectId) {
@@ -57,20 +58,31 @@ export class QueryCommentRepositories {
     const pagesCount: number = Math.ceil(totalCount / +pageSize);
 
     //const items: CommentViewModel[] = [];
+	let findLike
+	let status: Like | null
     const items: CommentViewModel[] = await Promise.all(commentByPostId.map(async (item) => {
-		let findLike = null;
+		findLike = null;
 		if(userId){
-		const status = await LikesModel.findOne({
+		status = await LikesModel.findOne({
 			userId,
 			commentId: item._id.toString()
 		});
 		findLike = status ? status.myStatus : null
 		}
+		
       const commnent = commentDBToView(item, findLike);
 	  console.log("comment: ", commnent)
       return commnent;
     }))
-console.log("items: ", items)
+	// const result: PaginationType<CommentViewModel> | null = {
+	// 	pagesCount: pagesCount,
+	// 	page: +pageNumber,
+	// 	pageSize: +pageSize,
+	// 	totalCount: totalCount,
+	// 	items: commentByPostId.map((item) => CommentsDB.getNewComments(item, status!.myStatus))
+	// }
+	// return result
+
     return {
       pagesCount: pagesCount,
       page: +pageNumber,
