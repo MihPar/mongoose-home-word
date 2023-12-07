@@ -160,4 +160,24 @@ describe("/users", () => {
 		expect(findUser.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401);
 	  });
   });
+
+  describe("delete user specified by id", () => {
+	it("delete user with correct input data => return 204 status code", async() => {
+		const deleteUserById = await request(app)
+		.delete(`/users/${createUser.id}`)
+		.auth("admin", "qwerty")
+		expect(deleteUserById.status).toBe(HTTP_STATUS.NO_CONTENT_204)
+	})
+	it("delete user without authorization => return 401 status code", async() => {
+		const deleteUserById = await request(app)
+		.delete(`/users/${createUser.id}`)
+		expect(deleteUserById.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401)
+	})
+	it("delete user with incorrect input data => return 404 status code", async() => {
+		const deleteUserById = await request(app)
+		.delete(`/users`)
+		.auth("admin", "qwerty")
+		expect(deleteUserById.status).toBe(HTTP_STATUS.NOT_FOUND_404)
+	})
+  })
 });

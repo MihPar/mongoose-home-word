@@ -69,8 +69,7 @@ export class UserController {
     const deleteUserById = await this.userService.deleteUserId(req.params.id);
     if (!deleteUserById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    } else {
-      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
     }
+      return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
 }
