@@ -430,4 +430,117 @@ describe("/auth", () => {
       );
     });
   });
+  describe("/auth/registration-email-resendign", () => {
+	type UserType = {
+		login: string;
+		password: string;
+		email: string;
+	  };
+	  type CreateAuthLogin = {
+		accessToken: string;
+	  };
+	  let createUser: UserViewType;
+	  let user: UserType;
+	  let authLogin: CreateAuthLogin;
+	it("resend confirmation registration if user exists => return 204 status code", async() => {
+		user = {
+			login: "Michail",
+			password: "qwerty",
+			email: "mpara7472@gmail.com",
+		  };
+		  const resultOfUserCreation = await request(app)
+			.post("/users")
+			.auth("admin", "qwerty")
+			.send(user);
+		  createUser = resultOfUserCreation.body;
+	
+		  expect(resultOfUserCreation.status).toBe(HTTP_STATUS.CREATED_201);
+		  expect(createUser).toEqual({
+			id: expect.any(String),
+			login: user.login,
+			email: user.email,
+			createdAt: expect.any(String),
+		  });
+		  const createAuthLogin = await request(app).post("/auth/login").send({
+			loginOrEmail: createUser.login,
+			password: user.password,
+		  });
+	
+		  authLogin = createAuthLogin.body;
+		  expect(createAuthLogin.status).toBe(HTTP_STATUS.OK_200);
+		  expect(authLogin).toEqual({
+			accessToken: expect.any(String),
+		  });
+		  const resendEmailForConfirmation = await request(app)
+		  .post("/auth/registration-email-resendign")
+		  .send({
+			"email": "mpara7274@gmail.com"
+		  })
+		  expect(resendEmailForConfirmation.status).toBe(HTTP_STATUS.NO_CONTENT_204)
+	})
+  })
+  describe("/auth/logout", () => {
+	it("in cookie client must send correct refresh token that will be revoked => return 204 status code", async() => {
+
+	})
+  })
+  describe("/auth/me", () => {
+	type UserType = {
+		login: string;
+		password: string;
+		email: string;
+	  };
+	  type CreateAuthLogin = {
+		accessToken: string;
+	  };
+	  let createUser: UserViewType;
+	  let user: UserType;
+	  let authLogin: CreateAuthLogin;
+	it("get information about current user => return 200 status code", async() => {
+		user = {
+			login: "Michail",
+			password: "qwerty",
+			email: "mpara7472@gmail.com",
+		  };
+		  const resultOfUserCreation = await request(app)
+			.post("/users")
+			.auth("admin", "qwerty")
+			.send(user);
+		  createUser = resultOfUserCreation.body;
+	
+		  expect(resultOfUserCreation.status).toBe(HTTP_STATUS.CREATED_201);
+		  expect(createUser).toEqual({
+			id: expect.any(String),
+			login: user.login,
+			email: user.email,
+			createdAt: expect.any(String),
+		  });
+		  const createAuthLogin = await request(app).post("/auth/login").send({
+			loginOrEmail: createUser.login,
+			password: user.password,
+		  });
+	
+		  authLogin = createAuthLogin.body;
+		  expect(createAuthLogin.status).toBe(HTTP_STATUS.OK_200);
+		  expect(authLogin).toEqual({
+			accessToken: expect.any(String),
+		  });
+
+		const informationUser = await request(app)
+		.get("/auth/me")
+		.set("Authorization", `Bearer ${authLogin.accessToken}`)
+
+		expect(informationUser.status).toBe(HTTP_STATUS.OK_200)
+		expect(informationUser.body).toEqual({
+			"email": user.email,
+			"login": user.login,
+			"userId": createUser.id
+		})
+	})
+	it("get information about current user without authorization => return 401 status code", async() => {
+		const withoutAuthorization = await request(app)
+		.get("/auth/me")
+		expect(withoutAuthorization.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401)
+	})
+  })
 });
