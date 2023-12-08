@@ -51,7 +51,8 @@ export class AuthContorller {
     if (!passwordRecovery) {
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
     }
-    return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+    return res.sendStatus(204);
+    // return res.status(HTTP_STATUS.OK_200).send({code: passwordRecovery});
   }
   async createLogin(
     req: RequestWithBody<bodyAuthModel>,

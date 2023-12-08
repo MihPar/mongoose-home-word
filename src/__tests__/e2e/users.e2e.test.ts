@@ -141,8 +141,8 @@ describe("/users", () => {
       let sortDirection = "desc";
       let pageNumber = "1";
       let pageSize = 50;
-      let searchLoginTerm = null;
-      let searchEmailTerm = null;
+      let searchLoginTerm = "";
+      let searchEmailTerm = "";
       const findUser = await request(app)
         .get(
           `/users?sortBy=${sortBy}&sortDirection=${sortDirection}&pageNumber=${pageNumber}&pageSize=${pageSize}&searchLoginTerm=${searchLoginTerm}&searchEmailTerm=${searchEmailTerm}`
@@ -150,16 +150,12 @@ describe("/users", () => {
         .auth("admin", "qwerty");
 		console.log(findUser.body.items)
       expect(findUser.status).toBe(HTTP_STATUS.OK_200);
-	  expect(findUser.body.pagesCount).toEqual(0)
+	  expect(findUser.body.pagesCount).toEqual(1)
 	  expect(findUser.body.page).toEqual(1)
 	  expect(findUser.body.pageSize).toEqual(50)
-	  expect(findUser.body.totalCount).toEqual(0)
-	  expect(findUser.body.items).toEqual({
-        pagesCount: 0,
-        page: 1,
-        pageSize: 50,
-        totalCount: 0,
-        items: [
+	  expect(findUser.body.totalCount).toEqual(1)
+	  expect(findUser.body.items).toEqual(
+		[
           {
             id: id,
             login: login,
@@ -167,7 +163,7 @@ describe("/users", () => {
             createdAt: expect.any(String),
           },
         ],
-      })
+      )
     });
 	it("get all users without authorization => return 401 status code", async () => {
 		let sortBy = "createdAt";

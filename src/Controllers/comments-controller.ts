@@ -62,11 +62,13 @@ export class CommentController {
   ): Promise<Response<boolean>> {
     const { commentId } = req.params;
     const { content } = req.body;
-    const { userId } = req.user;
+    const { _id } = req.user;
     const isExistComment = await this.queryCommentRepositories.findCommentById(
       commentId,
-      userId
+      _id
     );
+	console.log("isExistComment: ", isExistComment)
+	console.log("req.user: ", req.user)
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
@@ -86,10 +88,10 @@ export class CommentController {
     res: Response<boolean>
   ): Promise<Response<boolean>> {
     const { commentId } = req.params;
-    const { userId } = req.user;
+    const { _id } = req.user;
     const isExistComment = await this.queryCommentRepositories.findCommentById(
       commentId,
-      userId
+      _id
     );
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

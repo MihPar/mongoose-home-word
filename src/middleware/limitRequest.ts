@@ -34,7 +34,7 @@ export const limitRequestMiddlewarePassword = async (req: Request, res: Response
 		URL: req.originalUrl,
 		date: new Date(),
 	}
-	console.log('url/endpoit: ', reqData.URL)
+	// console.log('url/endpoit: ', reqData.URL)
 
 	await IPCollectionModel.create(reqData)
     const tenSecondsAgo = new Date(Date.now() - 10000)

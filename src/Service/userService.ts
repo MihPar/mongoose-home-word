@@ -153,19 +153,20 @@ export class UserService {
     }
     return true;
   }
-  async recoveryPassword(email: string): Promise<boolean> {
+  async recoveryPassword(email: string): Promise<any> {
     const recoveryCode = uuidv4();
     const findUser: WithId<Users> | null =
       await this.queryUsersRepositories.findUserByEmail(email);
-    console.log("findUser: ", findUser);
+    // console.log("findUser: ", findUser);
     if (!findUser) {
-      console.log("false: ", findUser);
+    //   console.log("false: ", findUser);
       return false;
     }
     try {
       await this.emailManager.sendEamilRecoveryCode(email, recoveryCode);
       await this.userRepositories.passwordRecovery(findUser._id, recoveryCode);
-      return true;
+	  return true
+    //   return recoveryCode;
     } catch (e) {
       console.log("email: ", e);
       return false;

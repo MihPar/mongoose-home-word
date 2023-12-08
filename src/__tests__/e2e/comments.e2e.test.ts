@@ -74,6 +74,8 @@ describe("/like", () => {
 
   let commentBody: CommentViewModel;
   let token: TokenType;
+  let token2: string
+
 
   describe("make like/dislike => return 204 status code", () => {
     it("PUT -> /comments/:commentId/like-status: create comment then: status 204; used additional methods: POST user,  POST => /blogs, POST => /posts, POST => /posts/:postId/comments, GET => /comments/:id;", async () => {
@@ -246,36 +248,67 @@ describe("/like", () => {
     });
   });
   describe("update existing comment by id with correct input model", function() {
-		const updateObj = {
-			"content": "My daughter`s name is Maria, she is nine"
-		}
-		it("update existing comment by id => return 204 status code", async() => {
-			const updateCommentById = await request(app)
-			.put(`/comments/${commentBody.id}`)
-			.set("Authorization", `Bearer ${token.accessToken}`)
-			.send(updateObj)
-			expect(updateCommentById.status).toBe(HTTP_STATUS.NO_CONTENT_204)
-		})
-		it("update existing comment by id with incorrect input model=> return 400 status code", async() => {
-			const updateObj = {
-				"content": true
-			}
-			const updateCommentById = await request(app)
-			.put(`/comments/${commentBody.id}`)
-			.set("Authorization", `Bearer ${token.accessToken}`)
-			.send(updateObj)
-			expect(updateCommentById.status).toBe(HTTP_STATUS.BAD_REQUEST_400)
-			expect(updateCommentById.body).toEqual(createErrorsMessageTest(["content"]))
-		})
-		it("update existing comment by id with empty body=> return 400 status code", async() => {
-			const updateObj = {}
-			const updateCommentById = await request(app)
-			.put(`/comments/${commentBody.id}`)
-			.set("Authorization", `Bearer ${token.accessToken}`)
-			.send(updateObj)
-			expect(updateCommentById.status).toBe(HTTP_STATUS.BAD_REQUEST_400)
-			expect(updateCommentById.body).toEqual(createErrorsMessageTest(["content"]))
-		})
+	it("create new user", async () => {
+    const createUserNext = await request(app)
+      .post("/users")
+      .auth("admin", "qwerty")
+      .send({
+        login: "Tatiana",
+        password: "qwerty2",
+        email: "2mpara7472@gmail.com",
+      });
+    expect(createUserNext.status).toBe(HTTP_STATUS.CREATED_201);
+    expect(createUserNext.body).toEqual({
+      id: expect.any(String),
+      login: "Tatiana",
+      email: "2mpara7472@gmail.com",
+      createdAt: expect.any(String),
+    });
+    const loginOrEmail = createUserNext.body.login;
+    const createAccessTokenNew = await request(app).post("/auth/login").send({
+      loginOrEmail: loginOrEmail,
+      password: "qwerty2",
+    });
+    expect(createAccessTokenNew.status).toBe(HTTP_STATUS.OK_200);
+    expect(createAccessTokenNew.body).toEqual({
+      accessToken: expect.any(String),
+    });
+    token2 = createAccessTokenNew.body.accessToken;
+  });
+  const updateObj = {
+    content: "My daughter`s name is Maria, she is nine",
+  };
+  it("update existing comment by id => return 204 status code", async () => {
+    const updateCommentById = await request(app)
+      .put(`/comments/${commentBody.id}`)
+      .set("Authorization", `Bearer ${token.accessToken}`)
+      .send(updateObj);
+    expect(updateCommentById.status).toBe(HTTP_STATUS.NO_CONTENT_204);
+  });
+  it("update existing comment by id with incorrect input model=> return 400 status code", async () => {
+    const updateObj = {
+      content: true,
+    };
+    const updateCommentById = await request(app)
+      .put(`/comments/${commentBody.id}`)
+      .set("Authorization", `Bearer ${token.accessToken}`)
+      .send(updateObj);
+    expect(updateCommentById.status).toBe(HTTP_STATUS.BAD_REQUEST_400);
+    expect(updateCommentById.body).toEqual(
+      createErrorsMessageTest(["content"])
+    );
+  });
+  it("update existing comment by id with empty body=> return 400 status code", async () => {
+    const updateObj = {};
+    const updateCommentById = await request(app)
+      .put(`/comments/${commentBody.id}`)
+      .set("Authorization", `Bearer ${token.accessToken}`)
+      .send(updateObj);
+    expect(updateCommentById.status).toBe(HTTP_STATUS.BAD_REQUEST_400);
+    expect(updateCommentById.body).toEqual(
+      createErrorsMessageTest(["content"])
+    );
+  });
 		it("update existing comment by id => return 204 status code", async() => {
 			const updateObj = {
 				"content": "My daughter`s name is Maria, she is nine"
@@ -301,7 +334,7 @@ describe("/like", () => {
 			}
 			const updateCommentById = await request(app)
 			.put(`/comments/${commentBody.id}`)
-			.set("Authorization", `Bearer ${token.accessToken}`)
+			.set("Authorization", `Bearer ${token2}`)
 			.send(updateObj)
 			expect(updateCommentById.status).toBe(HTTP_STATUS.FORBIDEN_403)
 		})
@@ -337,22 +370,22 @@ describe("/like", () => {
 	})
   })
   describe("delete comment specified by id => return 204 status code", () => {
-	it("delete comment with correct input data", async() => {
+	it("delete comment with correct input data return 404 status code", async() => {
 		const deleteCommentById = await request(app)
 		.delete(`/comments/${commentBody.id}`)
-		.set("Authorization", `Bearer ${token.accessToken}`)
-		expect(deleteCommentById.status).toBe(HTTP_STATUS.NO_CONTENT_204)
+		.set("Authorization", `Bearer ${token2}`)
+		expect(deleteCommentById.status).toBe(HTTP_STATUS.FORBIDEN_403)
 	})
 	it("delete comment without uesr`s authorazing return 401 status code", async() => {
 		const deleteCommentById = await request(app)
 		.delete(`/comments/${commentBody.id}`)
 		expect(deleteCommentById.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401)
 	})
-	it("delete comment with correct input data return 404 status code", async() => {
+	it("delete comment with correct input data", async() => {
 		const deleteCommentById = await request(app)
 		.delete(`/comments/${commentBody.id}`)
 		.set("Authorization", `Bearer ${token.accessToken}`)
-		expect(deleteCommentById.status).toBe(HTTP_STATUS.FORBIDEN_403)
+		expect(deleteCommentById.status).toBe(HTTP_STATUS.NO_CONTENT_204)
 	})
 	it("delete comment without existing commentId return 404 status code", async() => {
 		const deleteCommentById = await request(app)

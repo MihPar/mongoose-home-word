@@ -16,6 +16,7 @@ export const checkRefreshTokenSecurityDeviceMiddleware = async function (
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
+    // res.sendStatus(402);
     return;
   }
   let result: any;
@@ -23,6 +24,7 @@ export const checkRefreshTokenSecurityDeviceMiddleware = async function (
     result = await jwt.verify(refreshToken, process.env.REFRESH_JWT_SECRET!);
   } catch (err) {
     return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
+    // return res.sendStatus(403);
   }
   const session = await querySecurityDeviceRepositories.findDeviceByDeviceId(
     result.deviceId
@@ -33,6 +35,7 @@ export const checkRefreshTokenSecurityDeviceMiddleware = async function (
       (await jwtService.getLastActiveDate(refreshToken))
   ) {
     return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401);
+    // return res.sendStatus(404);
   }
   if (result.userId) {
     const user = await queryUsersRepositories.findUserById(new ObjectId(result.userId));
