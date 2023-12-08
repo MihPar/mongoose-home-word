@@ -1,4 +1,4 @@
-import { DeviceView, Devices } from '../types/deviceAuthSessionTypes';
+import { Devices } from '../types/deviceAuthSessionTypes';
 import { DevicesModel } from '../db/db';
 
 export class SecurityDeviceRepositories {

@@ -17,11 +17,11 @@ export const checkForbiddenSecurityDevice = async function (
     return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
   }
 
-console.log(deviceId, 'deviceId')
+// console.log(deviceId, 'deviceId')
 
   const findSession = await querySecurityDeviceRepositories.findDeviceByDeviceId(deviceId);
 
-  console.log(findSession, 'findSession')
+//   console.log(findSession, 'findSession')
 
   if (!findSession) {
     return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -29,7 +29,7 @@ console.log(deviceId, 'deviceId')
 
   const userId = req.user._id.toString();
 
-  console.log(userId, 'userId')
+//   console.log(userId, 'userId')
 
   if (findSession.userId !== userId) {
     return res.sendStatus(HTTP_STATUS.FORBIDEN_403);

@@ -260,9 +260,8 @@ describe("/blogs", () => {
         const pageNumber = "1";
         const pageSize = "10";
         const sortBy = "desc";
-        const getAllPostForBlogs = await request(app).get(
-          `/blogs/${blogId}/posts`
-        );
+        const getAllPostForBlogs = await request(app)
+		.get(`/blogs/${blogId}/posts`);
         console.log("getAllPostForBlogs.body: ", getAllPostForBlogs.body);
 
         expect(getAllPostForBlogs.status).toBe(HTTP_STATUS.OK_200);
