@@ -1,9 +1,11 @@
+import { RequestWithParamsAndBody } from './../types/types';
+import { postsService } from './../Compositions-root/posts-composition-root';
 import { paramsIdModel } from '../model/modePosts.ts/paramsIdModel';
 import { bodyPostsModel } from '../model/modePosts.ts/bodyPostsMode';
 import { bodyPostModelContent } from '../model/modePosts.ts/bodyPostModeContent';
 import { PostsRepositories } from '../Repositories/posts-db-repositories';
 import { queryPostsModel } from '../model/modePosts.ts/queryPostsModel';
-import { paramsPostIdMode } from '../model/modePosts.ts/paramsPostIdMode';
+import { ParamsPostIdMode, paramsPostIdMode } from '../model/modePosts.ts/paramsPostIdMode';
 import {
   RequestWithParams,
   RequestWithBody,
@@ -20,6 +22,8 @@ import { PostsService } from '../Service/postsService';
 import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
 import { QueryCommentRepositories } from '../Repositories/queryRepositories/comment-query-repositories';
 import { CommentViewModel } from '../types/commentType';
+import { LikeInputModel } from '../types/likesInfoType';
+import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';
 
 
 export class PostsController {
@@ -29,7 +33,8 @@ export class PostsController {
 	protected queryCommentRepositories: QueryCommentRepositories,
     protected commentService: CommentService,
     protected postsService: PostsService,
-	protected queryPostsRepositories: QueryPostsRepositories
+	protected queryPostsRepositories: QueryPostsRepositories,
+	protected queryUsersRepositories: QueryUsersRepositories
   ) {
   }
   async getPostByPostId(
@@ -153,6 +158,15 @@ export class PostsController {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+  }
+  async updateLikeStatus(req: RequestWithParamsAndBody<ParamsPostIdMode, LikeInputModel>, res: Response) {
+	const postId = req.params.postId
+	const { _id } = req.user;
+	const findPost = await this.queryPostsRepositories.findPostByPostId(postId, _id)
+	if(!findPost) {
+		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
+	}
+	const result = await this.postsService.updateLikeDislike(req.body, postId, _id)
   }
   async deletePostById(
     req: RequestWithParams<paramsIdModel>,

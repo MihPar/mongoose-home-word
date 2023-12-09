@@ -6,6 +6,7 @@ import { inputCommentValidator } from "../middleware/input-value-comment-middlew
 import { inputPostBlogValidator, inputPostContentValidator, inputPostShortDescriptionValidator, inputPostTitleValidator } from "../middleware/input-value-posts-middleware";
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { getCommentAuthorization } from "../middleware/getCommentsAuthorization";
+import { likeValidationRule } from "../middleware/input-value-likeStatus-middleware";
 
 
 export const postsRouter = Router({});
@@ -40,4 +41,5 @@ postsRouter.put(
   ValueMiddleware,
   postsController.updatePostById.bind(postsController)
 );
+postsRouter.put("/:postId/like-status", commentAuthorization, likeValidationRule, ValueMiddleware, postsController.updateLikeStatus.bind(postsController))
 postsRouter.delete("/:id", authorization, postsController.deletePostById.bind(postsController));

@@ -1,4 +1,6 @@
 import { ObjectId } from "mongodb";
+import { LikeStatusEnum } from "../enum/like-status-enum";
+import { LikesInfoModel } from "./likesInfoType";
 
 export class Posts {
   public createdAt: string;
@@ -7,7 +9,8 @@ export class Posts {
     public shortDescription: string,
     public content: string,
     public blogId: string,
-    public blogName: string
+    public blogName: string,
+	public extendedLikesInfo: LikesInfoModel
   ) {
     this.createdAt = new Date().toISOString();
   }
@@ -20,9 +23,10 @@ export class PostsDB extends Posts {
     shortDescription: string,
     content: string,
     blogId: string,
-    blogName: string
+    blogName: string,
+	extendedLikesInfo:  LikesInfoModel
   ) {
-    super(title, shortDescription, content, blogId, blogName);
+    super(title, shortDescription, content, blogId, blogName, extendedLikesInfo);
     this._id = new ObjectId();
   }
   static getPostsViewModel(post: PostsDB): PostsViewModel {
@@ -34,6 +38,7 @@ export class PostsDB extends Posts {
       blogId: post.blogId,
       blogName: post.blogName,
       createdAt: post.createdAt,
+	  extendedLikesInfo: post.extendedLikesInfo
     };
   }
   getPostViewModel(): PostsViewModel {
@@ -45,13 +50,10 @@ export class PostsDB extends Posts {
       blogId: this.blogId,
       blogName: this.blogName,
       createdAt: this.createdAt,
+	  extendedLikesInfo: this.extendedLikesInfo
     };
   }
 }
-
-// const func = (): PostsDB => {
-// 	return }
-// }
 
 export type PostsViewModel = {
   id: string;
@@ -61,4 +63,5 @@ export type PostsViewModel = {
   blogId: string;
   blogName: string;
   createdAt: string;
+  extendedLikesInfo: LikesInfoModel
 };

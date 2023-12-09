@@ -1,3 +1,3 @@
-export type paramsPostIdMode = {
+export type ParamsPostIdMode = {
 	postId: string
 }

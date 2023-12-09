@@ -6,11 +6,13 @@ import { CommentService } from '../Service/commentService';
 import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
 import { QueryCommentRepositories } from '../Repositories/queryRepositories/comment-query-repositories';
 import { LikesRepositories } from '../Repositories/limit-db-repositories';
+import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';
 
-const queryCommentRepositories = new QueryCommentRepositories()
+export const queryCommentRepositories = new QueryCommentRepositories()
+const queryUsersRepositories = new QueryUsersRepositories()
 const queryPostsRepositories = new QueryPostsRepositories()
 const postsRepositories = new PostsRepositories();
-export const postsService = new PostsService(postsRepositories);
+export const postsService = new PostsService(postsRepositories, queryUsersRepositories, queryPostsRepositories);
 const commentRepositories = new CommentRepositories();
 const likesRepositories = new LikesRepositories()
 const commentService = new CommentService(commentRepositories, queryCommentRepositories, likesRepositories);
@@ -21,4 +23,5 @@ export const postsController = new PostsController(
   commentService,
   postsService,
   queryPostsRepositories,
+  queryUsersRepositories
 );
