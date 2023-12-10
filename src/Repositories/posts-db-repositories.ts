@@ -1,6 +1,7 @@
 import { Posts, PostsDB } from "../types/postsTypes";
 import { PostsModel } from "../db/db";
 import { ObjectId } from "mongodb";
+import { LikeModel } from "../types/likesInfoType";
 
 export class PostsRepositories {
   async createNewPosts(newPost: PostsDB): Promise<PostsDB> {
@@ -27,6 +28,10 @@ export class PostsRepositories {
     );
     return result.matchedCount === 1;
   }
+  async saveLike(postId: string, newLike: LikeModel) {
+	const saveResult = await PostsModel.updateOne({_id: postId}, {$push: {likes: newLike}})
+	return saveResult.modifiedCount === 1
+}
   async deletedPostById(id: string): Promise<boolean> {
     const result = await PostsModel.deleteOne({ _id: new ObjectId(id) });
     return result.deletedCount === 1;

@@ -10,5 +10,4 @@ export const PostSchema = new mongoose.Schema<WithId<PostsDB>>({
 	blogId: {type: String, require: true},
 	blogName: {type: String, require: true},
 	createdAt: {type: String, require: true},
-	likes: {type: [LikesInfoSchema], default: []}
 })

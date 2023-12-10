@@ -12,10 +12,11 @@ export const queryCommentRepositories = new QueryCommentRepositories()
 const queryUsersRepositories = new QueryUsersRepositories()
 const queryPostsRepositories = new QueryPostsRepositories()
 const postsRepositories = new PostsRepositories();
-export const postsService = new PostsService(postsRepositories, queryUsersRepositories, queryPostsRepositories);
+
 const commentRepositories = new CommentRepositories();
 const likesRepositories = new LikesRepositories()
 const commentService = new CommentService(commentRepositories, queryCommentRepositories, likesRepositories);
+export const postsService = new PostsService(postsRepositories, queryUsersRepositories, queryPostsRepositories, queryCommentRepositories, commentService);
 export const postsController = new PostsController(
   postsRepositories,
   commentRepositories,

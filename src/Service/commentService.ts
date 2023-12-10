@@ -11,7 +11,7 @@ export class CommentService {
 	protected queryCommentRepositories: QueryCommentRepositories,
 	protected likesRepositories: LikesRepositories
 	) {}
- 	async updateltLikeStatus(likeStatus: string, commentId: string, userId: string) {
+ 	async updateltLikeStatus(likeStatus: string, commentId: string, userId: ObjectId) {
 		const findLike = await this.likesRepositories.findLikeCommentByUser(commentId, new ObjectId(userId))
 		if(!findLike) {
 			await this.likesRepositories.saveLikeForComment(commentId, new ObjectId(userId), likeStatus)

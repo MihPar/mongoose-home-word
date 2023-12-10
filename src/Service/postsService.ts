@@ -1,3 +1,4 @@
+import { queryCommentRepositories } from './../Compositions-root/posts-composition-root';
 import { Like } from './../types/likesInfoType';
 import { queryUsersRepositories } from './../Compositions-root/user-composition-root';
 import { PostsDB, PostsViewModel } from '../types/postsTypes';
@@ -6,12 +7,16 @@ import { LikeInputModel } from '../types/likesInfoType';
 import { ObjectId } from 'mongodb';
 import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';
 import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
+import { QueryCommentRepositories } from '../Repositories/queryRepositories/comment-query-repositories';
+import { CommentService } from './commentService';
 
 export class PostsService {
 	constructor(
 		protected postsRepositories: PostsRepositories,
 		protected queryUsersRepositories: QueryUsersRepositories,
-		protected queryPostsRepositories: QueryPostsRepositories
+		protected queryPostsRepositories: QueryPostsRepositories,
+		protected queryCommentRepositories: QueryCommentRepositories,
+		protected commentService: CommentService
 		) {
 	}
 	async createPost(
@@ -21,7 +26,7 @@ export class PostsService {
 		content: string,
 		blogName: string
 	  ): Promise<PostsViewModel | null> {
-		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName, )
+		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName)
 		const createPost: PostsDB = await this.postsRepositories.createNewPosts(newPost);
 		return createPost.getPostViewModel();
 	  }
@@ -47,12 +52,14 @@ export class PostsService {
 	  async deleteAllPosts(): Promise<boolean> {
 		return await this.postsRepositories.deleteRepoPosts();
 	  }
-	  async updateLikeDislike(body: LikeInputModel, postId: string, _id: ObjectId) {
+	  async updateLikeDislike(likeStatus: string, postId: string, _id: ObjectId) {
 		const userName = await this.queryUsersRepositories.findUserById(_id)
 		const post = await this.queryPostsRepositories.findPostById(postId)
-		const findLike = await Like.checkUserLike(post!.likes, _id)
+		const findLike = await this.queryCommentRepositories.findLikeCommentByUser(postId, new ObjectId(_id))
 		if(!findLike) {
-			const newLike = new Like
+			return false
 		}
+		await this.commentService.updateltLikeStatus(findLike!.myStatus ?? null, postId, _id);
+		return true
 	  }
 }

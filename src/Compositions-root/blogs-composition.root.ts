@@ -5,13 +5,16 @@ import { PostsRepositories } from "../Repositories/posts-db-repositories";
 import { BlogsService } from "../Service/blogsService";
 import { PostsService } from "../Service/postsService";
 import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
+import { queryUsersRepositories } from './user-composition-root';
+import { queryCommentRepositories } from './posts-composition-root';
+import { commentService } from './comment-composition-root';
 
 const queryPostsRepositories = new QueryPostsRepositories()
 export const queryBlogsRepositories = new QueryBlogsRepositories()
 const blogsRepositories = new BlogsRepositories();
 export const blogsService = new BlogsService(blogsRepositories);
 const postsRepositories = new PostsRepositories();
-const postsService = new PostsService(postsRepositories);
+const postsService = new PostsService(postsRepositories, queryUsersRepositories, queryPostsRepositories, queryCommentRepositories, commentService);
 export const blogsController = new BlogsComtroller(
   blogsService,
   blogsRepositories,

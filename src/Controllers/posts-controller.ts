@@ -1,11 +1,9 @@
-import { RequestWithParamsAndBody } from './../types/types';
-import { postsService } from './../Compositions-root/posts-composition-root';
 import { paramsIdModel } from '../model/modePosts.ts/paramsIdModel';
 import { bodyPostsModel } from '../model/modePosts.ts/bodyPostsMode';
 import { bodyPostModelContent } from '../model/modePosts.ts/bodyPostModeContent';
 import { PostsRepositories } from '../Repositories/posts-db-repositories';
 import { queryPostsModel } from '../model/modePosts.ts/queryPostsModel';
-import { ParamsPostIdMode, paramsPostIdMode } from '../model/modePosts.ts/paramsPostIdMode';
+import { ParamsPostIdMode } from '../model/modePosts.ts/paramsPostIdMode';
 import {
   RequestWithParams,
   RequestWithBody,
@@ -24,6 +22,7 @@ import { QueryCommentRepositories } from '../Repositories/queryRepositories/comm
 import { CommentViewModel } from '../types/commentType';
 import { LikeInputModel } from '../types/likesInfoType';
 import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';
+import { likeStatusModel } from '../model/modelComment/bodyLikeStatusMode';
 
 
 export class PostsController {
@@ -38,7 +37,7 @@ export class PostsController {
   ) {
   }
   async getPostByPostId(
-    req: RequestWithParamsAndQuery<paramsPostIdMode, queryPostsModel>,
+    req: RequestWithParamsAndQuery<ParamsPostIdMode, queryPostsModel>,
     res: Response<PaginationType<CommentViewModel>>
   ) {
     const { postId } = req.params;
@@ -69,7 +68,7 @@ export class PostsController {
     }
   }
   async createCommentForPostByPostId(
-    req: RequestWithParamsAndBody<paramsPostIdMode, bodyPostModelContent>,
+    req: RequestWithParamsAndBody<ParamsPostIdMode, bodyPostModelContent>,
     res: Response<CommentViewModel>
   ) {
     const { postId } = req.params;
@@ -159,14 +158,19 @@ export class PostsController {
     }
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
-  async updateLikeStatus(req: RequestWithParamsAndBody<ParamsPostIdMode, LikeInputModel>, res: Response) {
+  async updateLikeStatus(req: RequestWithParamsAndBody<ParamsPostIdMode, likeStatusModel>, res: Response) {
 	const postId = req.params.postId
 	const { _id } = req.user;
+	const {likeStatus} = req.body
 	const findPost = await this.queryPostsRepositories.findPostByPostId(postId, _id)
 	if(!findPost) {
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
-	const result = await this.postsService.updateLikeDislike(req.body, postId, _id)
+	const result = await this.postsService.updateLikeDislike(likeStatus, postId, _id)
+	if(!result) {
+		return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400)
+	}
+	return res.sendStatus(HTTP_STATUS.NO_CONTENT_204)
   }
   async deletePostById(
     req: RequestWithParams<paramsIdModel>,

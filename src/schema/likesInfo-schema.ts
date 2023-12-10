@@ -10,7 +10,6 @@ export const LikesInfoSchema = new mongoose.Schema<WithId<Like>>({
   myStatus: {
     type: String,
     default: LikeStatusEnum.None,
-    // enum: Object.values(LikeStatusEnum)
 	enum: ["None", "Like", "Dislike"]
   },
 });

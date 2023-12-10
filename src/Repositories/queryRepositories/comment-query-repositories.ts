@@ -7,11 +7,11 @@ import { CommentViewModel, CommentsDB } from "../../types/commentType";
 import { Like } from "../../types/likesInfoType";
 
 export class QueryCommentRepositories {
-  async findLikesCommentByUser(commentId: string, userId: ObjectId) {
-    return LikesModel.findOne({
-      $and: [{ userId: userId }, { commentId: commentId }],
-    });
-  }
+//   async findLikesCommentByUser(commentId: string, userId: ObjectId) {
+//     return LikesModel.findOne({
+//       $and: [{ userId: userId }, { commentId: commentId }],
+//     });
+//   }
   async findCommentByCommentId(commentId: string, userId?: ObjectId | null) {
     const commentById: CommentsDB | null = await CommentsModel.findOne({
       _id: new ObjectId(commentId),
@@ -74,15 +74,6 @@ export class QueryCommentRepositories {
 	  console.log("comment: ", commnent)
       return commnent;
     }))
-	// const result: PaginationType<CommentViewModel> | null = {
-	// 	pagesCount: pagesCount,
-	// 	page: +pageNumber,
-	// 	pageSize: +pageSize,
-	// 	totalCount: totalCount,
-	// 	items: commentByPostId.map((item) => CommentsDB.getNewComments(item, status!.myStatus))
-	// }
-	// return result
-	console.log("85 items: ", items)
     return {
       pagesCount: pagesCount,
       page: +pageNumber,
