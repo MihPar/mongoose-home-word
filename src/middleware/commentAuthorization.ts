@@ -8,15 +8,12 @@ export const commentAuthorization = async function(req: Request, res: Response, 
 	if(!req.headers.authorization) {
 		return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401)
 	}
-	// console.log(req.headers.authorization)
 	const token = req.headers.authorization.split(' ')[1]
 	const userId = await jwtService.getUserIdByToken(token)
-	// console.log("userId: ", userId)
 	if(!userId) {
 		return res.sendStatus(HTTP_STATUS.NOT_AUTHORIZATION_401)
 	}
 	req.user = await UsersModel.findOne({ _id: new ObjectId(userId) })
-	// console.log("req.user: ", req.user)
 	return next()
 
 	// if(userId) {
