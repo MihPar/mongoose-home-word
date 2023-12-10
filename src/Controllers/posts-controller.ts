@@ -159,13 +159,21 @@ export class PostsController {
   }
   async updateLikeStatus(req: RequestWithParamsAndBody<ParamsPostIdMode, likeStatusModel>, res: Response) {
 	const postId = req.params.postId
-	const { _id } = req.user;
+	const userId = req.user?.id ?? null;
 	const {likeStatus} = req.body
 	const findPost = await this.queryPostsRepositories.findPostById(postId)
 	if(!findPost) {
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
-	const result = await this.postsService.resultLikeStatus(likeStatus, postId, _id)
+    // const getCommentById: CommentViewModel | null =
+    //   await this.queryCommentRepositories.findCommentById(
+    //     req.params.id,
+    //     userId
+    //   );
+    // if (!getCommentById) {
+    //   return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    // }
+	const result = await this.postsService.resultLikeStatus(likeStatus, getCommentById.id, userId)
 	if(!result) {
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}

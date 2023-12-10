@@ -48,10 +48,11 @@ export class PostsService {
 	  async deleteAllPosts(): Promise<boolean> {
 		return await this.postsRepositories.deleteRepoPosts();
 	  }
-	  async resultLikeStatus(likeStatus: string, postId: string, _id: ObjectId) {
-		const userName = await this.queryUsersRepositories.findUserById(_id)
+	  async resultLikeStatus(likeStatus: string, postId: string, userId: ObjectId) {
+		// const userName = await this.queryUsersRepositories.findUserById(userId)
 		// const post = await this.queryPostsRepositories.findPostById(postId)
-		const updateLikeStatus = await this.commentService.updateLikeStatus(likeStatus, postId, _id)
+		
+		const updateLikeStatus = await this.commentService.updateLikeStatus(likeStatus, postId, userId)
 		if(!updateLikeStatus) {
 			return false
 		}

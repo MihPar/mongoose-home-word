@@ -11,6 +11,7 @@ import { likeValidationRule } from "../middleware/input-value-likeStatus-middlew
 
 export const postsRouter = Router({});
 
+postsRouter.put("/:postId/like-status", commentAuthorization, likeValidationRule, ValueMiddleware, postsController.updateLikeStatus.bind(postsController));
 postsRouter.get("/:postId/comments",getCommentAuthorization, postsController.getPostByPostId.bind(postsController));
 postsRouter.post(
   "/:postId/comments",
@@ -41,6 +42,4 @@ postsRouter.put(
   ValueMiddleware,
   postsController.updatePostById.bind(postsController)
 );
-postsRouter.put("/:postId/like-status", commentAuthorization, likeValidationRule, ValueMiddleware, postsController.updateLikeStatus.bind(postsController));
-
 postsRouter.delete("/:id", authorization, postsController.deletePostById.bind(postsController));
