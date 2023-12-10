@@ -10,8 +10,7 @@ export class Posts {
     public content: string,
     public blogId: string,
     public blogName: string,
-	// public likes: LikeModel[],
-	// public extendedLikesInfo: LikesInfoModel
+	public extendedLikesInfo: LikesInfoModel
   ) {
     this.createdAt = new Date().toISOString();
   }
@@ -25,11 +24,10 @@ export class PostsDB extends Posts {
     content: string,
     blogId: string,
     blogName: string,
-	// likes: LikeModel[],
-	// extendedLikesInfo:  LikesInfoModel
+	extendedLikesInfo:  LikesInfoModel
   ) {
     super(title, shortDescription, content, blogId, blogName, 
-		// likes, extendedLikesInfo
+		 extendedLikesInfo
 		);
     this._id = new ObjectId();
   }
@@ -42,8 +40,7 @@ export class PostsDB extends Posts {
       blogId: post.blogId,
       blogName: post.blogName,
       createdAt: post.createdAt,
-	//   likes: post.likes,
-	//   extendedLikesInfo: post.extendedLikesInfo
+	  extendedLikesInfo: post.extendedLikesInfo
     };
   }
   getPostViewModel(): PostsViewModel {
@@ -55,8 +52,7 @@ export class PostsDB extends Posts {
       blogId: this.blogId,
       blogName: this.blogName,
       createdAt: this.createdAt,
-	//   likes: this.likes,
-	//   extendedLikesInfo: this.extendedLikesInfo
+	  extendedLikesInfo: this.extendedLikesInfo
     };
   }
 }
@@ -69,6 +65,5 @@ export type PostsViewModel = {
   blogId: string;
   blogName: string;
   createdAt: string;
-//   likes: LikeModel[];
-//   extendedLikesInfo: LikesInfoModel
+  extendedLikesInfo: LikesInfoModel
 };
