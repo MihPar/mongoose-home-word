@@ -7,11 +7,6 @@ import { CommentViewModel, CommentsDB } from "../../types/commentType";
 import { Like } from "../../types/likesInfoType";
 
 export class QueryCommentRepositories {
-//   async findLikesCommentByUser(commentId: string, userId: ObjectId) {
-//     return LikesModel.findOne({
-//       $and: [{ userId: userId }, { commentId: commentId }],
-//     });
-//   }
   async findCommentByCommentId(commentId: string, userId?: ObjectId | null) {
     const commentById: CommentsDB | null = await CommentsModel.findOne({
       _id: new ObjectId(commentId),

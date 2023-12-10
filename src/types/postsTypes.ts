@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
-import { LikeStatusEnum } from "../enum/like-status-enum";
-import { LikeModel, LikesInfoModel } from "./likesInfoType";
+import { LikesInfoModel } from "./likesInfoType";
 
 export class Posts {
   public createdAt: string;

@@ -272,6 +272,56 @@ describe("/posts", () => {
 
   let id: string;
 
+  let postId: string;
+  it("make status like/dislike => return 204 status code", async() => {
+	const updateLikeDiske = await request(app)
+	.post(`/posts/${postId}/like-dislike`)
+	.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
+	.send({
+		"likeStatus": "None"
+	})
+	expect(updateLikeDiske.status).toBe(HTTP_STATUS.NO_CONTENT_204)
+  })
+
+  it("make status like/dislike with incorrect input data => return 400 status code", async() => {
+	const updateLikeDiske = await request(app)
+	.post(`/posts/${postId}/like-dislike`)
+	.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
+	.send({
+		"likeStatus": true
+	})
+	expect(updateLikeDiske.status).toBe(HTTP_STATUS.BAD_REQUEST_400)
+	expect(updateLikeDiske.body).toStrictEqual(createErrorsMessageTest(["likeStatus"]))
+  })
+
+  it("make status like/dislike with empty input data of body  => return 400 status code", async() => {
+	const updateLikeDiske = await request(app)
+	.post(`/posts/${postId}/like-dislike`)
+	.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
+	.send({})
+	expect(updateLikeDiske.status).toBe(HTTP_STATUS.BAD_REQUEST_400)
+	expect(updateLikeDiske.body).toStrictEqual(createErrorsMessageTest(["likeStatus"]))
+  })
+
+  it("make status like/dislike without authorization => return 401 status code", async() => {
+	const updateLikeDiske = await request(app)
+	.post(`/posts/${postId}/like-dislike`)
+	.send({
+		"likeStatus": "None"
+	})
+	expect(updateLikeDiske.status).toBe(HTTP_STATUS.NOT_AUTHORIZATION_401)
+  })
+
+  it("make status like/dislike without id=> return 404 status code", async() => {
+	const updateLikeDiske = await request(app)
+	.post(`/posts/123456789012345678901234/like-dislike`)
+	.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
+	.send({
+		"likeStatus": "None"
+	})
+	expect(updateLikeDiske.status).toBe(HTTP_STATUS.NOT_FOUND_404)
+  })
+
   it("create new post with correnct input data => return 201 status code", async () => {
     inputDataBlog = {
       name: "Mickhael",
@@ -420,7 +470,6 @@ describe("/posts", () => {
     expect(getPostByIdWithIncorrectData.status).toBe(HTTP_STATUS.NOT_FOUND_404);
     // expect(getPostByIdWithIncorrectData.body).toStrictEqual(createErrorsMessageTest(["id"]))
   });
-  let postId: string;
   let createCommentByPostId: PostsViewModel;
   it("create comment by postId", async () => {
     postId = firstPost.id;

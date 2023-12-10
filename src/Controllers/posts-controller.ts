@@ -13,14 +13,13 @@ import {
 } from "../types/types";
 import { Response } from "express";
 import { HTTP_STATUS } from "../utils/utils";
-import { Posts, PostsDB } from '../types/postsTypes';
+import { Posts } from '../types/postsTypes';
 import { CommentRepositories } from '../Repositories/comment-db-repositories';
 import { CommentService } from '../Service/commentService';
 import { PostsService } from '../Service/postsService';
 import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
 import { QueryCommentRepositories } from '../Repositories/queryRepositories/comment-query-repositories';
 import { CommentViewModel } from '../types/commentType';
-import { LikeInputModel } from '../types/likesInfoType';
 import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';
 import { likeStatusModel } from '../model/modelComment/bodyLikeStatusMode';
 
@@ -162,13 +161,13 @@ export class PostsController {
 	const postId = req.params.postId
 	const { _id } = req.user;
 	const {likeStatus} = req.body
-	const findPost = await this.queryPostsRepositories.findPostByPostId(postId, _id)
+	const findPost = await this.queryPostsRepositories.findPostById(postId)
 	if(!findPost) {
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
-	const result = await this.postsService.updateLikeDislike(likeStatus, postId, _id)
+	const result = await this.postsService.resultLikeStatus(likeStatus, postId, _id)
 	if(!result) {
-		return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400)
+		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
 	return res.sendStatus(HTTP_STATUS.NO_CONTENT_204)
   }

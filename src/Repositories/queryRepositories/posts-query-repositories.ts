@@ -59,9 +59,9 @@ export class QueryPostsRepositories {
     const post = await PostsModel.findOne({ _id: new ObjectId(id) }, {__v: 0 }).lean();
 	return post ? PostsDB.getPostsViewModel(post) : null
   }
-  async findPostByPostId(postId: string, userId: Object | null): Promise<PostsViewModel | null> {
-	const findPost: PostsDB | null = await PostsModel.findOne({_id: new ObjectId(postId)})
-	if (!findPost) return null
-	return findPost.getPostViewModel()
-  }
+//   async findPostByPostId(postId: string, userId: Object | null): Promise<PostsViewModel | null> {
+// 	const findPost: PostsDB | null = await PostsModel.findOne({_id: new ObjectId(postId)})
+// 	if (!findPost) return null
+// 	return findPost.getPostViewModel()
+//   }
 }

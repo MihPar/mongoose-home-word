@@ -11,7 +11,7 @@ export class CommentService {
 	protected queryCommentRepositories: QueryCommentRepositories,
 	protected likesRepositories: LikesRepositories
 	) {}
- 	async updateltLikeStatus(likeStatus: string, commentId: string, userId: ObjectId) {
+ 	async updateLikeStatus(likeStatus: string, commentId: string, userId: ObjectId) {
 		const findLike = await this.likesRepositories.findLikeCommentByUser(commentId, new ObjectId(userId))
 		if(!findLike) {
 			await this.likesRepositories.saveLikeForComment(commentId, new ObjectId(userId), likeStatus)
@@ -62,18 +62,6 @@ export class CommentService {
     userLogin: string
   ): Promise<CommentViewModel | null> {
 	const newComment: CommentsDB = new CommentsDB(content, postId, {userId, userLogin}) 
-    // const newComment: Comments = {
-    //   _id: new ObjectId(),
-    //   content: content,
-    //   commentatorInfo: {
-    //     userId,
-    //     userLogin,
-    //   },
-    //   postId,
-    //   createdAt: new Date().toISOString(),
-	//   likesCount: 0,
-	//   dislikesCount: 0
-    // };
     const createNewCommentawait: CommentsDB = await this.commentRepositories.createNewCommentPostId(newComment);
 	return createNewCommentawait.getNewComment(LikeStatusEnum.None)
   }

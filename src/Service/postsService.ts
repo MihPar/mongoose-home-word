@@ -1,9 +1,5 @@
-import { queryCommentRepositories } from './../Compositions-root/posts-composition-root';
-import { Like } from './../types/likesInfoType';
-import { queryUsersRepositories } from './../Compositions-root/user-composition-root';
 import { PostsDB, PostsViewModel } from '../types/postsTypes';
 import { PostsRepositories } from '../Repositories/posts-db-repositories';
-import { LikeInputModel } from '../types/likesInfoType';
 import { ObjectId } from 'mongodb';
 import { QueryUsersRepositories } from '../Repositories/queryRepositories/users-query-repositories';
 import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-query-repositories';
@@ -24,9 +20,9 @@ export class PostsService {
 		title: string,
 		shortDescription: string,
 		content: string,
-		blogName: string
+		blogName: string,
 	  ): Promise<PostsViewModel | null> {
-		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName)
+		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName, extendedLikesInfo)
 		const createPost: PostsDB = await this.postsRepositories.createNewPosts(newPost);
 		return createPost.getPostViewModel();
 	  }
@@ -52,14 +48,14 @@ export class PostsService {
 	  async deleteAllPosts(): Promise<boolean> {
 		return await this.postsRepositories.deleteRepoPosts();
 	  }
-	  async updateLikeDislike(likeStatus: string, postId: string, _id: ObjectId) {
+	  async resultLikeStatus(likeStatus: string, postId: string, _id: ObjectId) {
 		const userName = await this.queryUsersRepositories.findUserById(_id)
-		const post = await this.queryPostsRepositories.findPostById(postId)
-		const findLike = await this.queryCommentRepositories.findLikeCommentByUser(postId, new ObjectId(_id))
-		if(!findLike) {
+		// const post = await this.queryPostsRepositories.findPostById(postId)
+		const updateLikeStatus = await this.commentService.updateLikeStatus(likeStatus, postId, _id)
+		if(!updateLikeStatus) {
 			return false
 		}
-		await this.commentService.updateltLikeStatus(findLike!.myStatus ?? null, postId, _id);
+		// await this.commentService.updateLikeStatus(findLike!.myStatus ?? null, postId, _id);
 		return true
 	  }
 }

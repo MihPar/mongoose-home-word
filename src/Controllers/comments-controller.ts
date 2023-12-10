@@ -47,7 +47,7 @@ export class CommentController {
     );
     // console.log("findCommentById: ", findCommentById)
 
-    let updateLikeStatus = await this.commentService.updateltLikeStatus(
+    let updateLikeStatus = await this.commentService.updateLikeStatus(
       likeStatus,
       commentId,
       userId

@@ -57,7 +57,7 @@ export class LikesInfoClass {
 //     }
 // }
 
-  export type newestLikesType = {
+export type newestLikesType = {
     addedAt: string,
     userId: ObjectId,
     login: string
@@ -77,8 +77,4 @@ export interface LikeModel {
     likesCount: number
     myStatus: LikeStatusEnum
     newestLikes?: newestLikesType[]
-}
-
-export interface LikeInputModel {
-    likeStatus: LikeStatusEnum
 }
