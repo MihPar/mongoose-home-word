@@ -165,15 +165,7 @@ export class PostsController {
 	if(!findPost) {
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
-    // const getCommentById: CommentViewModel | null =
-    //   await this.queryCommentRepositories.findCommentById(
-    //     req.params.id,
-    //     userId
-    //   );
-    // if (!getCommentById) {
-    //   return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    // }
-	const result = await this.postsService.resultLikeStatus(likeStatus, getCommentById.id, userId)
+	const result = await this.postsService.updateLikeStatus(likeStatus, postId, userId)
 	if(!result) {
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}

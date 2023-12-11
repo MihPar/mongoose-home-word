@@ -40,4 +40,16 @@ export class PostsRepositories {
     const deletedAll = await PostsModel.deleteMany({});
     return deletedAll.acknowledged;
   }
+  async increase(postId: string, likeStatus: string){
+	if(likeStatus !== 'Dislike' && likeStatus !== 'Like') {
+		return
+	} 
+	return await PostsModel.updateOne({_id: new ObjectId(postId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: 1} : {likesCount: 1}})
+}
+async decrease(postId: string, likeStatus: string){
+	if(likeStatus !== 'Dislike' && likeStatus !== 'Like') {
+		return
+	} 
+	return await PostsModel.updateOne({_id: new ObjectId(postId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: -1} : {likesCount: -1}})
+}
 }
