@@ -76,5 +76,4 @@ export interface LikeModel {
   export interface LikesInfoModel {
     dislikesCount: number
     likesCount: number
-    
 }

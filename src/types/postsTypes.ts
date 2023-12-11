@@ -13,8 +13,10 @@ export class Posts {
 	
   ) {
     this.createdAt = new Date().toISOString();
-	this.extendedLikesInfo.dislikesCount = 0;
-	this.extendedLikesInfo.likesCount = 0;
+	this.extendedLikesInfo = {
+		dislikesCount: 0,
+		likesCount: 0
+	}
   }
 }
 

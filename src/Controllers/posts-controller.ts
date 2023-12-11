@@ -157,7 +157,7 @@ export class PostsController {
     }
       return res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }
-  async updateLikeStatus(req: RequestWithParamsAndBody<ParamsPostIdMode, likeStatusModel>, res: Response) {
+  async updateLikeStatus(req: RequestWithParamsAndBody<ParamsPostIdMode, likeStatusModel>, res: Response<void>): Promise<Response<void>> {
 	const postId = req.params.postId
 	const userId = req.user?.id ?? null;
 	const {likeStatus} = req.body

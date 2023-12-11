@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb"
 import { LikesModel } from "../db/db"
+import { Like } from "../types/likesInfoType"
 
 export class LikesRepositories  {
 	async saveLikeForComment(commentId: string, userId: ObjectId, likeStatus: string) {
@@ -14,7 +15,7 @@ export class LikesRepositories  {
 		const saveResult = await LikesModel.updateOne({commentId: commentId, userId: userId}, {myStatus: likeStatus})
 		return saveResult
 	}
-	async saveLikeForPost(postId: string, userId: ObjectId, likeStatus: string) {
+	async saveLikeForPost(postId: string, userId: ObjectId, likeStatus: string): Promise<string> {
 		// console.log("typeof userId: ", typeof userId)
 		const saveResult = await LikesModel.create({postId: postId, userId: userId, myStatus: likeStatus})
 		// console.log(saveResult, "we are in saveResult")
@@ -22,14 +23,14 @@ export class LikesRepositories  {
 		// console.log("userComment: ", usesrComment)
 		return saveResult.id
 	}
-	async updateLikeStatusForPost(postId: string, userId: ObjectId, likeStatus: string){
+	async updateLikeStatusForPost(postId: string, userId: ObjectId, likeStatus: string) {
 		const saveResult = await LikesModel.updateOne({postId: postId, userId: userId}, {myStatus: likeStatus})
 		return saveResult
 	}
 	async findLikeCommentByUser(postId: string, userId: ObjectId) {
 		return LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
 	}
-	async findLikePostByUser(postId: string, userId: ObjectId) {
+	async findLikePostByUser(postId: string, userId: ObjectId): Promise<Like | null> {
 		return LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]})
 	}
 }
