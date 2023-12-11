@@ -8,13 +8,15 @@ import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-
 import { queryUsersRepositories } from './user-composition-root';
 import { queryCommentRepositories } from './posts-composition-root';
 import { commentService } from './comment-composition-root';
+import { LikesRepositories } from '../Repositories/limit-db-repositories';
 
 const queryPostsRepositories = new QueryPostsRepositories()
+const likesRepositories = new LikesRepositories()
 export const queryBlogsRepositories = new QueryBlogsRepositories()
 const blogsRepositories = new BlogsRepositories();
 export const blogsService = new BlogsService(blogsRepositories);
 const postsRepositories = new PostsRepositories();
-const postsService = new PostsService(postsRepositories, queryUsersRepositories, queryPostsRepositories, queryCommentRepositories, commentService);
+const postsService = new PostsService(postsRepositories, queryUsersRepositories, queryPostsRepositories, queryCommentRepositories, commentService, likesRepositories);
 export const blogsController = new BlogsComtroller(
   blogsService,
   blogsRepositories,

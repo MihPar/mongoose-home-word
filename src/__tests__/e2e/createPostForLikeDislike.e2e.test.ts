@@ -58,7 +58,7 @@ describe("/blogs", () => {
     const wipeAllRes = await request(app).delete("/testing/all-data").send();
   });
 
-  describe("POST -> /posts: should create new post for an existing blog; status 201; content: created post; used additional methods: POST -> /blogs, GET -> /posts/:id", async () => {
+  describe("POST -> /posts: should create new post for an existing blog; status 201; content: created post; used additional methods: POST -> /blogs, GET -> /posts/:id", () => {
     type PostType = {
       id: string;
       title: string;
@@ -72,6 +72,8 @@ describe("/blogs", () => {
     let token: string;
     let postData: PostType;
     let blogName: string;
+	let userLogin: string
+	let userId: string
     it("create new user, create blog, create post => return 201 status code", async () => {
       const user = {
         login: "Mickle",
@@ -83,6 +85,8 @@ describe("/blogs", () => {
         .auth("admin", "qwerty")
         .send(user);
 
+		userLogin = createUser.body.login
+		userId = createUser.body.id
       expect(createUser.body).toStrictEqual({
         id: expect.any(String),
         login: user.login,
@@ -158,6 +162,18 @@ describe("/blogs", () => {
         blogId: postData.blogId,
         blogName: blogName,
         createdAt: expect.any(String),
+		extendedLikesInfo: {
+			"likesCount": 0,
+			"dislikesCount": 0,
+			"myStatus": "None",
+			"newestLikes": [
+			  {
+				"addedAt": expect.any(String),
+				"userId": userId,
+				"login": userLogin
+			  }
+			]
+		  }
       });
     });
   });
