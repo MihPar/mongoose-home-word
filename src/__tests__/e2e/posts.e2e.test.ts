@@ -186,6 +186,18 @@ describe("/posts", () => {
       blogId: blogId,
       blogName: blogName,
       createdAt: expect.any(String),
+	  "extendedLikesInfo": {
+		"likesCount": 0,
+		"dislikesCount": 0,
+		"myStatus": "None",
+		"newestLikes": [
+		  {
+			"addedAt": expect.any(String),
+			"userId": userId,
+			"login": login
+		  }
+		]
+	  }
     });
 
     firstPost = createPosts.body;
