@@ -12,4 +12,5 @@ export const LikesInfoSchema = new mongoose.Schema<WithId<Like>>({
     default: LikeStatusEnum.None,
 	enum: ["None", "Like", "Dislike"]
   },
+  addedAt: {type: String, required: true}
 });

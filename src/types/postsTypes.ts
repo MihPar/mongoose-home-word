@@ -3,15 +3,18 @@ import { LikesInfoModel } from "./likesInfoType";
 
 export class Posts {
   public createdAt: string;
+  public extendedLikesInfo!: LikesInfoModel;
   constructor(
     public title: string,
     public shortDescription: string,
     public content: string,
     public blogId: string,
     public blogName: string,
-	public extendedLikesInfo: LikesInfoModel
+	
   ) {
     this.createdAt = new Date().toISOString();
+	this.extendedLikesInfo.dislikesCount = 0;
+	this.extendedLikesInfo.likesCount = 0;
   }
 }
 
@@ -23,10 +26,9 @@ export class PostsDB extends Posts {
     content: string,
     blogId: string,
     blogName: string,
-	extendedLikesInfo:  LikesInfoModel
+	
   ) {
     super(title, shortDescription, content, blogId, blogName, 
-		 extendedLikesInfo
 		);
     this._id = new ObjectId();
   }

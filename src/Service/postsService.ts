@@ -24,7 +24,7 @@ export class PostsService {
 		content: string,
 		blogName: string,
 	  ): Promise<PostsViewModel | null> {
-		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName, extendedLikesInfo)
+		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName)
 		const createPost: PostsDB = await this.postsRepositories.createNewPosts(newPost);
 		return createPost.getPostViewModel();
 	  }

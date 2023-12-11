@@ -22,6 +22,7 @@ export class LikesInfoClass {
 	  public commentId: String,
 	  public postId: String,
       public myStatus: LikeStatusEnum,
+	  public addedAt: String
     ) {}
   }
 
@@ -75,6 +76,5 @@ export interface LikeModel {
   export interface LikesInfoModel {
     dislikesCount: number
     likesCount: number
-    myStatus: LikeStatusEnum
-    newestLikes?: newestLikesType[]
+    
 }
