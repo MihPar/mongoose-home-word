@@ -10,16 +10,16 @@ export class QueryUsersRepositories {
         { "accountData.email": loginOrEmail },
         { "accountData.userName": loginOrEmail },
       ],
-    });
+    }, {__v: 0}).lean(); 
     return user;
   }
   async findUserByEmail(email: string) {
-    return UsersModel.findOne({ "accountData.email": email });
+    return UsersModel.findOne({ "accountData.email": email }, {__v: 0}).lean();
   }
   async findUserByConfirmation(code: string): Promise<Users | null> {
     const user: Users | null = await UsersModel.findOne({
       "emailConfirmation.confirmationCode": code,
-    });
+    }, {__v: 0}).lean();
     return user;
   }
   async getAllUsers(
@@ -46,7 +46,7 @@ export class QueryUsersRepositories {
       ],
     };
 
-    const getAllUsers = await UsersModel.find(filter, 
+    const getAllUsers = await UsersModel.find(filter, {__v: 0}
 		//{      projection: { passwordHash: 0 },
     //}
 	)
@@ -72,12 +72,12 @@ export class QueryUsersRepositories {
     };
   }
   async findUserById(userId: ObjectId): Promise<Users | null> {
-    let user = await UsersModel.findOne({ _id: new ObjectId(userId) });
+    let user = await UsersModel.findOne({ _id: new ObjectId(userId) }, {__v: 0}).lean();
     return user;
   }
   async findUserByCode(recoveryCode: string): Promise<WithId<Users> | null> {
     return UsersModel.findOne({
       "emailConfirmation.confirmationCode": recoveryCode,
-    });
+    }, {__v: 0}).lean();
   }
 }

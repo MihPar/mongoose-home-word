@@ -16,6 +16,6 @@ export class QuerySecurityDeviceRepositories {
 		});
 	  }
 	  async findDeviceByDeviceId(deviceId: string) {
-		return await DevicesModel.findOne({ deviceId: deviceId });
+		return await DevicesModel.findOne({ deviceId: deviceId }, {__v: 0}).lean();
 	  }
 }
