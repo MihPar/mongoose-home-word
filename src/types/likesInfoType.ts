@@ -76,4 +76,6 @@ export interface LikeModel {
   export interface LikesInfoModel {
     dislikesCount: number
     likesCount: number
+	myStatus: "None", //
+    newestLikes: newestLikesType[] //
 }
