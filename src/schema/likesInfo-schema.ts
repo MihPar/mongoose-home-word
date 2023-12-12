@@ -4,7 +4,7 @@ import { LikeStatusEnum } from "../enum/like-status-enum";
 import { Like } from "../types/likesInfoType";
 
 export const LikesInfoSchema = new mongoose.Schema<WithId<Like>>({
-  userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, require: true },
   commentId: { type: String, nullable: true },
   postId: {type: String, nullable: true},
   myStatus: {
@@ -12,5 +12,5 @@ export const LikesInfoSchema = new mongoose.Schema<WithId<Like>>({
     default: LikeStatusEnum.None,
 	enum: ["None", "Like", "Dislike"]
   },
-  addedAt: {type: String, required: true}
+  addedAt: {type: String, require: true}
 });
