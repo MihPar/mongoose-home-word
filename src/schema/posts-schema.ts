@@ -13,5 +13,15 @@ export const PostSchema = new mongoose.Schema<WithId<PostsDB>>({
 	extendedLikesInfo: {
 		likesCount: {type: Number, require: true},
 		dislikesCount: {type: Number, require: true},
+		myStatus: {
+			type: String,
+			default: LikeStatusEnum.None,
+			enum: ["None", "Like", "Dislike"]
+		  },
+		  newestLikes: {
+			addedAt: {type: String, require: true},
+        	userId: {type: String, require: true},
+        	login: {type: String, require: true}
+		  } 
 	  }
 })
