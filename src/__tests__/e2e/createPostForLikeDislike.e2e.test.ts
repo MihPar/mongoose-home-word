@@ -138,7 +138,7 @@ describe("/blogs", () => {
 
       id = createPosts.body.id;
       postData = createPosts.body;
-	  console.log(postData)
+	//   console.log(postData)
       expect(createPosts.status).toBe(HTTP_STATUS.CREATED_201);
       expect(postData).toEqual({
         id: expect.any(String),
@@ -164,6 +164,8 @@ describe("/blogs", () => {
 	  const getPostById = await request(app)
 	  .get(`/posts/${id}`)
 	  .set("Authorization", `Bearer ${token}`);
+
+	  console.log(getPostById.body)
 	expect(getPostById.status).toBe(HTTP_STATUS.OK_200);
 	expect(getPostById.body).toStrictEqual({
 	  id: id,
