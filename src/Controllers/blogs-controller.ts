@@ -72,6 +72,7 @@ export class BlogsComtroller {
       sortDirection = "desc",
     } = req.query;
 
+	const userId = req.user?.id ?? null;
     const { blogId } = req.params;
 	console.log(blogId)
 
@@ -84,7 +85,8 @@ export class BlogsComtroller {
         pageSize as string,
         sortBy as string,
         sortDirection as string,
-        blogId as string
+        blogId as string,
+		userId as string
       );
     return res.status(HTTP_STATUS.OK_200).send(getPosts);
   }

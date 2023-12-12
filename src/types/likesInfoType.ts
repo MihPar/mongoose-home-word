@@ -19,6 +19,7 @@ export class LikesInfoClass {
     constructor(
 	  public _id: ObjectId,
 	  public userId: ObjectId,
+	  public login: String,
 	  public commentId: String,
 	  public postId: String,
       public myStatus: LikeStatusEnum,
@@ -76,6 +77,12 @@ export interface LikeModel {
   export interface LikesInfoModel {
     dislikesCount: number
     likesCount: number
-	myStatus: "None", //
-    newestLikes: newestLikesType[] //
+	
+}
+
+export interface LikesInfoViewModel {
+    dislikesCount: number
+    likesCount: number
+	myStatus: LikeStatusEnum,
+	newestLikes: newestLikesType[]
 }

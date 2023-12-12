@@ -4,6 +4,7 @@ import { inputBlogDescription, inputBlogNameValidator, inputBlogWebsiteUrl } fro
 import { ValueMiddleware } from "../middleware/validatorMiddleware";
 import { inputPostContentValidator, inputPostShortDescriptionValidator, inputPostTitleValidator } from '../middleware/input-value-posts-middleware';
 import { Router } from "express";
+import { getCommentAuthorization } from "../middleware/getCommentsAuthorization";
 
 export const blogsRouter = Router({});
 
@@ -17,7 +18,7 @@ blogsRouter.post(
   ValueMiddleware,
   blogsController.createBlog.bind(blogsController)
 );
-blogsRouter.get("/:blogId/posts", blogsController.getBlogsByPostIdPost.bind(blogsController));
+blogsRouter.get("/:blogId/posts",getCommentAuthorization, blogsController.getBlogsByPostIdPost.bind(blogsController));
 blogsRouter.post(
   "/:blogId/posts",
   authorization,

@@ -131,7 +131,7 @@ export class PostsController {
     res: Response<Posts | null>
   ) {
     const getPostById: Posts | null = await this.queryPostsRepositories.findPostById(
-      req.params.id
+      req.params.id, req.user?.id
     );
     if (!getPostById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

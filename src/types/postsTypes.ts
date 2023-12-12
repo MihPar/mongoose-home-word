@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { LikesInfoModel } from "./likesInfoType";
+import { LikesInfoModel, LikesInfoViewModel, newestLikesType } from "./likesInfoType";
 import { LikeStatusEnum } from "../enum/like-status-enum";
 
 export class Posts {
@@ -17,8 +17,7 @@ export class Posts {
 	this.extendedLikesInfo = {
 		dislikesCount: 0,
 		likesCount: 0,
-		myStatus: "None", //
-        newestLikes: [] //
+		
 	}
   }
 }
@@ -32,12 +31,14 @@ export class PostsDB extends Posts {
     blogId: string,
     blogName: string,
 	
+	
   ) {
     super(title, shortDescription, content, blogId, blogName, 
 		);
     this._id = new ObjectId();
   }
-  static getPostsViewModel(post: PostsDB): PostsViewModel {
+  static getPostsViewModel(post: PostsDB, myStatus: LikeStatusEnum,
+	newestLikes: newestLikesType[] ): PostsViewModel {
     return {
       id: post._id.toString(),
       title: post.title,
@@ -46,10 +47,11 @@ export class PostsDB extends Posts {
       blogId: post.blogId,
       blogName: post.blogName,
       createdAt: post.createdAt,
-	  extendedLikesInfo: post.extendedLikesInfo,
+	  extendedLikesInfo: {...post.extendedLikesInfo, myStatus, newestLikes},
     };
   }
-  getPostViewModel(): PostsViewModel {
+  getPostViewModel(myStatus: LikeStatusEnum,
+	newestLikes: newestLikesType[]): PostsViewModel {
     return {
       id: this._id.toString(),
       title: this.title,
@@ -58,7 +60,7 @@ export class PostsDB extends Posts {
       blogId: this.blogId,
       blogName: this.blogName,
       createdAt: this.createdAt,
-	  extendedLikesInfo: this.extendedLikesInfo,
+	  extendedLikesInfo: {...this.extendedLikesInfo, myStatus, newestLikes},
     };
   }
 }
@@ -71,5 +73,5 @@ export type PostsViewModel = {
   blogId: string;
   blogName: string;
   createdAt: string;
-  extendedLikesInfo: LikesInfoModel,
+  extendedLikesInfo: LikesInfoViewModel,
 };
