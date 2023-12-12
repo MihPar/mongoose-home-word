@@ -6,6 +6,8 @@ import { QueryPostsRepositories } from '../Repositories/queryRepositories/posts-
 import { QueryCommentRepositories } from '../Repositories/queryRepositories/comment-query-repositories';
 import { CommentService } from './commentService';
 import { LikesRepositories } from '../Repositories/limit-db-repositories';
+import { LikesModel, PostsModel } from '../db/db';
+import { LikeStatusEnum } from '../enum/like-status-enum';
 
 export class PostsService {
 	constructor(
@@ -27,7 +29,14 @@ export class PostsService {
 		const newPost: PostsDB = new PostsDB(title, shortDescription, content, blogId, blogName)
 		// console.log(newPost)
 		const createPost: PostsDB = await this.postsRepositories.createNewPosts(newPost);
-		return createPost.getPostViewModel();
+		const post = await PostsModel.findOne({ blogId: blogId }, {__v: 0 }).lean();
+		const newestLikes = await LikesModel.find({postId: newPost._id}).sort({addedAt: -1}).limit(3).skip(0).lean()
+		let myStatus : LikeStatusEnum = LikeStatusEnum.None;
+		if(blogId){
+			const reaction = await LikesModel.findOne({blogId: blogId})
+			myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
+		}
+		return createPost.getPostViewModel(myStatus, newestLikes);
 	  }
 	  async updateOldPost(
 		id: string,
