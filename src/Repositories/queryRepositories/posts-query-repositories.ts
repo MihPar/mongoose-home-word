@@ -1,6 +1,6 @@
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { LikesModel, PostsModel } from "../../db/db";
-import { Posts, PostsDB, PostsViewModel } from "../../types/postsTypes";
+import { Posts, PostsDB } from "../../types/postsTypes";
 import { PaginationType } from "../../types/types";
 import { LikeStatusEnum } from "../../enum/like-status-enum";
 
@@ -9,7 +9,8 @@ export class QueryPostsRepositories {
     pageNumber: string,
     pageSize: string,
     sortBy: string,
-    sortDirection: string
+    sortDirection: string,
+	userId: string
   ): Promise<PaginationType<Posts>> {
     const filtered = {};
     const allPosts: PostsDB[] = await PostsModel.find(filtered, {__v: 0 })
@@ -26,7 +27,21 @@ export class QueryPostsRepositories {
       page: +pageNumber,
       pageSize: +pageSize,
       totalCount: totalCount,
-      items: allPosts.map((item) => PostsDB.getPostsViewModel(item)),
+      items: await Promise.all(allPosts.map(async(allPOsts) => {
+		const newestLikes = await LikesModel
+		.find({postId: allPOsts._id.toString()})
+		.sort({addedAt: -1})
+		.limit(3)
+		.skip(0)
+		.lean()
+		let myStatus : LikeStatusEnum = LikeStatusEnum.None;
+		if(userId){
+			const reaction = await LikesModel.findOne({postId: allPOsts._id.toString()}, {userId: userId})
+			myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
+	}			
+		return PostsDB.getPostsViewModel(allPOsts, myStatus, newestLikes)
+	}
+		),)
     };
     return result;
   }
@@ -47,22 +62,25 @@ export class QueryPostsRepositories {
     const totalCount: number = await PostsModel.countDocuments(filter);
     const pagesCount: number = Math.ceil(totalCount / +pageSize);
 
-	const post =  PostsModel.findOne({ blogId: new ObjectId(blogId) }, {__v: 0 }).lean();
-	const newestLikes =  LikesModel.find({blogId: new ObjectId(blogId)}).sort({addedAt: -1}).limit(3).skip(0).lean()
-	let myStatus : LikeStatusEnum = LikeStatusEnum.None;
-		if(blogId){
-			const reaction = LikesModel.findOne({blogId: new ObjectId(blogId)}, {userId: userId})
-			myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
-		}
-
-	const result: PaginationType<Posts> = {
+		const result: PaginationType<Posts> = {
 		pagesCount: pagesCount,
 		page: +pageNumber,
 		pageSize: +pageSize,
 		totalCount: totalCount,
-		items: posts.map(function(item) {
-			return PostsDB.getPostsViewModel(item, myStatus, newestLikes)
-		}),
+		items: await Promise.all(posts.map(async(post)=> {
+			const newestLikes = await LikesModel
+			.find({postId: post._id.toString()})
+			.sort({addedAt: -1})
+			.limit(3)
+			.skip(0)
+			.lean()
+			let myStatus : LikeStatusEnum = LikeStatusEnum.None;
+			if(userId){
+				const reaction = await LikesModel.findOne({postId: post._id.toString()}, {userId: userId})
+				myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
+		}			
+			return PostsDB.getPostsViewModel(post, myStatus, newestLikes)
+		}))
 	  };
 
     return result

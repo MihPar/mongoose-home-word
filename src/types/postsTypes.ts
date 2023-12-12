@@ -38,7 +38,7 @@ export class PostsDB extends Posts {
     this._id = new ObjectId();
   }
   static getPostsViewModel(post: PostsDB, myStatus: LikeStatusEnum,
-	newestLikes: newestLikesType[] ): PostsViewModel {
+	newestLikes: newestLikesType[]): PostsViewModel {
     return {
       id: post._id.toString(),
       title: post.title,

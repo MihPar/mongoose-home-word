@@ -20,7 +20,7 @@ postsRouter.post(
   ValueMiddleware,
   postsController.createCommentForPostByPostId.bind(postsController)
 );
-postsRouter.get("/", postsController.getPosts.bind(postsController));
+postsRouter.get("/",getCommentAuthorization, postsController.getPosts.bind(postsController));
 postsRouter.post(
   "/",
   authorization,

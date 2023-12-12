@@ -101,12 +101,14 @@ export class PostsController {
       sortBy = "createdAt",
       sortDirection = "desc",
     } = req.query;
+	const userId = req.user?.id
     const getAllPosts: PaginationType<Posts> =
       await this.queryPostsRepositories.findAllPosts(
         pageNumber as string,
         pageSize as string,
         sortBy as string,
-        sortDirection as string
+        sortDirection as string,
+		userId
       );
     return res.status(HTTP_STATUS.OK_200).send(getAllPosts);
   }

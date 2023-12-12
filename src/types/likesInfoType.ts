@@ -19,11 +19,11 @@ export class LikesInfoClass {
     constructor(
 	  public _id: ObjectId,
 	  public userId: ObjectId,
-	  public login: String,
-	  public commentId: String,
-	  public postId: String,
+	  public login: string,
+	  public commentId: string,
+	  public postId: string,
       public myStatus: LikeStatusEnum,
-	  public addedAt: String
+	  public addedAt: string
     ) {}
   }
 
