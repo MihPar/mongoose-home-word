@@ -60,7 +60,7 @@ export class QueryPostsRepositories {
 	const newestLikes = await LikesModel.find({postId:id}).sort({addedAt: -1}).limit(3).skip(0)
 	let myStatus = 'None';
 	if(userId){
-		const reaction = await LikesModel.findOne({postId:id, userId})
+		const reaction = await LikesModel.findOne({postId:id}, {userId: userId})
 		myStatus = reaction ? reaction.myStatus : 'None'
 	}
 	return post ? PostsDB.getPostsViewModel(post) : null

@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS } from "../utils/utils";
 import { jwtService } from "../Compositions-root/auth-composition-root";
-import { UsersModel } from "../db/db";
-import { ObjectId } from "mongodb";
 import { queryUsersRepositories } from "../Compositions-root/user-composition-root";
 
 export const commentAuthorization = async function(req: Request, res: Response, next: NextFunction) {
