@@ -72,9 +72,10 @@ export class BlogsComtroller {
       sortDirection = "desc",
     } = req.query;
 
-	const userId = req.user?.id ?? null;
+	const userId = req.user._id.toString() ?? null;
     const { blogId } = req.params;
 	console.log(blogId)
+	console.log("userId: ", userId)
 
     const blog = await this.queryBlogsRepositories.findBlogById(blogId);
     if (!blog) return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

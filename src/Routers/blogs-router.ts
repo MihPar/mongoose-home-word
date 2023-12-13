@@ -18,7 +18,7 @@ blogsRouter.post(
   ValueMiddleware,
   blogsController.createBlog.bind(blogsController)
 );
-blogsRouter.get("/:blogId/posts",getCommentAuthorization, blogsController.getAllPostsByBloId.bind(blogsController));
+blogsRouter.get("/:blogId/posts", getCommentAuthorization, blogsController.getAllPostsByBloId.bind(blogsController));
 blogsRouter.post(
   "/:blogId/posts",
   authorization,

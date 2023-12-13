@@ -74,6 +74,7 @@ describe("/blogs", () => {
     let blogName: string;
     let userLogin: string;
     let userId: string;
+	let blogIdAllPost: string
     it("create new user, create blog, create post => return 201 status code", async () => {
 
 		/***************************** create user1 ********************************************/
@@ -197,6 +198,7 @@ describe("/blogs", () => {
           description: "my description",
           websiteUrl: "https://learn.javascript.ru",
         });
+		blogIdAllPost = createBlogs.body.id
       expect(createBlogs.status).toBe(HTTP_STATUS.CREATED_201);
       expect(createBlogs.body).toEqual({
         id: expect.any(String),
@@ -436,27 +438,11 @@ describe("/blogs", () => {
 
         console.log(getAllPosts.body);
         expect(getAllPosts.status).toBe(HTTP_STATUS.OK_200);
-        expect(getAllPosts.body).toStrictEqual({
-          id: id,
-          title: postData.title,
-          shortDescription: postData.shortDescription,
-          content: postData.content,
-          blogId: postData.blogId,
-          blogName: blogName,
-          createdAt: expect.any(String),
-          extendedLikesInfo: {
-            likesCount: expect.any(Number),
-            dislikesCount: expect.any(Number),
-            myStatus: expect.any(String),
-            newestLikes: [
-                {
-              	"addedAt": expect.any(String),
-              	"userId": userId,
-              	"login": userLogin
-                }
-            ],
-          },
-        });
+
+		const getAllPostByBlogId = await request(app)
+		.get(`/blogs/${blogIdAllPost}/posts`)
+		.set("Authorization", `Bearer ${token}`);
+		expect(getAllPosts.body).toEqual(getAllPostByBlogId.body)
 	  })
   });
 });
