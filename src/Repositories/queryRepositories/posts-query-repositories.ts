@@ -67,14 +67,14 @@ export class QueryPostsRepositories {
 		totalCount: totalCount,
 		items: await Promise.all(posts.map(async(post)=> {
 			const newestLikes = await LikesModel
-			.find({postId: new ObjectId(post._id), myStatus: LikeStatusEnum.Like})
+			.find({postId: post._id.toString(), myStatus: LikeStatusEnum.Like})
 			.sort({addedAt: -1})
 			.limit(3)
 			.skip(0)
 			.lean()
 			let myStatus : LikeStatusEnum = LikeStatusEnum.None;
 			if(userId){
-				const reaction = await LikesModel.findOne({postId: new ObjectId(post._id), userId: new ObjectId(userId)}, {__v: 0}).lean()
+				const reaction = await LikesModel.findOne({postId: post._id.toString(), userId: new ObjectId(userId)}).lean()
 				myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
 		}			
 			return PostsDB.getPostsViewModel(post, myStatus, newestLikes)

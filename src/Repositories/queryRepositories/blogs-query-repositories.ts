@@ -36,12 +36,12 @@ export class QueryBlogsRepositories {
 	  }
 	  async findBlogById(id: string, userId?: string): Promise<Blogs | null> {
 		const blog =  await BlogsModel.findOne({ _id: new ObjectId(id) }, {__v: 0}).lean();
-		const newestLikes = await LikesModel.find({postId:id, myStatus: LikeStatusEnum.Like}).sort({addedAt: -1}).limit(3).skip(0).lean()
-		let myStatus : LikeStatusEnum = LikeStatusEnum.None;
-		if(userId){
-			const reaction = await LikesModel.findOne({postId: id, userId: new ObjectId(userId)})
-			myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
-		}
+		// const newestLikes = await LikesModel.find({postId:id, myStatus: LikeStatusEnum.Like}).sort({addedAt: -1}).limit(3).skip(0).lean()
+		// let myStatus : LikeStatusEnum = LikeStatusEnum.None;
+		// if(userId){
+		// 	const reaction = await LikesModel.findOne({postId: id, userId: new ObjectId(userId)})
+		// 	myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
+		// }
 		return blog ? BlogsDB.getBlogsViewModel(blog) : null;
 	  }
 	  async findBlogs(): Promise<Blogs[]> {

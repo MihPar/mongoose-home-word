@@ -61,7 +61,7 @@ export class BlogsComtroller {
     );
     return res.status(HTTP_STATUS.CREATED_201).send(createBlog);
   }
-  async getBlogsByPostIdPost(
+  async getAllPostsByBloId(
     req: RequestWithParamsAndQuery<paramsPostsModelBlogId, queryPostsModel>,
     res: Response<PaginationType<Posts>>
   ) {
