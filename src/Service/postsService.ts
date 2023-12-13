@@ -60,10 +60,10 @@ export class PostsService {
 	  async deleteAllPosts(): Promise<boolean> {
 		return await this.postsRepositories.deleteRepoPosts();
 	  }
-	  async updateLikeStatus(likeStatus: string, postId: string, userId: ObjectId): Promise<boolean | void> {
+	  async updateLikeStatus(likeStatus: string, postId: string, userId: ObjectId, userLogin: string): Promise<boolean | void> {
 			const findLike = await this.likesRepositories.findLikePostByUser(postId, new ObjectId(userId))
 			if(!findLike) {
-				await this.likesRepositories.saveLikeForPost(postId, new ObjectId(userId), likeStatus)
+				await this.likesRepositories.saveLikeForPost(postId, new ObjectId(userId), likeStatus, userLogin)
 				const resultCheckListOrDislike = await this.postsRepositories.increase(postId, likeStatus)
 				return true
 			} 

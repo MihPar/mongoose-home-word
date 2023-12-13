@@ -1,3 +1,4 @@
+import { AccountDataType } from './../types/userTypes';
 import { paramsIdModel } from '../model/modePosts.ts/paramsIdModel';
 import { bodyPostsModel } from '../model/modePosts.ts/bodyPostsMode';
 import { bodyPostModelContent } from '../model/modePosts.ts/bodyPostModeContent';
@@ -161,13 +162,14 @@ export class PostsController {
   }
   async updateLikeStatus(req: RequestWithParamsAndBody<ParamsPostIdMode, likeStatusModel>, res: Response<void>): Promise<Response<void>> {
 	const postId = req.params.postId
-	const userId = req.user?.id ?? null;
+	const userId = req.user!.id;
+	const userLogin = req.user.accountData.userName
 	const {likeStatus} = req.body
 	const findPost = await this.queryPostsRepositories.findPostById(postId)
 	if(!findPost) {
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
-	const result = await this.postsService.updateLikeStatus(likeStatus, postId, userId)
+	const result = await this.postsService.updateLikeStatus(likeStatus, postId, userId, userLogin)
 	if(!result) {
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
