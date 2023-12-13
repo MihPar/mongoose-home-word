@@ -66,7 +66,7 @@ export class QueryCommentRepositories {
 		}
 		
       const commnent = commentDBToView(item, findLike);
-	  console.log("comment: ", commnent)
+	//   console.log("comment: ", commnent)
       return commnent;
     }))
     return {

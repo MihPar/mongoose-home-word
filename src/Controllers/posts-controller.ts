@@ -183,7 +183,7 @@ const userId = req.user ? req.user._id.toString() : null
     req: RequestWithParams<paramsIdModel>,
     res: Response<void>
   ) {
-	console.log(req.params.id)
+	// console.log(req.params.id)
     const deletPost: boolean = await this.postsService.deletePostId(
       req.params.id
     );

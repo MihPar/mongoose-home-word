@@ -1,11 +1,11 @@
-import { stopDb } from "../../db/db";
+import { stopDb } from "../../../db/db";
 import request from "supertest";
-import { initApp } from "../../settings";
-import { HTTP_STATUS } from "../../utils/utils";
+import { initApp } from "../../../settings";
+import { HTTP_STATUS } from "../../../utils/utils";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { log } from "console";
-import { PostsViewModel } from "../../types/postsTypes";
+import { PostsViewModel } from "../../../types/postsTypes";
 dotenv.config();
 
 const mongoURI = process.env.MONGO_URL || "mongodb://0.0.0.0:27017";
@@ -107,6 +107,7 @@ describe("/posts", () => {
   let createAccessTokenBody: token;
   let userId: string;
   let login: string;
+  let postId1: string
 
   it("POST -> /posts/:postId/comments: should create new comment; status 201; content: created comment; used additional methods: POST -> /blogs, POST -> /posts, GET -> /comments/:commentId;", async () => {
     // create user(login, psw)!!!!!!
@@ -175,7 +176,7 @@ describe("/posts", () => {
           "myContent I like javascript and I will be a developer in javascript, back end developer",
         blogId: blogId,
       });
-
+	  postId1 = createPosts.body.id
     expect(createPosts.status).toBe(HTTP_STATUS.CREATED_201);
     expect(createPosts.body).toEqual({
       id: expect.any(String),
@@ -191,11 +192,11 @@ describe("/posts", () => {
 		"dislikesCount": 0,
 		"myStatus": "None",
 		"newestLikes": [
-		  {
-			"addedAt": expect.any(String),
-			"userId": userId,
-			"login": login
-		  }
+		//   {
+		// 	"addedAt": expect.any(String),
+		// 	"userId": userId,
+		// 	"login": login
+		//   }
 		]
 	  }
     });
@@ -287,17 +288,18 @@ describe("/posts", () => {
   let postId: string;
   it("make status like/dislike => return 204 status code", async() => {
 	const updateLikeDiske = await request(app)
-	.post(`/posts/${postId}/like-dislike`)
+	.put(`/posts/${postId1}/like-status`)
 	.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
 	.send({
 		"likeStatus": "None"
 	})
+	console.log("updateLikeStatus: ", updateLikeDiske.body)
 	expect(updateLikeDiske.status).toBe(HTTP_STATUS.NO_CONTENT_204)
   })
 
   it("make status like/dislike with incorrect input data => return 400 status code", async() => {
 	const updateLikeDiske = await request(app)
-	.post(`/posts/${postId}/like-dislike`)
+	.put(`/posts/${postId1}/like-status`)
 	.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
 	.send({
 		"likeStatus": true
@@ -308,7 +310,7 @@ describe("/posts", () => {
 
   it("make status like/dislike with empty input data of body  => return 400 status code", async() => {
 	const updateLikeDiske = await request(app)
-	.post(`/posts/${postId}/like-dislike`)
+	.put(`/posts/${postId1}/like-status`)
 	.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
 	.send({})
 	expect(updateLikeDiske.status).toBe(HTTP_STATUS.BAD_REQUEST_400)
@@ -317,7 +319,7 @@ describe("/posts", () => {
 
   it("make status like/dislike without authorization => return 401 status code", async() => {
 	const updateLikeDiske = await request(app)
-	.post(`/posts/${postId}/like-dislike`)
+	.put(`/posts/${postId1}/like-status`)
 	.send({
 		"likeStatus": "None"
 	})
@@ -326,7 +328,7 @@ describe("/posts", () => {
 
   it("make status like/dislike without id=> return 404 status code", async() => {
 	const updateLikeDiske = await request(app)
-	.post(`/posts/123456789012345678901234/like-dislike`)
+	.put(`/posts/123456789012345678901234/like-dislike`)
 	.set("Authorization", `Bearer ${createAccessTokenBody.accessToken}`)
 	.send({
 		"likeStatus": "None"
@@ -376,6 +378,18 @@ describe("/posts", () => {
       blogId: blogId,
       blogName: inputDataBlog.name,
       createdAt: expect.any(String),
+	  extendedLikesInfo: {
+		likesCount: expect.any(Number),
+		dislikesCount: expect.any(Number),
+		myStatus: expect.any(String),
+		newestLikes: [
+		//   {
+		// 	"addedAt": "2023-12-13T11:39:16.432Z",
+		// 	"userId": "string",
+		// 	"login": "string"
+		//   }
+		]
+	  }
     });
 
     id = createNewPost.body.id;
@@ -452,6 +466,18 @@ describe("/posts", () => {
         blogId: inputDataPost.blogId,
         blogName: inputDataBlog.name,
         createdAt: expect.any(String),
+		extendedLikesInfo: {
+			likesCount: expect.any(Number),
+			dislikesCount: expect.any(Number),
+			myStatus: expect.any(String),
+			// newestLikes: [
+			//   {
+			// 	"addedAt": "2023-12-13T11:39:16.432Z",
+			// 	"userId": "string",
+			// 	"login": "string"
+			//   }
+			// ]
+		  }
       },
     ]);
   });
@@ -469,6 +495,18 @@ describe("/posts", () => {
       blogId: inputDataPost.blogId,
       blogName: inputDataBlog.name,
       createdAt: expect.any(String),
+	  extendedLikesInfo: {
+		likesCount: expect.any(Number),
+		dislikesCount: expect.any(Number),
+		myStatus: expect.any(String),
+		newestLikes: [
+		//   {
+		// 	"addedAt": "2023-12-13T11:39:16.432Z",
+		// 	"userId": "string",
+		// 	"login": "string"
+		//   }
+		]
+	  }
     });
   });
 

@@ -1,9 +1,9 @@
 import request from "supertest";
 import dotenv from "dotenv";
-import { stopDb } from "../../db/db";
+import { stopDb } from "../../../db/db";
 import mongoose from "mongoose";
-import { HTTP_STATUS } from "../../utils/utils";
-import { initApp } from "../../settings";
+import { HTTP_STATUS } from "../../../utils/utils";
+import { initApp } from "../../../settings";
 dotenv.config();
 
 const app = initApp();
