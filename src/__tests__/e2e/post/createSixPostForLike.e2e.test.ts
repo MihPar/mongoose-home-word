@@ -334,7 +334,7 @@ describe("/blogs", () => {
 			"likeStatus": "Like"
 		})
 
-		const createDislikePos3tUser5 = await request(app)
+		const createDislikePos3tUser1 = await request(app)
 		.put(`/posts/${createPosts3.body.id}/like-status`)
 		.set("Authorization", `Bearer ${token}`)
 		.send({
@@ -429,5 +429,34 @@ describe("/blogs", () => {
           },
         });
       });
+	  it("get all post", async() => {
+		const getAllPosts = await request(app)
+          .get(`/posts/`)
+          .set("Authorization", `Bearer ${token}`);
+
+        console.log(getAllPosts.body);
+        expect(getAllPosts.status).toBe(HTTP_STATUS.OK_200);
+        expect(getAllPosts.body).toStrictEqual({
+          id: id,
+          title: postData.title,
+          shortDescription: postData.shortDescription,
+          content: postData.content,
+          blogId: postData.blogId,
+          blogName: blogName,
+          createdAt: expect.any(String),
+          extendedLikesInfo: {
+            likesCount: expect.any(Number),
+            dislikesCount: expect.any(Number),
+            myStatus: expect.any(String),
+            newestLikes: [
+                {
+              	"addedAt": expect.any(String),
+              	"userId": userId,
+              	"login": userLogin
+                }
+            ],
+          },
+        });
+	  })
   });
 });

@@ -29,7 +29,7 @@ export class QueryPostsRepositories {
       totalCount: totalCount,
       items: await Promise.all(allPosts.map(async(post) => {
 		const newestLikes = await LikesModel
-		.find({postId: new ObjectId(post._id)})
+		.find({postId: new ObjectId(post._id), myStatus: LikeStatusEnum.Like})
 		.sort({addedAt: -1})
 		.limit(3)
 		.skip(0)
@@ -38,11 +38,9 @@ export class QueryPostsRepositories {
 		if(userId){
 			const reaction = await LikesModel.findOne({postId: new ObjectId(post._id), userId: new ObjectId(userId)}, {__v: 0}).lean()
 			myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
-	}			
+		}			
 		return PostsDB.getPostsViewModel(post, myStatus, newestLikes)
-	}
-		),)
-    };
+	}))};
     return result;
   }
   async findPostsByBlogsId(
@@ -69,7 +67,7 @@ export class QueryPostsRepositories {
 		totalCount: totalCount,
 		items: await Promise.all(posts.map(async(post)=> {
 			const newestLikes = await LikesModel
-			.find({postId: new ObjectId(post._id)})
+			.find({postId: new ObjectId(post._id), myStatus: LikeStatusEnum.Like})
 			.sort({addedAt: -1})
 			.limit(3)
 			.skip(0)
