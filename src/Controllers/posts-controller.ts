@@ -102,7 +102,7 @@ export class PostsController {
       sortBy = "createdAt",
       sortDirection = "desc",
     } = req.query;
-	const userId = req.user?.id
+	const userId = req.user ? req.user._id.toString() : null
     const getAllPosts: PaginationType<Posts> =
       await this.queryPostsRepositories.findAllPosts(
         pageNumber as string,
@@ -133,8 +133,10 @@ export class PostsController {
     req: RequestWithParams<paramsIdModel>,
     res: Response<Posts | null>
   ) {
+const userId = req.user ? req.user._id.toString() : null
+
     const getPostById: Posts | null = await this.queryPostsRepositories.findPostById(
-      req.params.id, req.user?.id
+      req.params.id, userId
     );
     if (!getPostById) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
@@ -162,15 +164,17 @@ export class PostsController {
   }
   async updateLikeStatus(req: RequestWithParamsAndBody<ParamsPostIdMode, likeStatusModel>, res: Response<void>): Promise<Response<void>> {
 	const postId = req.params.postId
-	const userId = req.user!.id;
+	const userId = req.user!._id;
 	const userLogin = req.user.accountData.userName
 	const {likeStatus} = req.body
 	const findPost = await this.queryPostsRepositories.findPostById(postId)
 	if(!findPost) {
+		console.log('post not found')
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
 	const result = await this.postsService.updateLikeStatus(likeStatus, postId, userId, userLogin)
 	if(!result) {
+		console.log('error in make reaction')
 		return res.sendStatus(HTTP_STATUS.NOT_FOUND_404)
 	}
 	return res.sendStatus(HTTP_STATUS.NO_CONTENT_204)

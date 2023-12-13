@@ -61,38 +61,38 @@ export class PostsService {
 		return await this.postsRepositories.deleteRepoPosts();
 	  }
 	  async updateLikeStatus(likeStatus: string, postId: string, userId: ObjectId, userLogin: string): Promise<boolean | void> {
-			const findLike = await this.likesRepositories.findLikePostByUser(postId, new ObjectId(userId))
+			const findLike = await this.likesRepositories.findLikePostByUser(postId, userId)
 			if(!findLike) {
-				await this.likesRepositories.saveLikeForPost(postId, new ObjectId(userId), likeStatus, userLogin)
+				await this.likesRepositories.saveLikeForPost(postId, userId, likeStatus, userLogin)
 				const resultCheckListOrDislike = await this.postsRepositories.increase(postId, likeStatus)
 				return true
 			} 
 			
 			if((findLike.myStatus === 'Dislike' || findLike.myStatus === 'Like') && likeStatus === 'None'){
-				await this.likesRepositories.updateLikeStatusForPost(postId, new ObjectId(userId), likeStatus)
+				await this.likesRepositories.updateLikeStatusForPost(postId, userId, likeStatus)
 				const resultCheckListOrDislike = await this.postsRepositories.decrease(postId, findLike.myStatus)
 				return true
 			}
 	
 			if(findLike.myStatus === 'None' && (likeStatus === 'Dislike' || likeStatus === 'Like')) {
-				await this.likesRepositories.updateLikeStatusForPost(postId, new ObjectId(userId), likeStatus)
+				await this.likesRepositories.updateLikeStatusForPost(postId, userId, likeStatus)
 				const resultCheckListOrDislike = await this.postsRepositories.increase(postId, likeStatus)
 				return true
 			}
 	
 			if(findLike.myStatus === 'Dislike' && likeStatus === 'Like') {
-				await this.likesRepositories.updateLikeStatusForPost(postId, new ObjectId(userId), likeStatus)
+				await this.likesRepositories.updateLikeStatusForPost(postId, userId, likeStatus)
 				const changeDislikeOnLike = await this.postsRepositories.increase(postId, likeStatus)
 				const changeLikeOnDislike = await this.postsRepositories.decrease(postId, findLike.myStatus)
 				return true
 			}
 			if(findLike.myStatus === 'Like' && likeStatus === 'Dislike') {
-				await this.likesRepositories.updateLikeStatusForPost(postId, new ObjectId(userId), likeStatus)
+				await this.likesRepositories.updateLikeStatusForPost(postId, userId, likeStatus)
 				const changeLikeOnDislike = await this.postsRepositories.decrease(postId, findLike.myStatus)
 				const changeDislikeOnLike = await this.postsRepositories.increase(postId, likeStatus)
 				return true
 			}
-			return 
+			return true
 		}
 	  
 }

@@ -36,7 +36,7 @@ export class QueryPostsRepositories {
 		.lean()
 		let myStatus : LikeStatusEnum = LikeStatusEnum.None;
 		if(userId){
-			const reaction = await LikesModel.findOne({postId: allPOsts._id.toString()}, {userId: userId})
+			const reaction = await LikesModel.findOne({postId: allPOsts._id.toString(), userId: new ObjectId(userId)}, {__v: 0}).lean()
 			myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
 	}			
 		return PostsDB.getPostsViewModel(allPOsts, myStatus, newestLikes)
@@ -76,7 +76,7 @@ export class QueryPostsRepositories {
 			.lean()
 			let myStatus : LikeStatusEnum = LikeStatusEnum.None;
 			if(userId){
-				const reaction = await LikesModel.findOne({postId: post._id.toString()}, {userId: userId})
+				const reaction = await LikesModel.findOne({postId: post._id.toString(), userId: new ObjectId(userId)}, {__v: 0}).lean()
 				myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
 		}			
 			return PostsDB.getPostsViewModel(post, myStatus, newestLikes)
@@ -87,10 +87,10 @@ export class QueryPostsRepositories {
   }
   async findPostById(id: string, userId?: string): Promise<Posts | null> {
     const post = await PostsModel.findOne({ _id: new ObjectId(id) }, {__v: 0 }).lean();
-	const newestLikes = await LikesModel.find({postId:id}).sort({addedAt: -1}).limit(3).skip(0).lean()
+	const newestLikes = await LikesModel.find({postId:id, myStatus: LikeStatusEnum.Like}).sort({addedAt: -1}).limit(3).skip(0).lean()
 	let myStatus : LikeStatusEnum = LikeStatusEnum.None;
 	if(userId){
-		const reaction = await LikesModel.findOne({postId: id}, {userId: userId})
+		const reaction = await LikesModel.findOne({postId: id, userId: new ObjectId(userId)})
 		myStatus = reaction ? reaction.myStatus : LikeStatusEnum.None
 	}
 	return post ? PostsDB.getPostsViewModel(post, myStatus, newestLikes) : null

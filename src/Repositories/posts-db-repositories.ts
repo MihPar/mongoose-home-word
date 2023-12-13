@@ -2,6 +2,7 @@ import { Posts, PostsDB } from "../types/postsTypes";
 import { PostsModel } from "../db/db";
 import { ObjectId } from "mongodb";
 import { LikeModel } from "../types/likesInfoType";
+import { LikeStatusEnum } from "../enum/like-status-enum";
 
 export class PostsRepositories {
   async createNewPosts(newPost: PostsDB): Promise<PostsDB> {
@@ -41,15 +42,15 @@ export class PostsRepositories {
     return deletedAll.acknowledged;
   }
   async increase(postId: string, likeStatus: string){
-	if(likeStatus !== 'Dislike' && likeStatus !== 'Like') {
+	if(likeStatus === LikeStatusEnum.None) {
 		return
 	} 
-	return await PostsModel.updateOne({_id: new ObjectId(postId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: 1} : {likesCount: 1}})
+	return await PostsModel.updateOne({_id: new ObjectId(postId)}, {$inc: likeStatus === 'Dislike' ? {"extendedLikesInfo.dislikesCount": 1} : {"extendedLikesInfo.likesCount": 1}})
 }
 async decrease(postId: string, likeStatus: string){
-	if(likeStatus !== 'Dislike' && likeStatus !== 'Like') {
+	if(likeStatus === LikeStatusEnum.None) {
 		return
 	} 
-	return await PostsModel.updateOne({_id: new ObjectId(postId)}, {$inc: likeStatus === 'Dislike' ? {dislikesCount: -1} : {likesCount: -1}})
+	return await PostsModel.updateOne({_id: new ObjectId(postId)}, {$inc: likeStatus === 'Dislike' ? {"extendedLikesInfo.dislikesCount": -1} : {"extendedLikesInfo.likesCount": -1}})
 }
 }

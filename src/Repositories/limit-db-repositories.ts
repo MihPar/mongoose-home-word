@@ -28,9 +28,9 @@ export class LikesRepositories  {
 		return saveResult
 	}
 	async findLikeCommentByUser(postId: string, userId: ObjectId) {
-		return LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]}, {__v: 0}).lean() //
+		return LikesModel.findOne({userId,  postId}, {__v: 0}).lean() //
 	}
 	async findLikePostByUser(postId: string, userId: ObjectId): Promise<Like | null> {
-		return LikesModel.findOne({$and: [{userId: userId}, {postId: postId}]}, {__v: 0}).lean() //
+		return LikesModel.findOne({userId, postId: postId}, {__v: 0}).lean() //
 	}
 }

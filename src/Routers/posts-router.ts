@@ -32,6 +32,9 @@ postsRouter.post(
   postsController.createPost.bind(postsController)
 );
 postsRouter.get("/:id",getCommentAuthorization, postsController.getPostById.bind(postsController));
+
+postsRouter.put("/:postId/like-status", commentAuthorization, likeValidationRule, ValueMiddleware, postsController.updateLikeStatus.bind(postsController));
+
 postsRouter.put(
   "/:id",
   authorization,
@@ -43,7 +46,7 @@ postsRouter.put(
   postsController.updatePostById.bind(postsController)
 );
 
-postsRouter.put("/:postId/like-status", commentAuthorization, likeValidationRule, ValueMiddleware, postsController.updateLikeStatus.bind(postsController));
+
 
 
 postsRouter.delete("/:id", authorization, postsController.deletePostById.bind(postsController));
