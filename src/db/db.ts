@@ -4,12 +4,11 @@ import { CommentSchema } from './../schema/comment-schema';
 import { DBUserSchema } from './../schema/users-schema';
 import { PostSchema } from './../schema/posts-schema';
 import { BlogsSchema } from './../schema/blogs-schema';
-import { Blogs, BlogsDB} from '../types/blogsType';
-import { MongoClient } from 'mongodb';
+import { BlogsDB} from '../types/blogsType';
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
 import { Users } from '../types/userTypes';
-import { Posts, PostsDB } from '../types/postsTypes';
+import { PostsDB } from '../types/postsTypes';
 import { CollectionIP, Devices } from '../types/deviceAuthSessionTypes';
 import { LikesInfoSchema } from '../schema/likesInfo-schema';
 import { CommentsDB } from '../types/commentType';
