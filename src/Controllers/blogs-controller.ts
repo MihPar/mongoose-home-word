@@ -114,7 +114,7 @@ export class BlogsComtroller {
       return res.status(HTTP_STATUS.CREATED_201).send(isCreatePost);
     }
   }
-  async getPostById(
+  async getBlogsById(
     req: RequestWithParams<paramsBlogsModel>,
     res: Response<Blogs | null>
   ) {
