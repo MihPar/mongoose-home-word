@@ -26,7 +26,7 @@ blogsRouter.post(
   inputPostTitleValidator,
   inputPostShortDescriptionValidator,
   ValueMiddleware,
-  blogsController.createBlogsByBlogsIdPost.bind(blogsController)
+  blogsController.createPostByBlogId.bind(blogsController)
 );
 blogsRouter.get("/:id", blogsController.getPostById.bind(blogsController));
 blogsRouter.put(

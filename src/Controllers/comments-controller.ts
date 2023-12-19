@@ -67,8 +67,8 @@ export class CommentController {
       commentId,
       _id
     );
-	console.log("isExistComment: ", isExistComment)
-	console.log("req.user: ", req.user)
+	// console.log("isExistComment: ", isExistComment)
+	// console.log("req.user: ", req.user)
     if (!isExistComment) {
       return res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     }

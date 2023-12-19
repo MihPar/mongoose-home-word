@@ -91,7 +91,7 @@ export class BlogsComtroller {
       );
     return res.status(HTTP_STATUS.OK_200).send(getPosts);
   }
-  async createBlogsByBlogsIdPost(
+  async createPostByBlogId(
     req: RequestWithParamsAndBody<paramsPostsModelBlogId, bodyPostsModel>,
     res: Response<Posts>
   ): Promise<Response<Posts>> {

@@ -27,8 +27,8 @@ export class LikesRepositories  {
 		const saveResult = await LikesModel.updateOne({postId, userId}, {myStatus: likeStatus})
 		return saveResult
 	}
-	async findLikeCommentByUser(postId: string, userId: ObjectId) {
-		return LikesModel.findOne({userId,  postId}, {__v: 0}).lean() //
+	async findLikeCommentByUser(commentId: string, userId: ObjectId) {
+		return LikesModel.findOne({userId,  commentId}, {__v: 0}).lean() //
 	}
 	async findLikePostByUser(postId: string, userId: ObjectId): Promise<Like | null> {
 		return LikesModel.findOne({userId, postId: postId}, {__v: 0}).lean() //
