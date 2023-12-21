@@ -36,7 +36,7 @@ export class PostsController {
 	protected queryUsersRepositories: QueryUsersRepositories
   ) {
   }
-  async getPostByPostId(
+  async getCommentsByPostId(
     req: RequestWithParamsAndQuery<ParamsPostIdMode, queryPostsModel>,
     res: Response<PaginationType<CommentViewModel>>
   ) {
