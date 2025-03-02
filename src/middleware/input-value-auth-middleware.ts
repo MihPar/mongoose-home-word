@@ -110,6 +110,7 @@ export const inputValueRecoveryCodeAuth = body('recoveryCode')
 .notEmpty()
 .trim()
 .withMessage('recovery code is incorrect')
+// https://somesite.com/confirm-email?code=ad8d1ff0-ed7d-43d2-b595-251b8de56d3d
 // .custom(async(code, {req}) => {
 // 	console.log(code)
 // 	const user: DBUserType | null = await userRepositories.findUserByConfirmation(code)

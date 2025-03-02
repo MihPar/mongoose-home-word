@@ -11,8 +11,11 @@ import { likeValidationRule } from "../middleware/input-value-likeStatus-middlew
 
 export const postsRouter = Router({});
 
-
-postsRouter.get("/:postId/comments",getCommentAuthorization, postsController.getCommentsByPostId.bind(postsController));
+postsRouter.get(
+  "/:postId/comments",
+  getCommentAuthorization,
+  postsController.getCommentsByPostId.bind(postsController)
+);
 postsRouter.post(
   "/:postId/comments",
   commentAuthorization,
@@ -20,7 +23,11 @@ postsRouter.post(
   ValueMiddleware,
   postsController.createCommentForPostByPostId.bind(postsController)
 );
-postsRouter.get("/",getCommentAuthorization, postsController.getPosts.bind(postsController));
+postsRouter.get(
+  "/",
+  getCommentAuthorization,
+  postsController.getPosts.bind(postsController)
+);
 postsRouter.post(
   "/",
   authorization,
@@ -31,9 +38,19 @@ postsRouter.post(
   ValueMiddleware,
   postsController.createPost.bind(postsController)
 );
-postsRouter.get("/:id",getCommentAuthorization, postsController.getPostById.bind(postsController));
+postsRouter.get(
+  "/:id",
+  getCommentAuthorization,
+  postsController.getPostById.bind(postsController)
+);
 
-postsRouter.put("/:postId/like-status", commentAuthorization, likeValidationRule, ValueMiddleware, postsController.updateLikeStatus.bind(postsController));
+postsRouter.put(
+  "/:postId/like-status",
+  commentAuthorization,
+  likeValidationRule,
+  ValueMiddleware,
+  postsController.updateLikeStatus.bind(postsController)
+);
 
 postsRouter.put(
   "/:id",

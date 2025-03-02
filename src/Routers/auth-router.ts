@@ -43,7 +43,7 @@ authRouter.post(
   authRouter.post(
 	"/logout",
 	checkRefreshTokenSecurityDeviceMiddleware,
-	authContorller.cretaeRefreshToken.bind(authContorller)
+	authContorller.cretaeLogout.bind(authContorller)
   );
   
   authRouter.get("/me", authValidationInfoMiddleware, authContorller.findMe.bind(authContorller));

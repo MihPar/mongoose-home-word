@@ -45,7 +45,6 @@ export class Blogs {
 				isMembership: this.isMembership
 			}
 		}
-		 
   };
 
   export type BlogsViewType = {

@@ -27,7 +27,7 @@ export class SecurityDeviceController {
       return res.status(HTTP_STATUS.OK_200).send(getDevicesAllUsers);
     }
   }
-  async terminateCurrentSessions(
+  async terminateCurrentSessions( 
     req: Request,
     res: Response<boolean>
   ): Promise<Response<boolean>> {

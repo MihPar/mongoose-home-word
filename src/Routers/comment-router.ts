@@ -8,15 +8,21 @@ import { likeValidationRule } from "../middleware/input-value-likeStatus-middlew
 
 export const commentsRouter = Router({});
 
-commentsRouter.put('/:commentId/like-status', commentAuthorization, likeValidationRule, ValueMiddleware, commentController.updateByCommentIdLikeStatus.bind(commentController))
+commentsRouter.put(
+  "/:commentId/like-status",
+  commentAuthorization,
+  likeValidationRule,
+  ValueMiddleware,
+  commentController.updateByCommentIdLikeStatus.bind(commentController)
+);
 
 commentsRouter.put(
-	"/:commentId",
-	commentAuthorization,
-	inputCommentValidator,
-	ValueMiddleware,
-	commentController.updateByCommentId.bind(commentController)
-  );
+  "/:commentId",
+  commentAuthorization,
+  inputCommentValidator,
+  ValueMiddleware,
+  commentController.updateByCommentId.bind(commentController)
+);
   
   commentsRouter.delete(
 	"/:commentId",
